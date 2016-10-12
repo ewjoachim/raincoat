@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+COVERAGE_FLAGS="--cov=raincoat --cov-report xml --cov-report term"
+
+if [ -z ${COVERAGE+x} ];
+	then
+	COVERAGE_FLAGS=""
+fi
+
+pytest $COVERAGE_FLAGS tests/
