@@ -196,7 +196,7 @@ def mark_text_ranges(node, source):
             try:
                 tokens = _mark_end_and_return_child_tokens(node, tokens, prelim_end_lineno, prelim_end_col_offset)
             except:
-                traceback.print_exc() # TODO: log it somewhere
+                # traceback.print_exc() # TODO: log it somewhere
                 # fallback to incorrect marking instead of exception
                 node.end_lineno = node.lineno
                 node.end_col_offset = node.col_offset + 1

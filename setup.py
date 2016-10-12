@@ -25,11 +25,13 @@ setup(
         'raincoat',
     ],
     include_package_data=True,
-    install_requires=["sh"],
+    install_requires=["sh", "requests", "pip"],
     tests_require=["tox"],
     license="MIT",
     zip_safe=False,
-    keywords='django-readonly-field',
+    entry_points={
+        'console_scripts': ['raincoat=raincoat:main'],
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

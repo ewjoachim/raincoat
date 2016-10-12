@@ -11,7 +11,7 @@ umbrella_file = os.path.normpath(os.path.join(os.path.dirname(__file__),
 
 def test_find_function():
     code_blocks = list(parse.find_objects(
-        open(umbrella_file), ["use_umbrella"]))
+        open(umbrella_file).read(), ["use_umbrella"]))
 
     assert len(code_blocks) == 1
 
@@ -24,7 +24,7 @@ def test_find_function():
 
 def test_find_method():
     code_blocks = list(parse.find_objects(
-        open(umbrella_file), ["Umbrella.open"]))
+        open(umbrella_file).read(), ["Umbrella.open"]))
 
     assert len(code_blocks) == 1
 
@@ -37,7 +37,7 @@ def test_find_method():
 
 def test_find_class():
     code_blocks = list(parse.find_objects(
-        open(umbrella_file), ["Umbrella"]))
+        open(umbrella_file).read(), ["Umbrella"]))
 
     assert len(code_blocks) == 1
 
@@ -50,7 +50,7 @@ def test_find_class():
 
 def test_find_module():
     code_blocks = list(parse.find_objects(
-        open(umbrella_file), [None]))
+        open(umbrella_file).read(), [None]))
 
     assert len(code_blocks) == 1
 
@@ -63,6 +63,6 @@ def test_find_module():
 
 def test_find_several():
     code_blocks = list(parse.find_objects(
-        open(umbrella_file), ["use_umbrella", "Umbrella.open", None]))
+        open(umbrella_file).read(), ["use_umbrella", "Umbrella.open", None]))
 
     assert len(code_blocks) == 3

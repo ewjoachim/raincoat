@@ -1,24 +1,33 @@
 import os
 import re
 
-from collections import namedtuple
+
+REGEX = r'# Raincoat: package "(?P<package>[^=]+)==(?P<version>[^"]+)" path "(?P<path>[^"]+)" (?:"(?P<code_object>[^"]+)")?'
 
 
-REGEX = r'# Raincoat: package "(?P<package>[^=]+)==(?P<version>[^"]+)" path "(?P<path>[^"]+)" "(?P<code_object>[^"]+)"'
+class Match(object):
+    def __init__(self, package, version, path, filename, lineno, code_object=None):
 
+        self.package = package
+        self.version = version
+        self.path = path
+        self.filename = filename
+        self.lineno = lineno
+        self.code_object = code_object
 
-Match = namedtuple("Match",
-                   ["package", "version", "path",
-                    "code_object", "filename", "lineno"])
+    def __str__(self):
+        return (
+            "{match.package} == {match.version} @ {match.path}:{match.code_object} "
+            "(from {match.filename}:{match.lineno})".format(match=self))
 
 
 def find_in_string(file_content, filename):
-    print(file_content)
     for match in re.finditer(REGEX, file_content):
         lineno = lineno = file_content.count(
             os.linesep, 0, match.start()) + 1
 
-        yield Match(*match.groups(), lineno=lineno, filename=filename)
+        kwargs = match.groupdict()
+        yield Match(**kwargs, lineno=lineno, filename=filename)
 
 
 def find_in_file(filename):
@@ -30,7 +39,7 @@ def list_python_files(base_dir="."):
     for root, __, files in os.walk(base_dir):
         for file in files:
             if file.endswith(".py"):
-                yield os.path.normpath(os.path.join(base_dir, root, file))
+                yield os.path.normpath(os.path.join(root, file))
 
 
 def find_in_dir(base_dir="."):

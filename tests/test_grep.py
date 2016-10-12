@@ -52,15 +52,15 @@ def test_list_python_files(mocker):
     ]
 
     assert list(grep.list_python_files("f")) == [
-        "f/c.py", "f/a/e.py"
+        "c.py", "a/e.py"
     ]
 
 
 # Full chain test
 def test_find_in_dir(mocker):
     open_responses = iter([
-        ("f/c.py", io.StringIO('''# Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"''')),
-        ("f/a/e.py", io.StringIO('''# Raincoat: package "BLU==1.2.4" path "yo/hai.py" "bar"''')),
+        ("c.py", io.StringIO('''# Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"''')),
+        ("a/e.py", io.StringIO('''# Raincoat: package "BLU==1.2.4" path "yo/hai.py" "bar"''')),
     ])
 
     def fake_open(file):
@@ -80,10 +80,10 @@ def test_find_in_dir(mocker):
 
     assert len(matches) == 2
     m1, m2 = matches
-    assert m1.filename == "f/c.py"
+    assert m1.filename == "c.py"
     assert m1.lineno == 1
     assert m1.package == "BLA"
 
-    assert m2.filename == "f/a/e.py"
+    assert m2.filename == "a/e.py"
     assert m2.lineno == 1
     assert m2.package == "BLU"
