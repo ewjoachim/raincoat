@@ -33,7 +33,7 @@ Lets say you're using a lib named ``umbrella`` which provides a function named `
 
 		# Put umbrella away
 		umbrella.close()
-		while not umbrella.is_wet()
+		while not umbrella.is_wet():
 			time.sleep(1)
 		umbrella.put_pouch()
 
@@ -107,6 +107,11 @@ Whether there is something to change or not, you've now verified your code with 
 
 Raincoat can be used like a linter, you can integrate it in CI, make it a tox target...
 
+Note that if you omit the last argument, Raincoat will analyze the whole module:
+
+.. code-block:: python
+
+	# Raincoat: package "umbrella==16.0.3" path "umbrella/__init__.py"
 
 Gotchas
 =======
@@ -114,6 +119,8 @@ Gotchas
 - The 2 elements you provide in path should be the location of the file when the package is installed (in most case, this should match the location of the file in the project repo) and the object defined in this file. This object can be a variable, a class, a function or a method.
 - Your own customized (copied/pasted) version of the function will not be analyzed. In fact, you don't even have to place the Raincoat comment in the function that uses it.
 - You may realize that raincoat works best if you can use some kind of pip cache.
+- Raicoat does not run files (either your files or the package file). Package files are parsed and the AST is analyzed.
+- If for any reason, several code objects are identically named in the file you analyze, there's no guarantee you'll get any specific one.
 
 
 Todos
