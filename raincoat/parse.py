@@ -32,19 +32,18 @@ class CodeLocator(ast.NodeVisitor):
         self.visit_node(node)
 
 
-def find_objects(filename, code_objects):
+def find_objects(handler, code_objects):
 
-    with open(filename) as handler:
-        source = handler.read()
-        source_lines = source.splitlines()
+    source = handler.read()
+    source_lines = source.splitlines()
 
-        if not all(code_objects):
-            yield None, source_lines
+    if not all(code_objects):
+        yield None, source_lines
 
-        if any(code_objects):
+    if any(code_objects):
 
-            locator = CodeLocator(source=source, filters=code_objects)
+        locator = CodeLocator(source=source, filters=code_objects)
 
-            for node_name, node in locator.load().items():
-                if node_name in code_objects:
-                    yield node_name, source_lines[node.lineno - 1:node.end_lineno]
+        for node_name, node in locator.load().items():
+            if node_name in code_objects:
+                yield node_name, source_lines[node.lineno - 1:node.end_lineno]
