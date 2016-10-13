@@ -37,7 +37,7 @@ Lets say you're using a lib named ``umbrella`` which provides a function named `
 			time.sleep(1)
 		umbrella.put_pouch()
 
-This function does what it says it does, but it's not ideally splitted, depending on your needs. For example, maybe at some point you realize you need each of the 3 separate parts to be a function of its own. Or maybe you can't call time.sleep in your app. Or do something else with the ``umbrella`` when it's open like dace with it.
+This function does what it says it does, but it's not ideally splitted, depending on your needs. For example, maybe at some point you realize you need each of the 3 separate parts to be a function of its own. Or maybe you can't call time.sleep in your app. Or do something else with the ``umbrella`` when it's open like dance with it.
 
 It's also possible that you can't really make a pull request because your needs are specific, or you don't have the time (that's sad but, hey, I know it happens) or any other personnal reason. So what do you do ? There's no real alternative. You copy and paste the code, modify it to fit your needs and use your modified version. And whenever there's a change to the upstream function, chances are you'll never know.
 
