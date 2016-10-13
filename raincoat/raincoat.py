@@ -198,7 +198,7 @@ class Raincoat(object):
                 diff = "\n".join(difflib.ndiff(
                     match_block,
                     current_block))
-                self.add_error("Code is different : {}".format(diff), match)
+                self.add_error("Code is different : \n{}".format(diff), match)
 
     def _add_to_clean(self, dirname):
         self.to_clean.add(dirname)
