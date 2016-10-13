@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import sys
 
 import click
@@ -14,7 +16,8 @@ def main(path):
 
     for match, error in inst.errors:
         print(
-            "{match.package} == {match.version} vs {match.other_version} @ {match.path}:{match.code_object} "
+            "{match.package} == {match.version} vs {match.other_version} "
+            "@ {match.path}:{match.code_object} "
             "(from {match.filename}:{match.lineno})".format(match=match))
         print(error)
 

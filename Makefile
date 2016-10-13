@@ -18,9 +18,10 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -rf {} +
 
 lint: ## check style with flake8
-	flake8 --exclude="migrations,.tox,docs,build" .
+	flake8 --exclude=".tox,docs,build,ast_utils.py" .
 
 test: ## run tests quickly with the default Python
 	./runtests

@@ -59,7 +59,8 @@ def test_source_wheel(tmpdir, mocker):
 
     lines = source_code["six.py"].splitlines()
     assert len(lines) == 868
-    assert lines[0] == '"""Utilities for writing code that runs on Python 2 and 3"""'
+    assert lines[0] == ('"""Utilities for writing code '
+                        'that runs on Python 2 and 3"""')
 
 
 def test_current_version():

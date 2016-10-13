@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import os
 import tarfile
 import zipfile
@@ -64,8 +66,8 @@ def get_current_or_latest_version(package):
     try:
         return True, pkg_resources.get_distribution(package).version
     except pkg_resources.DistributionNotFound:
-        pypi_url = "http://pypi.python.org/pypi/{}/json"
-        return False, requests.get(pypi_url.format(package)).json()["info"]["version"]
+        pypi_url = "http://pypi.python.org/pypi/{}/json".format(package)
+        return False, requests.get(pypi_url).json()["info"]["version"]
 
 
 def get_current_path(package):

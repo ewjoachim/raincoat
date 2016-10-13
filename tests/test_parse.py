@@ -1,7 +1,6 @@
 import os
 
 from raincoat import parse
-from raincoat.grep import Match
 
 
 umbrella_file = os.path.normpath(os.path.join(os.path.dirname(__file__),

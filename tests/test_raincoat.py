@@ -159,7 +159,8 @@ def test_compare_contents_missing_match(mocker):
 
 
 def test_check_package_identical_version(mocker):
-    compare_content = mocker.patch("raincoat.raincoat.Raincoat.compare_contents")
+    compare_content = mocker.patch(
+        "raincoat.raincoat.Raincoat.compare_contents")
 
     version = mocker.patch("raincoat.source.get_current_or_latest_version")
     version.return_value = (True, "1.2.3")
@@ -173,7 +174,8 @@ def test_check_package_identical_version(mocker):
 
 
 def test_check_package_installed(mocker):
-    compare_content = mocker.patch("raincoat.raincoat.Raincoat.compare_contents")
+    compare_content = mocker.patch(
+        "raincoat.raincoat.Raincoat.compare_contents")
 
     source = mocker.patch("raincoat.raincoat.source")
 
@@ -193,7 +195,8 @@ def test_check_package_installed(mocker):
 
 
 def test_check_package_installed_no_fast_escape(mocker):
-    compare_content = mocker.patch("raincoat.raincoat.Raincoat.compare_contents")
+    compare_content = mocker.patch(
+        "raincoat.raincoat.Raincoat.compare_contents")
 
     source = mocker.patch("raincoat.raincoat.source")
 
@@ -214,7 +217,8 @@ def test_check_package_installed_no_fast_escape(mocker):
 
 
 def test_check_package_not_installed(mocker):
-    compare_content = mocker.patch("raincoat.raincoat.Raincoat.compare_contents")
+    compare_content = mocker.patch(
+        "raincoat.raincoat.Raincoat.compare_contents")
 
     source = mocker.patch("raincoat.raincoat.source")
 

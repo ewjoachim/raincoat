@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import itertools
 import shutil
 import tempfile
@@ -58,7 +60,8 @@ class Raincoat(object):
         try:
             # In order to minimize useless computation, we'll analyze
             # all the match for a given package at the same time.
-            for (package, version), matches_package in itertools.groupby(matches, key=self.version_key):
+            for (package, version), matches_package in itertools.groupby(
+                    matches, key=self.version_key):
 
                 self.check_package(package, version, list(matches_package))
         finally:
@@ -68,9 +71,11 @@ class Raincoat(object):
         """
         For a given package, extract the sources and call compare_contents
         """
-        installed, current_version = source.get_current_or_latest_version(package)
+        installed, current_version = (
+            source.get_current_or_latest_version(package))
 
-        # If we're comparing the same version, let's not waste time and resources.
+        # If we're comparing the same version, let's not
+        # waste time and resources.
         if current_version == version:
             return
 
@@ -87,7 +92,8 @@ class Raincoat(object):
             current_path = tempfile.mkdtemp()
             self._add_to_clean(current_path)
             source.download_package(package, current_version, current_path)
-            current_content = source.open_downloaded(current_path, files, package)
+            current_content = source.open_downloaded(
+                current_path, files, package)
         else:
             current_path = source.get_current_path(package)
             current_content = source.open_installed(current_path, files)
@@ -144,7 +150,8 @@ class Raincoat(object):
             if match_source == current_source:
                 continue
 
-            self.compare_files(match_source, current_source, list(path_matches))
+            self.compare_files(
+                match_source, current_source, list(path_matches))
 
     def compare_files(self, match_source, current_source, matches):
         """
@@ -153,7 +160,8 @@ class Raincoat(object):
         """
         code_objects = {match.code_object for match in matches}
         match_objects = dict(parse.find_objects(match_source, code_objects))
-        current_objects = dict(parse.find_objects(current_source, code_objects))
+        current_objects = dict(parse.find_objects(
+            current_source, code_objects))
 
         match_keys = frozenset(match_objects)
         current_keys = frozenset(current_objects)
@@ -175,7 +183,8 @@ class Raincoat(object):
             for match in matches:
                 if match.code_object == code_object:
                     self.add_error(
-                        "Code object {} has disappeared".format(code_object), match)
+                        "Code object {} has disappeared"
+                        "".format(code_object), match)
 
         common_keys = match_keys & current_keys
 

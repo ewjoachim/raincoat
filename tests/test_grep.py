@@ -59,8 +59,10 @@ def test_list_python_files(mocker):
 # Full chain test
 def test_find_in_dir(mocker):
     open_responses = iter([
-        ("c.py", io.StringIO('''# Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"''')),
-        ("a/e.py", io.StringIO('''# Raincoat: package "BLU==1.2.4" path "yo/hai.py" "bar"''')),
+        ("c.py", io.StringIO(
+            '''# Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"''')),
+        ("a/e.py", io.StringIO(
+            '''# Raincoat: package "BLU==1.2.4" path "yo/hai.py" "bar"''')),
     ])
 
     def fake_open(file):

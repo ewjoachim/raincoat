@@ -1,12 +1,16 @@
+from __future__ import absolute_import
+
 import os
 import re
 
 
-REGEX = r'# Raincoat: package "(?P<package>[^=]+)==(?P<version>[^"]+)" path "(?P<path>[^"]+)" (?:"(?P<code_object>[^"]+)")?'
+REGEX = (r'# Raincoat: package "(?P<package>[^=]+)==(?P<version>[^"]+)" '
+         'path "(?P<path>[^"]+)" (?:"(?P<code_object>[^"]+)")?')
 
 
 class Match(object):
-    def __init__(self, package, version, path, filename, lineno, code_object=None):
+    def __init__(self, package, version, path,
+                 filename, lineno, code_object=None):
 
         self.package = package
         self.version = version
@@ -17,7 +21,8 @@ class Match(object):
 
     def __str__(self):
         return (
-            "{match.package} == {match.version} @ {match.path}:{match.code_object} "
+            "{match.package} == {match.version} "
+            "@ {match.path}:{match.code_object} "
             "(from {match.filename}:{match.lineno})".format(match=self))
 
 
@@ -27,7 +32,7 @@ def find_in_string(file_content, filename):
             os.linesep, 0, match.start()) + 1
 
         kwargs = match.groupdict()
-        yield Match(**kwargs, lineno=lineno, filename=filename)
+        yield Match(lineno=lineno, filename=filename, **kwargs)
 
 
 def find_in_file(filename):
