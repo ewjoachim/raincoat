@@ -11,6 +11,10 @@ Raincoat
 .. image:: https://img.shields.io/codecov/c/github/novafloss/raincoat/master.svg
     :target: https://codecov.io/github/novafloss/raincoat?branch=master
 
+.. image:: https://readthedocs.org/projects/raincoat/badge/?version=latest
+    :target: http://raincoat.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 Raincoat has you covered when you can't stay DRY. When the time comes where you HAVE to copy code from a third party, Raincoat will let you know when this code is changed so that you can update your local copy.
 
 
