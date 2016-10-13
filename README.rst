@@ -72,6 +72,7 @@ You have made your own private copy of ``umbrella.use_umbrella`` (umbrella being
 Now simply add a comment somewhere (preferably juste after the docstring) that says something like:
 
 .. code-block:: python
+
 	def dance_with_umbrella(umbrella):
 		"""
 		I'm siiiiiinging in the rain !
