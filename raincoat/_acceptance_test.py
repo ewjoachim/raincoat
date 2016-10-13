@@ -1,12 +1,12 @@
 """
-This is a purely internal file that I need distributed for
-testing purposes only.
-
-(Raincoat uses itself to test itself, so we need a file in which
-we control the changes)
+Umbrella can unfold to keep you DRY in the rain
 """
 
 import time
+
+
+def some_decorator(*args):
+    pass
 
 
 class Umbrella(object):
@@ -20,9 +20,14 @@ class Umbrella(object):
         """
         Only support automatic umbrella for now
         """
-        self.button = "pressed"
+        if self.automatic:
+            self.button = "pressed"
+        else:
+            self.slide_runner()
         self.side = "pointy side up"
 
+    @some_decorator(
+        "argument")
     def close(self):
         pass
 
@@ -35,12 +40,12 @@ class Umbrella(object):
 
 class RainDetector(object):
     def still_raining(self):
-        return True
+        return False
 
 rain_detector = RainDetector()
 
 
-def use_umbrella(umbrella):
+def use_umbrella(umbrella, action):
 
     # Prepare umbrella
     umbrella.remove_pouch()
@@ -48,10 +53,33 @@ def use_umbrella(umbrella):
 
     # Use umbrella
     while rain_detector.still_raining():
-        umbrella.keep_over_me()
+        action(umbrella)
 
     # Put umbrella away
     umbrella.close()
     while not umbrella.is_wet():
         time.sleep(1)
     umbrella.put_pouch()
+
+
+@some_decorator(
+    "argument")
+def some_function():
+    pass
+
+
+@some_decorator
+def some_function_2():
+    pass
+
+
+@some_decorator("argument")
+@some_decorator("argument")
+def some_function_3():
+    pass
+
+
+def some_function_4():
+    string = """
+bla"""
+    return string
