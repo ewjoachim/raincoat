@@ -72,6 +72,7 @@ You have made your own private copy of ``umbrella.use_umbrella`` (umbrella being
 Now simply add a comment somewhere (preferably juste after the docstring) that says something like:
 
 .. code-block:: python
+
 	def dance_with_umbrella(umbrella):
 		"""
 		I'm siiiiiinging in the rain !
@@ -84,7 +85,7 @@ Now simply add a comment somewhere (preferably juste after the docstring) that s
 
 Now, if you run ``raincoat`` in your project (At this stage, I assumed you've installed it with ``pip install raincoat``)
 
-.. code-block:: python
+.. code-block:: bash
 
 	$ raincoat
 
@@ -120,7 +121,7 @@ Caveats and Gotchas
 - The 2 elements you provide in path should be the location of the file when the package is installed (in most case, this should match the location of the file in the project repo) and the object defined in this file. This object can be a variable, a class, a function or a method.
 - Your own customized (copied/pasted) version of the function will not be analyzed. In fact, you don't even have to place the Raincoat comment in the function that uses it.
 - You may realize that raincoat works best if you can use some kind of pip cache.
-- Raicoat does not run files (either your files or the package file). Package files are parsed and the AST is analyzed.
+- Raincoat does not run files (either your files or the package file). Package files are parsed and the AST is analyzed.
 - If for any reason, several code objects are identically named in the file you analyze, there's no guarantee you'll get any specific one.
 
 
