@@ -1,0 +1,2 @@
+[run]
+omit = raincoat/ast_utils.py

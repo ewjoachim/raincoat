@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COVERAGE_FLAGS="--cov=raincoat --cov-report xml --cov-report term"
+COVERAGE_FLAGS="--cov=raincoat --cov-report xml --cov-report term --cov-report html --cov-config .coveragerc"
 
 if [ -z ${COVERAGE+x} ];
 	then

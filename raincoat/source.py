@@ -13,7 +13,8 @@ def download_package(package, version, download_dir):
     exit_code = pip.main(
         ["download", "--no-deps", "-d", download_dir, full_package])
     if exit_code != 0:
-        raise ValueError("Error while fetching {} via PIP.".format(full_package))
+        raise ValueError("Error while fetching {} via pip.".format(
+            full_package))
 
 
 def open_in_wheel(wheel, pathes, package):
