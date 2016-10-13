@@ -11,7 +11,7 @@ Raincoat
 .. image:: https://img.shields.io/codecov/c/github/novafloss/raincoat/master.svg
     :target: https://codecov.io/github/novafloss/raincoat?branch=master
 
-Raincoat helps your code to stay DRY when you need to go under the rain. When the time comes where you HAVE to copy code from a third party, Raincoat will let you know when this code is changed so that you can update your local copy.
+Raincoat has you covered when you can't stay DRY. When the time comes where you HAVE to copy code from a third party, Raincoat will let you know when this code is changed so that you can update your local copy.
 
 
 The problem

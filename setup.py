@@ -13,7 +13,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 setup(
     name='raincoat',
     version=version,
-    description="""Raincoat helps your code to stay DRY when you need to go under the rain""",
+    description="Raincoat has your code covered when you can't stay DRY.",
     long_description=readme + '\n\n' + history,
     author='Joachim Jablon',
     author_email='joachim.jablon@people-doc.com',
