@@ -113,9 +113,10 @@ Note that if you omit the last argument, Raincoat will analyze the whole module:
 
 	# Raincoat: package "umbrella==16.0.3" path "umbrella/__init__.py"
 
-Gotchas
-=======
+Caveats and Gotchas
+===================
 
+- **For now, Raincoat does not work with Python 2**. I'm working on it.
 - The 2 elements you provide in path should be the location of the file when the package is installed (in most case, this should match the location of the file in the project repo) and the object defined in this file. This object can be a variable, a class, a function or a method.
 - Your own customized (copied/pasted) version of the function will not be analyzed. In fact, you don't even have to place the Raincoat comment in the function that uses it.
 - You may realize that raincoat works best if you can use some kind of pip cache.
