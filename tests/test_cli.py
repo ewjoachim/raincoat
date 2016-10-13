@@ -13,7 +13,7 @@ def test_cli(cli_runner, mocker):
         match = get_match()
         match.other_version = "2.0.0"
         raincoat.errors = [
-            (match, "Oh :(")
+            ("Oh :(", match)
         ]
 
     raincoat.raincoat.side_effect = add_errors

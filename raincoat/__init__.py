@@ -16,7 +16,7 @@ def main(path):
 
     inst.raincoat(path)
 
-    for match, error in inst.errors:
+    for error, match in inst.errors:
         print(
             "{match.package} == {match.version} vs {match.other_version} "
             "@ {match.path}:{match.code_object} "
