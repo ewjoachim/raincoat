@@ -6,6 +6,8 @@ import click
 
 from raincoat.raincoat import Raincoat
 
+__version__ = "0.1.0"
+
 
 @click.command()
 @click.option('--path', default=".", help='Path to analyze (default.')
