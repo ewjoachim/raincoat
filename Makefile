@@ -1,4 +1,4 @@
-.PHONY: clean-pyc clean-build docs help lint test test-all coverage release sdist
+.PHONY: clean-pyc clean-build docs help lint test test-all coverage release sdist acceptance-tests
 .DEFAULT_GOAL := help
 
 help:
@@ -25,6 +25,9 @@ lint: ## check style with flake8
 
 test: ## run tests quickly with the default Python
 	./runtests
+
+acceptance-tests:
+	pytest acceptance_tests/
 
 test-all: ## run tests on every Python version with tox
 	tox
