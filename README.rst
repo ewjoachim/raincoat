@@ -85,7 +85,7 @@ Now simply add a comment somewhere (preferably juste after the docstring) that s
 
 Now, if you run ``raincoat`` in your project (At this stage, I assumed you've installed it with ``pip install raincoat``)
 
-.. code-block:: python
+.. code-block:: bash
 
 	$ raincoat
 
