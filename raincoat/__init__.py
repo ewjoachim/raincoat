@@ -6,7 +6,7 @@ import click
 
 from raincoat.raincoat import Raincoat
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 @click.command()
