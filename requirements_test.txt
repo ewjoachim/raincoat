@@ -3,5 +3,6 @@ pytest-cov
 pytest-mock
 pytest_click
 mock
+six
 
 -r requirements.txt
