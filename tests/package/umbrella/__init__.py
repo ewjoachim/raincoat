@@ -83,3 +83,9 @@ def some_function_4():
     string = """
 bla"""
     return string
+
+
+def outer():
+    def inner():
+        pass
+    pass

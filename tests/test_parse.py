@@ -55,9 +55,9 @@ def test_find_module():
 
     for name, lines in code_blocks:
         assert name is None
-        assert len(lines) == 85
+        assert len(lines) == 91
         assert lines[0] == ('"""')
-        assert lines[-1] == ('    return string')
+        assert lines[-1] == ('    pass')
 
 
 def test_find_several():
@@ -65,3 +65,14 @@ def test_find_several():
         open(umbrella_file).read(), ["use_umbrella", "Umbrella.open", None]))
 
     assert len(code_blocks) == 3
+
+
+def test_outer_inner():
+    code_blocks = dict(parse.find_objects(
+        open(umbrella_file).read(), ["outer", "outer.inner"]))
+
+    assert len(code_blocks) == 2
+
+    assert len(code_blocks["outer"]) == 4
+
+    assert len(code_blocks["outer.inner"]) == 2
