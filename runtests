@@ -2,9 +2,17 @@
 
 COVERAGE_FLAGS="--cov=raincoat --cov-report xml --cov-report term --cov-report html --cov-config .coveragerc"
 
+TESTS="acceptance_tests/"
+
 if [ -z ${COVERAGE+x} ];
-	then
-	COVERAGE_FLAGS=""
+    then
+    COVERAGE_FLAGS=""
 fi
 
-pytest -v $COVERAGE_FLAGS tests/
+
+if [ -z ${ACCEPTANCE+x} ];
+    then
+    TESTS="tests/"
+fi
+
+pytest -v $COVERAGE_FLAGS $TESTS $@

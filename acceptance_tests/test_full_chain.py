@@ -1,4 +1,5 @@
 from raincoat import main
+from raincoat import __version__
 
 
 def test_full_chain(cli_runner):
@@ -8,10 +9,12 @@ def test_full_chain(cli_runner):
     """
     result = cli_runner.invoke(main, ["--path=acceptance_tests/test_project"])
 
-    details = ("raincoat == 0.1.4 vs 0.1.5 "
+    details = ("raincoat == 0.1.4 vs {} "
                "@ raincoat/_acceptance_test.py:use_umbrella "
-               "(from acceptance_tests/test_project/__init__.py:2)")
+               "(from acceptance_tests/test_project/__init__.py:2)").format(
+                    __version__)
 
+    print(result.output)
     assert details in result.output
     assert "_acceptance_test.py:Umbrella.open" in result.output
     # space left intentionally at the end to not match the previous line
