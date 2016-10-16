@@ -22,7 +22,7 @@ setup(
         'raincoat',
     ],
     include_package_data=True,
-    install_requires=["sh", "requests", "pip"],
+    install_requires=["sh", "requests", "pip", "click"],
     tests_require=["tox"],
     license="MIT",
     zip_safe=False,
