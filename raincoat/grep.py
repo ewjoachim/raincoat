@@ -4,8 +4,11 @@ import os
 import re
 
 
-REGEX = (r'# Raincoat: package "(?P<package>[^=]+)==(?P<version>[^"]+)" '
-         'path "(?P<path>[^"]+)" (?:"(?P<code_object>[^"]+)")?')
+REGEX = re.compile(r'# Raincoat: (.+)(\n|$)')
+ARGS_REGEX = re.compile(
+    r'package "(?P<package>[^=]+)==(?P<version>[^"]+)" '
+    'path "(?P<path>[^"]+)"'
+    '(?: "(?P<code_object>[^"]+)")?')
 
 
 class Match(object):
@@ -27,11 +30,15 @@ class Match(object):
 
 
 def find_in_string(file_content, filename):
-    for match in re.finditer(REGEX, file_content):
+    for match in REGEX.finditer(file_content):
         lineno = lineno = file_content.count(
             os.linesep, 0, match.start()) + 1
 
-        kwargs = match.groupdict()
+        args_match = ARGS_REGEX.match(match.group(1))
+        if not args_match:
+            continue
+
+        kwargs = args_match.groupdict()
         yield Match(lineno=lineno, filename=filename, **kwargs)
 
 

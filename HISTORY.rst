@@ -7,6 +7,7 @@ History
 ++++++++++++++++++
 
 - Fix reqs
+- Perfs improvements when analyzing huge codebases
 
 0.3.0 (2016-10-15)
 ++++++++++++++++++

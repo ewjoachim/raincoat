@@ -21,6 +21,21 @@ def test_string_normal():
     assert match.lineno == 2
     assert match.filename == "foo/bar"
 
+def test_string_normal_whole_module():
+    matches = list(grep.find_in_string("""
+        # Raincoat: package "BLA==1.2.3" path "yo/yeah.py"
+    """, filename="foo/bar"))
+
+    assert len(matches) == 1
+    match, = matches
+
+    assert match.package == "BLA"
+    assert match.version == "1.2.3"
+    assert match.path == "yo/yeah.py"
+    assert match.code_object is None
+    assert match.lineno == 2
+    assert match.filename == "foo/bar"
+
 
 def test_other_operator():
     matches = list(grep.find_in_string("""
@@ -41,6 +56,14 @@ def test_find_in_file():
         handler.write("""
             # Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"
         """)
+        handler.seek(0)
+        matches = list(grep.find_in_file(handler.name))
+        assert len(matches) == 1
+
+
+def test_find_in_file_oneliner():
+    with tempfile.NamedTemporaryFile("w+") as handler:
+        handler.write('''# Raincoat: package "BLA==1.2.3" path "yo/yeah.py" "foo"''')  # noqa
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
         assert len(matches) == 1
