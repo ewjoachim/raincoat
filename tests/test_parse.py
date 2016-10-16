@@ -3,9 +3,10 @@ import os
 from raincoat import parse
 
 
-umbrella_file = os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                              "package/umbrella",
-                                              "__init__.py"))
+umbrella_dir = os.path.normpath(os.path.join(os.path.dirname(__file__),
+                                             "package/umbrella"))
+
+umbrella_file = os.path.join(umbrella_dir, "__init__.py")
 
 
 def test_find_function():
@@ -76,3 +77,17 @@ def test_outer_inner():
     assert len(code_blocks["outer"]) == 4
 
     assert len(code_blocks["outer.inner"]) == 2
+
+
+def test_one_liner():
+    one_liner_file = os.path.join(umbrella_dir, "oneliner.py")
+
+    code_blocks = list(parse.find_objects(
+        open(one_liner_file).read(), ["a"]))
+
+    assert len(code_blocks) == 1
+
+    for name, lines in code_blocks:
+        assert name == "a"
+        assert len(lines) == 1
+        assert lines == ['def a(): pass']

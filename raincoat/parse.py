@@ -16,7 +16,7 @@ class CodeLocator(ast.NodeVisitor):
         self.nodes = {}
         nodes = ast.parse(self.source)
         self.visit(nodes)
-        self.mark_end_lineno(self.source.count("\n"))
+        self.mark_end_lineno(self.source.rstrip().count("\n") + 1)
         return self.nodes
 
     def mark_end_lineno(self, lineno):
@@ -69,4 +69,5 @@ def find_objects(source, code_objects):
 
         for node_name, node in locator.load().items():
             if node_name in code_objects:
+                print(node.lineno - 1, node.end_lineno)
                 yield node_name, source_lines[node.lineno - 1:node.end_lineno]
