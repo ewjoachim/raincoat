@@ -37,6 +37,7 @@ class PyPIChecker(Checker):
         """
         Main entrypoint
         """
+        matches = sorted(matches, key=self.complete_key)
 
         with self.cleaner_ctx():
             # In order to minimize useless computation, we'll analyze

@@ -225,6 +225,27 @@ def test_check_package_installed_no_fast_escape(mocker):
         {"file_a.py": "code"}, {"file_a.py": "code2"}, [match])]
 
 
+def test_checker_check(mocker):
+    check_package = mocker.patch(
+        "raincoat.match.pypi.PyPIChecker.check_package")
+
+    matches = [
+        get_match(package="a", path="a"),
+        get_match(package="b"),
+        get_match(package="a", path="b"),
+    ]
+    match1, match2, match3 = matches
+
+    checker = PyPIChecker()
+    checker.check(matches)
+
+    assert len(check_package.mock_calls) == 2
+    assert check_package.mock_calls == [
+        mock.call("a", "1.0.0", [match1, match3]),
+        mock.call("b", "1.0.0", [match2]),
+    ]
+
+
 def test_check_package_not_installed(mocker):
     compare_content = mocker.patch(
         "raincoat.match.pypi.PyPIChecker.compare_contents")
@@ -272,3 +293,5 @@ def test_match_check_matches():
 
     assert SubClass.checker.mock_calls == [
         mock.call(), mock.call().check([])]
+
+
