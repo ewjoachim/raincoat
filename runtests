@@ -15,4 +15,4 @@ if [ -z ${ACCEPTANCE+x} ];
     TESTS="tests/"
 fi
 
-pytest -v $COVERAGE_FLAGS $TESTS $@
+pytest -v $COVERAGE_FLAGS $TESTS

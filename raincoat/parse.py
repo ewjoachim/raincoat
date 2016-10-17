@@ -69,5 +69,4 @@ def find_objects(source, code_objects):
 
         for node_name, node in locator.load().items():
             if node_name in code_objects:
-                print(node.lineno - 1, node.end_lineno)
                 yield node_name, source_lines[node.lineno - 1:node.end_lineno]

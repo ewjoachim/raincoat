@@ -21,6 +21,7 @@ def test_string_normal():
     assert match.lineno == 2
     assert match.filename == "foo/bar"
 
+
 def test_string_normal_whole_module():
     matches = list(grep.find_in_string("""
         # Raincoat: package "BLA==1.2.3" path "yo/yeah.py"

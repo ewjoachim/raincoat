@@ -14,7 +14,6 @@ def test_full_chain(cli_runner):
                "(from acceptance_tests/test_project/__init__.py:2)").format(
                     __version__)
 
-    print(result.output)
     assert details in result.output
     assert "_acceptance_test.py:Umbrella.open" in result.output
     # space left intentionally at the end to not match the previous line

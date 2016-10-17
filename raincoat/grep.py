@@ -1,32 +1,15 @@
 from __future__ import absolute_import
 
+import logging
 import os
 import re
 
+from .match import Match, NotMatching
+
+logger = logging.getLogger(__name__)
+
 
 REGEX = re.compile(r'# Raincoat: (.+)(\n|$)')
-ARGS_REGEX = re.compile(
-    r'package "(?P<package>[^=]+)==(?P<version>[^"]+)" '
-    'path "(?P<path>[^"]+)"'
-    '(?: "(?P<code_object>[^"]+)")?')
-
-
-class Match(object):
-    def __init__(self, package, version, path,
-                 filename, lineno, code_object=None):
-
-        self.package = package
-        self.version = version
-        self.path = path
-        self.filename = filename
-        self.lineno = lineno
-        self.code_object = code_object
-
-    def __str__(self):
-        return (
-            "{match.package} == {match.version} "
-            "@ {match.path}:{match.code_object} "
-            "(from {match.filename}:{match.lineno})".format(match=self))
 
 
 def find_in_string(file_content, filename):
@@ -34,12 +17,17 @@ def find_in_string(file_content, filename):
         lineno = lineno = file_content.count(
             os.linesep, 0, match.start()) + 1
 
-        args_match = ARGS_REGEX.match(match.group(1))
-        if not args_match:
+        try:
+            match = Match.from_comment(comment=match.group(1),
+                                       filename=filename,
+                                       lineno=lineno)
+
+        except NotMatching:
+            logger.warning("Unrecognized Raincoat comment at {}:{}".format(
+                filename, lineno))
             continue
 
-        kwargs = args_match.groupdict()
-        yield Match(lineno=lineno, filename=filename, **kwargs)
+        yield match
 
 
 def find_in_file(filename):

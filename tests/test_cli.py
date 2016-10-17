@@ -9,14 +9,12 @@ def test_cli(cli_runner, mocker):
 
     raincoat = raincoat_class.return_value
 
-    def add_errors(*args):
-        match = get_match()
-        match.other_version = "2.0.0"
-        raincoat.errors = [
-            ("Oh :(", match)
-        ]
+    match = get_match()
+    match.other_version = "2.0.0"
+    raincoat.raincoat.return_value = [
+        ("Oh :(", match)
+    ]
 
-    raincoat.raincoat.side_effect = add_errors
     result = cli_runner.invoke(main)
     assert result.output == ("umbrella == 1.0.0 vs 2.0.0 @ "
                              "a/b.py:whole module (from file.py:23)\n"

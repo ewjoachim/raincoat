@@ -90,4 +90,4 @@ def test_one_liner():
     for name, lines in code_blocks:
         assert name == "a"
         assert len(lines) == 1
-        assert lines == ['def a(): pass']
+        assert lines == ['def a(): pass  # noqa']

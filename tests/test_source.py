@@ -78,9 +78,12 @@ def test_get_current_path():
 
 
 def test_open_installed():
-    print(source.open_installed(
-        source.get_current_path("pytest"),
-        ["pytest.py"]))
+    source_dict = source.open_installed(
+        source.get_current_path("pytest"), ["pytest.py"])
+    assert len(source_dict) == 1
+    assert "pytest.py" in source_dict
+    assert ("pytest: unit and functional "
+            "testing with Python.\n") in source_dict["pytest.py"]
 
 
 def test_unrecognized_format(tmpdir):
