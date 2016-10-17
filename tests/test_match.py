@@ -293,5 +293,3 @@ def test_match_check_matches():
 
     assert SubClass.checker.mock_calls == [
         mock.call(), mock.call().check([])]
-
-
