@@ -3,7 +3,7 @@ Raincoat
 ########
 
 .. image:: https://badge.fury.io/py/raincoat.png
-    :target: https://badge.fury.io/py/raincoat
+    :target: https://pypi.org/pypi/raincoat
 
 .. image:: https://travis-ci.org/novafloss/raincoat.png?branch=master
     :target: https://travis-ci.org/novafloss/raincoat
