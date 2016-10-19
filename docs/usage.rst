@@ -18,6 +18,7 @@ Raincoat comments
 Raincoat will detect comments in your code, that look like this :
 
 .. code-block:: python
+
 	# Raincoat: package "PACKAGE_NAME==VERSION" path "PATH" "OBJECT_NAME"
 
 Where :
