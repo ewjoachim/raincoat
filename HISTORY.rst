@@ -2,6 +2,12 @@
 
 History
 -------
+
+0.5.0 (2016-11-06)
+++++++++++++++++++
+
+- Standardized the comments form to prepare for other types of Raincoat comments
+
 0.4.3 (2016-11-06)
 ++++++++++++++++++
 
