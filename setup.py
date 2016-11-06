@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
-    from distutils.core import setup
+    from distutils.core import setup, find_packages
 
 version = '0.4.2'
 
@@ -18,9 +18,7 @@ setup(
     author='Joachim Jablon',
     author_email='joachim.jablon@people-doc.com',
     url='https://github.com/novafloss/raincoat',
-    packages=[
-        'raincoat',
-    ],
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     install_requires=["sh", "requests", "pip", "click"],
     tests_require=["tox"],
