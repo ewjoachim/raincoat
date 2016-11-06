@@ -4,9 +4,8 @@ import re
 
 from raincoat import source
 from raincoat import parse
-from raincoat.match import Checker
+from raincoat.match import Checker, NotMatching
 from raincoat.match import Match
-from raincoat.match import RegexMatchMixin
 from raincoat.utils import Cleaner
 
 
@@ -138,19 +137,19 @@ class PyPIChecker(Checker):
         For 2 sources of the same file, compare the part that we're
         intereted in and add errors only if those parts are different.
         """
-        code_objects = {match.code_object for match in matches}
-        match_objects = dict(parse.find_objects(match_source, code_objects))
-        current_objects = dict(parse.find_objects(
-            current_source, code_objects))
+        elements = {match.element for match in matches}
+        match_elements = dict(parse.find_elements(match_source, elements))
+        current_elements = dict(parse.find_elements(
+            current_source, elements))
 
-        match_keys = frozenset(match_objects)
-        current_keys = frozenset(current_objects)
+        match_keys = frozenset(match_elements)
+        current_keys = frozenset(current_elements)
 
         # Missing functions/classes in matched (should not exist)
         unexpectedly_missing = current_keys - match_keys
         if unexpectedly_missing:
             raise ValueError(
-                "Raincoat was misconfigured. The following code objects "
+                "Raincoat was misconfigured. The following elements "
                 "do not exist in the file : {}. Offending Raincoat "
                 "comments are located here : {}".format(
                     ", ".join(unexpectedly_missing),
@@ -158,33 +157,51 @@ class PyPIChecker(Checker):
                     ", ".join(str(match) for match in matches)))
 
         # Missing functions/classes in current
-        disappeared_objects = match_keys - current_keys
-        for code_object in disappeared_objects:
+        disappeared_elements = match_keys - current_keys
+        for element in disappeared_elements:
             for match in matches:
-                if match.code_object == code_object:
+                if match.element == element:
                     self.add_error(
                         "Code object {} has disappeared"
-                        "".format(code_object), match)
+                        "".format(element), match)
 
         common_keys = match_keys & current_keys
 
         for match in matches:
-            if match.code_object not in common_keys:
+            if match.element not in common_keys:
                 continue
 
-            match_block = match_objects[match.code_object]
-            current_block = current_objects[match.code_object]
+            match_block = match_elements[match.element]
+            current_block = current_elements[match.element]
             match.check(
                 checker=self,
                 match_block=match_block,
                 current_block=current_block)
 
 
-class PyPIMatch(RegexMatchMixin, Match):
+class PyPIMatch(Match):
 
-    regex = re.compile(
-        r'package "(?P<package>[^=]+)==(?P<version>[^"]+)" '
-        'path "(?P<path>[^"]+)"'
-        '(?: "(?P<code_object>[^"]+)")?')
+    def __init__(self, filename, lineno, package, path, element=None):
+        super(PyPIMatch, self).__init__(filename, lineno)
 
+        try:
+            self.package, self.version = package.strip().split("==")
+        except ValueError:
+            raise NotMatching
+        self.path = path.strip()
+        self.element = element.strip() if element else None
+
+        # This may be filled manually later.
+        self.other_version = None
+
+    def __str__(self):
+        return (
+            "{match.package} == {match.version}{vs_match} "
+            "@ {match.path}:{element} "
+            "(from {match.filename}:{match.lineno})".format(
+                match=self,
+                vs_match=" vs {}".format(self.other_version)
+                         if self.other_version else "",
+                element=self.element or "whole module"))
     checker = PyPIChecker
+    match_type = "pypi"

@@ -83,7 +83,7 @@ Now simply add a comment somewhere (preferably juste after the docstring) that s
 		"""
 		# This code was adapted from the original umbrella.use_umbrella function
 		# (we just changed the part inside the middle while loop)
-		# Raincoat: package "umbrella==14.5.7" path "umbrella/__init__.py" "use_umbrella"
+		# Raincoat: pypi package: umbrella==14.5.7 path: umbrella/__init__.py element: use_umbrella
 
 		...
 
@@ -108,7 +108,7 @@ Whether there is something to change or not, you've now verified your code with 
 
 .. code-block:: python
 
-	# Raincoat: package "umbrella==16.0.3" path "umbrella/__init__.py" "use_umbrella"
+	# Raincoat: pypi package: umbrella==16.0.3 path: umbrella/__init__.py element: use_umbrella"
 
 Raincoat can be used like a linter, you can integrate it in CI, make it a tox target...
 
@@ -116,7 +116,7 @@ Note that if you omit the last argument, Raincoat will analyze the whole module:
 
 .. code-block:: python
 
-	# Raincoat: package "umbrella==16.0.3" path "umbrella/__init__.py"
+	# Raincoat: pypi package: umbrella==16.0.3 path: umbrella/__init__.py
 
 Caveats and Gotchas
 ===================

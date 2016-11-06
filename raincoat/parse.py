@@ -56,17 +56,19 @@ class CodeLocator(ast.NodeVisitor):
         super(CodeLocator, self).visit(node)
 
 
-def find_objects(source, code_objects):
+def find_elements(source, elements):
 
     source_lines = source.splitlines()
 
-    if not all(code_objects):
+    elements = set(elements)
+    if None in elements:
         yield None, source_lines
+        elements.remove(None)
 
-    if any(code_objects):
+    if elements:
 
-        locator = CodeLocator(source=source, filters=code_objects)
+        locator = CodeLocator(source=source, filters=elements)
 
         for node_name, node in locator.load().items():
-            if node_name in code_objects:
+            if node_name in elements:
                 yield node_name, source_lines[node.lineno - 1:node.end_lineno]

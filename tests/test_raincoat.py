@@ -5,16 +5,12 @@ from .test_match import get_match
 
 
 def test_raincoat(mocker):
-    # The test strategy is a little contrieved here but the problem
-    # is that we'll take match and call a classmethod on their class
-    # so it's not easy to mock, because the Mock class itself is
-    # not a mock.
-
-    # If you have an idea on how to do this better.
-
     find_in_dir = mocker.patch("raincoat.grep.find_in_dir")
 
     class MatchSubtype(Match):
+        def __init__(self, filename, lineno, **kwargs):
+            super(MatchSubtype, self).__init__(filename, lineno)
+
         @classmethod
         def check_matches(cls, matches):
             assert matches == cls.matches
@@ -26,10 +22,14 @@ def test_raincoat(mocker):
     class MatchSubtypeB(MatchSubtype):
         pass
 
+    Match.subclasses.update({
+        "a": MatchSubtypeA, "b": MatchSubtypeB
+    })
+
     matches = [
-        get_match(match_class=MatchSubtypeA, package="a", path="a"),
-        get_match(match_class=MatchSubtypeB, package="b"),
-        get_match(match_class=MatchSubtypeA, package="a", path="b"),
+        get_match(match_type="a", package="a", path="a"),
+        get_match(match_type="b", package="b"),
+        get_match(match_type="a", package="a", path="b"),
     ]
     match1, match2, match3 = matches
     MatchSubtypeA.matches = [match1, match3]

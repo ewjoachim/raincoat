@@ -3,26 +3,24 @@ import pytest
 import mock
 
 from raincoat.match import Match
-from raincoat.match import RegexMatchMixin
 from raincoat.match.pypi import PyPIMatch
 from raincoat.match.pypi import PyPIChecker
 
 
 default_kwargs = {
-    "package": "umbrella",
-    "version": "1.0.0",
+    "match_type": "pypi",
+    "package": "umbrella==1.0.0",
     "filename": "file.py",
     "lineno": 23,
     "path": "a/b.py",
-    "code_object": None,
+    "element": None,
 }
 
 
 def get_match(**kwargs):
-    match_class = kwargs.pop("match_class", PyPIMatch)
     match_kwargs = default_kwargs.copy()
     match_kwargs.update(kwargs)
-    return match_class(**match_kwargs)
+    return Match.from_comment(**match_kwargs)
 
 
 def test_compare_files_identical():
@@ -33,7 +31,7 @@ def a():
     return 1
     """
     checker.compare_files(
-        func_a, func_a, [get_match(code_object="a")])
+        func_a, func_a, [get_match(element="a")])
 
     assert checker.errors == []
 
@@ -51,7 +49,7 @@ def a():
     """
 
     checker.compare_files(
-        func_a, func_b, [get_match(code_object="a")])
+        func_a, func_b, [get_match(element="a")])
 
     assert checker.errors == []
 
@@ -68,7 +66,7 @@ def a():
     return 2
     """
     checker.compare_files(
-        func_a, func_b, [get_match(code_object="a")])
+        func_a, func_b, [get_match(element="a")])
 
     assert len(checker.errors) == 1
     assert checker.errors[0][0].startswith("Code is different")
@@ -86,7 +84,7 @@ def a():
 
     with pytest.raises(ValueError):
         checker.compare_files(
-            func_a, func_b, [get_match(code_object="a")])
+            func_a, func_b, [get_match(element="a")])
 
 
 def test_compare_files_missing_current():
@@ -100,7 +98,7 @@ def a():
     """
 
     checker.compare_files(
-        func_a, func_b, [get_match(code_object="a")])
+        func_a, func_b, [get_match(element="a")])
 
     assert len(checker.errors) == 1
     assert checker.errors[0][0].startswith("Code object a has disappeared")
@@ -230,9 +228,9 @@ def test_checker_check(mocker):
         "raincoat.match.pypi.PyPIChecker.check_package")
 
     matches = [
-        get_match(package="a", path="a"),
-        get_match(package="b"),
-        get_match(package="a", path="b"),
+        get_match(package="a==1.0.0", path="a"),
+        get_match(package="b==1.0.0"),
+        get_match(package="a==1.0.0", path="b"),
     ]
     match1, match2, match3 = matches
 
@@ -266,14 +264,6 @@ def test_check_package_not_installed(mocker):
     assert len(source.open_installed.mock_calls) == 0
     assert len(checker.errors) == 0
     assert compare_content.mock_calls == []
-
-
-def test_misconfigured_regex_match():
-    class SubClass(RegexMatchMixin):
-        pass
-
-    with pytest.raises(NotImplementedError):
-        SubClass.match("a", "b", 3)
 
 
 def test_misconfigured_match():

@@ -9,7 +9,8 @@ from .match import Match, NotMatching
 logger = logging.getLogger(__name__)
 
 
-REGEX = re.compile(r'# Raincoat: (.+)(\n|$)')
+REGEX = re.compile(r'# Raincoat: ([a-z]+) (.+)(\n|#|$)')
+ARGS_REGEX = re.compile(r' *([^ ]+): *([^ ]+)(?: *|$)')
 
 
 def find_in_string(file_content, filename):
@@ -18,13 +19,19 @@ def find_in_string(file_content, filename):
             os.linesep, 0, match.start()) + 1
 
         try:
-            match = Match.from_comment(comment=match.group(1),
+            kwargs_str = match.group(2).strip()
+            kwargs = dict(
+                pair.groups()
+                for pair in ARGS_REGEX.finditer(kwargs_str))
+
+            match = Match.from_comment(match_type=match.group(1),
                                        filename=filename,
-                                       lineno=lineno)
+                                       lineno=lineno,
+                                       **kwargs)
 
         except NotMatching:
-            logger.warning("Unrecognized Raincoat comment at {}:{}".format(
-                filename, lineno))
+            logger.warning("Unrecognized Raincoat comment at {}:{}\n{}".format(
+                filename, lineno, match.group(0)))
             continue
 
         yield match

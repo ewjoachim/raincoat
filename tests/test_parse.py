@@ -10,7 +10,7 @@ umbrella_file = os.path.join(umbrella_dir, "__init__.py")
 
 
 def test_find_function():
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(umbrella_file).read(), ["use_umbrella"]))
 
     assert len(code_blocks) == 1
@@ -23,7 +23,7 @@ def test_find_function():
 
 
 def test_find_method():
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(umbrella_file).read(), ["Umbrella.open"]))
 
     assert len(code_blocks) == 1
@@ -36,7 +36,7 @@ def test_find_method():
 
 
 def test_find_class():
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(umbrella_file).read(), ["Umbrella"]))
 
     assert len(code_blocks) == 1
@@ -49,7 +49,7 @@ def test_find_class():
 
 
 def test_find_module():
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(umbrella_file).read(), [None]))
 
     assert len(code_blocks) == 1
@@ -62,14 +62,14 @@ def test_find_module():
 
 
 def test_find_several():
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(umbrella_file).read(), ["use_umbrella", "Umbrella.open", None]))
 
     assert len(code_blocks) == 3
 
 
 def test_outer_inner():
-    code_blocks = dict(parse.find_objects(
+    code_blocks = dict(parse.find_elements(
         open(umbrella_file).read(), ["outer", "outer.inner"]))
 
     assert len(code_blocks) == 2
@@ -82,7 +82,7 @@ def test_outer_inner():
 def test_one_liner():
     one_liner_file = os.path.join(umbrella_dir, "oneliner.py")
 
-    code_blocks = list(parse.find_objects(
+    code_blocks = list(parse.find_elements(
         open(one_liner_file).read(), ["a"]))
 
     assert len(code_blocks) == 1
