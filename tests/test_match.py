@@ -3,7 +3,6 @@ import pytest
 import mock
 
 from raincoat.match import Match
-from raincoat.match.pypi import PyPIMatch
 from raincoat.match.pypi import PyPIChecker
 
 

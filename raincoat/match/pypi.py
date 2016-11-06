@@ -1,6 +1,5 @@
 import contextlib
 import itertools
-import re
 
 from raincoat import source
 from raincoat import parse
