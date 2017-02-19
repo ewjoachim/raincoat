@@ -4,7 +4,7 @@ import logging
 import os
 import re
 
-from .match import Match, NotMatching
+from .match import NotMatching, match_from_comment
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +18,13 @@ def find_in_string(file_content, filename):
         lineno = lineno = file_content.count(
             os.linesep, 0, match.start()) + 1
 
-        try:
-            kwargs_str = match.group(2).strip()
-            kwargs = dict(
-                pair.groups()
-                for pair in ARGS_REGEX.finditer(kwargs_str))
+        kwargs_str = match.group(2).strip()
+        kwargs = dict(
+            pair.groups()
+            for pair in ARGS_REGEX.finditer(kwargs_str))
 
-            match = Match.from_comment(match_type=match.group(1),
+        try:
+            match = match_from_comment(match_type=match.group(1),
                                        filename=filename,
                                        lineno=lineno,
                                        **kwargs)

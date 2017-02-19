@@ -1,44 +1,17 @@
 from raincoat.raincoat import Raincoat
-from raincoat.match import Match
-
-from .test_match import get_match
 
 
-def test_raincoat(mocker):
+def test_raincoat(mocker, match, match_module):
     find_in_dir = mocker.patch("raincoat.grep.find_in_dir")
+    check_matches = mocker.patch("raincoat.raincoat.check_matches")
 
-    class MatchSubtype(Match):
-        def __init__(self, filename, lineno, **kwargs):
-            super(MatchSubtype, self).__init__(filename, lineno)
-
-        @classmethod
-        def check_matches(cls, matches):
-            assert matches == cls.matches
-            return [("Oh :(", matches[0])]
-
-    class MatchSubtypeA(MatchSubtype):
-        pass
-
-    class MatchSubtypeB(MatchSubtype):
-        pass
-
-    Match.subclasses.update({
-        "a": MatchSubtypeA, "b": MatchSubtypeB
-    })
-
-    matches = [
-        get_match(match_type="a", package="a", path="a"),
-        get_match(match_type="b", package="b"),
-        get_match(match_type="a", package="a", path="b"),
-    ]
-    match1, match2, match3 = matches
-    MatchSubtypeA.matches = [match1, match3]
-
-    MatchSubtypeB.matches = [match2]
-
-    find_in_dir.return_value = matches
+    find_in_dir.return_value = [match, match_module]
 
     raincoat = Raincoat()
 
-    # Asserts are made in the check_package method
+    # Asserts are made in the check_matches method
     list(raincoat.raincoat("."))
+
+    assert (
+        check_matches.mock_calls[0] ==
+        mocker.call({'pypi': [match, match_module]}))

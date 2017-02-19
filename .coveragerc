@@ -1,2 +1,3 @@
 [run]
 omit = raincoat/ast_utils.py,raincoat/_acceptance_test.py
+branch = True

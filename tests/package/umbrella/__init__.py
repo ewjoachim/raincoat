@@ -42,6 +42,7 @@ class RainDetector(object):
     def still_raining(self):
         return False
 
+
 rain_detector = RainDetector()
 
 

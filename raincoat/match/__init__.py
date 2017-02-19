@@ -1,63 +1,58 @@
-import difflib
-
-
-class NotMatching(ValueError):
+class NotMatching(Exception):
     pass
 
 
 class Match(object):
     # Filled at the end of the module
-    subclasses = {}
-    match_type = None
+    match_type = NotImplemented
+    checker = NotImplemented
 
     def __init__(self, filename, lineno):
-
         self.filename = filename
         self.lineno = lineno
 
     def __str__(self):
         return "Match in {}:{}".format(self.filename, self.lineno)
 
-    @classmethod
-    def from_comment(cls, match_type, filename, lineno, **kwargs):
-        """
-        Indentifies the correct Match subclass and
-        creates a match
-        """
-        try:
-            return cls.subclasses[match_type](filename, lineno, **kwargs)
-        except KeyError:
-            raise NotMatching
 
-    checker = NotImplemented
-
-    @classmethod
-    def check_matches(cls, matches):
-        if cls.checker is NotImplemented:
-            raise NotImplementedError()
-
-        return cls.checker().check(matches)
-
-    def check(self, checker, match_block, current_block):
-        """
-        Compares the matched code against the current code. This
-        part should probably be the same for all subclasses.
-        """
-        if match_block != current_block:
-            diff = "\n".join(difflib.ndiff(
-                match_block,
-                current_block))
-            checker.add_error("Code is different : \n{}".format(diff), self)
+def match_from_comment(match_type, filename, lineno, **kwargs):
+    """
+    Indentifies the correct Match subclass and
+    creates a match
+    """
+    try:
+        return match_types[match_type](filename, lineno, **kwargs)
+    except KeyError:
+        raise NotMatching
 
 
-class Checker(object):
+def check_matches(matches):
+    for match_type, matches_for_type in matches.items():
+        match_class = match_types[match_type]
+        checker = match_class.checker
 
-    def add_error(self, error, match):
-        self.errors.append((error, match))
+        if checker is NotImplemented:
+            raise NotImplementedError(
+                "{} has no checker".format(match_class))
+
+        for difference in checker().check(matches_for_type):
+            yield difference
+
+
+def fill_match_types(match_types, match_classes):
+    for match_class in match_classes:
+        match_type = match_class.match_type
+
+        if match_type is NotImplemented:
+            raise NotImplementedError(
+                "{} has no match_type".format(match_class))
+
+        match_types[match_type] = match_class
 
 
 from .pypi import PyPIMatch  # noqa
-Match.subclasses = {
-    match_class.match_type: match_class
-    for match_class in [PyPIMatch]
-}
+match_classes = [PyPIMatch]
+
+match_types = {}
+
+fill_match_types(match_types, match_classes)

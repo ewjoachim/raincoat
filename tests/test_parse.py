@@ -56,7 +56,7 @@ def test_find_module():
 
     for name, lines in code_blocks:
         assert name is None
-        assert len(lines) == 91
+        assert len(lines) == 92
         assert lines[0] == ('"""')
         assert lines[-1] == ('    pass')
 
