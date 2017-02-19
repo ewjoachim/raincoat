@@ -20,4 +20,4 @@ def main(path):
         click.echo(error)
         click.echo()
 
-    sys.exit(len(errors))
+    sys.exit(int(bool(errors)))
