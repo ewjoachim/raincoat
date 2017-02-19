@@ -24,3 +24,6 @@ def test_full_chain(cli_runner):
 
     assert "-        umbrella.keep_over_me()" in result.output
     assert "+        action(umbrella)" in result.output
+
+    assert "27754" not in result.output
+    assert "Ticket #26976 has been merged in Django" in result.output

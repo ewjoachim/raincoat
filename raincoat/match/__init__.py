@@ -51,7 +51,8 @@ def fill_match_types(match_types, match_classes):
 
 
 from .pypi import PyPIMatch  # noqa
-match_classes = [PyPIMatch]
+from .django import DjangoMatch  # noqa
+match_classes = [PyPIMatch, DjangoMatch]
 
 match_types = {}
 

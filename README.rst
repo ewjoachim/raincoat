@@ -118,6 +118,26 @@ Note that if you omit the last argument, Raincoat will analyze the whole module:
 
 	# Raincoat: pypi package: umbrella==16.0.3 path: umbrella/__init__.py
 
+
+And beyond !
+============
+
+Actually, the base principle of Raincoat can be extended to many other subjects than PyPI packages.
+To fit this, Raincoat was written with a modular achitecture allowing other kinds of Raincoat comments.
+
+For now Raincoat comes with:
+
+- *PyPI*: The module presented above
+- *Django*: A module that checks if a given bug in Django for which you may have had to write a workaround
+  is fixed in your (or the latest) version of Django. Syntax is :
+
+.. code-block:: python
+
+	# Raincoat: django ticket: #26976
+
+Of course, feel free to code your own !
+
+
 Caveats and Gotchas
 ===================
 
