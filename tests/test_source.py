@@ -63,8 +63,10 @@ def test_source_wheel(tmpdir, mocker):
                         'that runs on Python 2 and 3"""')
 
 
-def test_current_version():
-    assert source.get_current_or_latest_version("pytest") == (True, "3.0.3")
+def test_current_version(mocker):
+    dist = mocker.patch("raincoat.source.pkg_resources.get_distribution")()
+    dist.version = "1.2.3"
+    assert source.get_current_or_latest_version("pytest") == (True, "1.2.3")
 
 
 def test_latest_version(mocker):

@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import itertools
 
 from . import grep
+from .match import check_matches
 
 
 class Raincoat(object):
@@ -35,8 +36,10 @@ class Raincoat(object):
         matches = sorted(grep.find_in_dir(path), key=self.class_key_id)
         # In order to minimize useless computation, we'll analyze
         # all the match for a given package at the same time.
+        matches_dict = {}
         for match_class, matches_for_class in itertools.groupby(
                 matches, key=self.class_key):
+            matches_for_class = list(matches_for_class)
+            matches_dict[match_class.match_type] = matches_for_class
 
-            for error in match_class.check_matches(list(matches_for_class)):
-                yield error
+        return check_matches(matches_dict)

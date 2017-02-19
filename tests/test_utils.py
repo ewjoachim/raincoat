@@ -34,3 +34,8 @@ def test_cleaner_add_folder():
         assert os.path.exists(dir_name)
 
     assert not os.path.exists(dir_name)
+
+
+def test_cleaner_missing_file(tmpdir):
+    with Cleaner() as cleaner:
+        cleaner.add("/tmp/bla/yay")

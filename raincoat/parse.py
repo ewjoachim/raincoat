@@ -70,5 +70,4 @@ def find_elements(source, elements):
         locator = CodeLocator(source=source, filters=elements)
 
         for node_name, node in locator.load().items():
-            if node_name in elements:
-                yield node_name, source_lines[node.lineno - 1:node.end_lineno]
+            yield node_name, source_lines[node.lineno - 1:node.end_lineno]

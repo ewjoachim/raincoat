@@ -1,188 +1,208 @@
-import contextlib
-import itertools
+import difflib
 
-from raincoat import source
-from raincoat import parse
-from raincoat.match import Checker, NotMatching
-from raincoat.match import Match
+from raincoat import parse, source
+from raincoat.match import Match, NotMatching
 from raincoat.utils import Cleaner
 
 
-class PyPIChecker(Checker):
-    @staticmethod
-    def version_key(match):
-        return (match.package, match.version)
-
-    @staticmethod
-    def path_key(match):
-        return match.path
-
-    @classmethod
-    def complete_key(cls, match):
-        return cls.version_key(match) + (cls.path_key(match),)
-
-    def __init__(self):
-        self.errors = []
-        self.cleaner = None
-
-    @contextlib.contextmanager
-    def cleaner_ctx(self):
-        with Cleaner() as cleaner:
-            self.cleaner = cleaner
-            yield self.cleaner
+class PyPIChecker(object):
 
     def check(self, matches):
         """
         Main entrypoint
         """
-        matches = sorted(matches, key=self.complete_key)
+        match_info = self.get_match_info(matches)
 
-        with self.cleaner_ctx():
-            # In order to minimize useless computation, we'll analyze
-            # all the match for a given package at the same time.
-            for (package, version), matches_package in itertools.groupby(
-                    matches, key=self.version_key):
+        packages = dict(self.get_packages(
+            match_info=match_info))
 
-                self.check_package(package, version, list(matches_package))
+        return self.compare_packages(packages, match_info)
 
-        return self.errors
+    def get_match_info(self, matches):
+        match_info = {}
+        for match in matches:
+            (match_info
+             .setdefault((match.package, match.version), {})
+             .setdefault(match.path, {})
+             .setdefault(match.element, [])
+             .append(match))
+        return match_info
 
-    def check_package(self, package, version, matches_package):
-        """
-        For a given package, extract the sources and call compare_contents
-        """
-        installed, current_version = (
-            source.get_current_or_latest_version(package))
+    def get_packages(self, match_info):
 
-        # If we're comparing the same version, let's not
-        # waste time and resources.
-        if current_version == version:
-            return
+        # In order to minimize useless computation, we'll analyze
+        # all the match for a given package at the same time.
 
-        for match in matches_package:
-            match.other_version = current_version
+        current_packages = {}
 
-        # Get the list of files for this package
-        # that we'll want to check. We only check those.
-        files = set(match.path for match in matches_package)
+        for (package, version), package_info in sorted(match_info.items()):
 
-        # If the package is installed, we'll use its source.
-        # Otherwise, we'll download it.
-        if not installed:
-            current_path = self.cleaner.mkdir()
-            source.download_package(package, current_version, current_path)
-            current_content = source.open_downloaded(
-                current_path, files, package)
-        else:
-            current_path = source.get_current_path(package)
-            current_content = source.open_installed(current_path, files)
+            current_source = None
+            try:
+                current_source, current_version = current_packages[package]
+            except KeyError:
+                installed, current_version = (
+                    source.get_current_or_latest_version(package))
 
-        # For the package pointed by the Raincoat comment, we'll always have to
-        # download it.
-        matched_path = self.cleaner.mkdir()
-        source.download_package(package, version, matched_path)
-        match_content = source.open_downloaded(matched_path, files, package)
-
-        # fast escape strategy
-        if match_content == current_content:
-            return
-
-        self.compare_contents(match_content, current_content, matches_package)
-
-    def compare_contents(self, match_content, current_content, matches):
-        """
-        For 2 sets of source code, compare them, and if there might
-        be something different, call compare_files
-        """
-        match_keys = frozenset(match_content)
-        current_keys = frozenset(current_content)
-
-        # Missing files in matched (should not exist)
-        unexpectedly_missing = current_keys - match_keys
-        if unexpectedly_missing:
-            raise ValueError(
-                "Raincoat was misconfigured. The following files "
-                "do not exist on the package : {}. Offending Raincoat "
-                "comments are located here : {}".format(
-                    ", ".join(unexpectedly_missing),
-                    # TODO : refine the next line.
-                    ", ".join(str(match) for match in matches)))
-
-        # Missing files in current
-        disappeared_files = match_keys - current_keys
-        for file in disappeared_files:
-            for match in matches:
-                if match.path == file:
-                    self.add_error(
-                        "File {} has disappeared".format(file), match)
-
-        common_keys = match_keys & current_keys
-
-        for path, path_matches in itertools.groupby(matches, self.path_key):
-            if path not in common_keys:
+            # If we're comparing the same version, let's not
+            # waste time and resources.
+            if current_version == version:
                 continue
-            match_source = match_content[path]
-            current_source = current_content[path]
 
-            # fast escape strategy
+            files = list(package_info)
+
+            match_source = self.download_package(
+                package, version, files)
+
+            if not current_source:
+                if installed:
+                    current_source = self.retrieve_installed_package(
+                        package, files)
+                else:
+                    current_source = self.download_package(
+                        package, current_version, files)
+
+                current_packages[package] = (current_source, current_version)
+
             if match_source == current_source:
                 continue
 
-            self.compare_files(
-                match_source, current_source, list(path_matches))
+            self.mark_other_version(match_info, current_version)
 
-    def compare_files(self, match_source, current_source, matches):
+            yield (package, version), (match_source, current_source)
+
+    def download_package(self, package, version, files):
+        with Cleaner() as cleaner:
+            path = cleaner.mkdir()
+            source.download_package(package, version, path)
+            return source.open_downloaded(path, files, package)
+
+    def retrieve_installed_package(self, package, files):
+        path = source.get_current_path(package)
+        return source.open_installed(path, files)
+
+    def mark_other_version(self, info, version):
+        for match in self.get_all_matches(info):
+            match.other_version = version
+
+    def compare_packages(self, packages, match_info):
+        for package_key, (match_source, current_source) in packages.items():
+            package_info = match_info[package_key]
+            package_name, package_version = package_key
+            files = dict(self.get_differences(
+                match_dict=match_source,
+                current_dict=current_source))
+
+            for path, (match_file, current_file) in files.items():
+                file_info = package_info[path]
+                if match_file is None:
+                    for match in self.get_all_matches(file_info):
+                        yield ("Invalid Raincoat PyPI comment : {} does not "
+                               "exist in {}=={}"
+                               .format(path, package_name, package_version),
+                               match)
+                    continue
+
+                if current_file is None:
+                    for match in self.get_all_matches(file_info):
+                        yield ("File {} disappeared from {}"
+                               .format(path, package_name),
+                               match)
+                    continue
+
+                names = list(file_info)
+                match_elements = dict(
+                    parse.find_elements(match_file, names))
+                current_elements = dict(
+                    parse.find_elements(current_file, names))
+
+                elements = dict(self.get_differences(
+                    match_dict=match_elements,
+                    current_dict=current_elements))
+
+                if None in file_info:
+                    for match in file_info[None]:
+                        yield self.compare_blocks(
+                            match=match,
+                            match_block=match_file.splitlines(),
+                            current_block=current_file.splitlines(),
+                            path=path)
+
+                for name, (match_block, current_block) in elements.items():
+                    if not name:
+                        continue
+
+                    block_info = file_info[name]
+                    if match_block is None:
+                        for match in block_info:
+                            yield ("Invalid Raincoat PyPI comment : {} does "
+                                   "not exist in {} in {}=={}"
+                                   .format(name, path, package_name,
+                                           package_version),
+                                   match)
+                        continue
+
+                    if current_block is None:
+                        for match in block_info:
+                            yield ("{} disappeared from {} in {}"
+                                   .format(name, path, package_name),
+                                   match)
+                        continue
+
+                    for match in block_info:
+                        yield self.compare_blocks(
+                            match=match,
+                            match_block=match_block,
+                            current_block=current_block,
+                            path=path)
+
+    def get_all_matches(self, info):
         """
-        For 2 sources of the same file, compare the part that we're
-        intereted in and add errors only if those parts are different.
+        Recursively yields all matches in the given nested dict.
         """
-        elements = {match.element for match in matches}
-        match_elements = dict(parse.find_elements(match_source, elements))
-        current_elements = dict(parse.find_elements(
-            current_source, elements))
+        for element in info.values():
+            if isinstance(element, dict):
+                for match in self.get_all_matches(element):
+                    yield match
+            else:
+                for match in element:
+                    yield match
 
-        match_keys = frozenset(match_elements)
-        current_keys = frozenset(current_elements)
+    def get_differences(self, match_dict, current_dict):
+        """
+        Returns the keys for which values in the 2 dicts are
+        different, and the said values.
+        """
+        match_keys = frozenset(match_dict)
+        current_keys = frozenset(current_dict)
 
-        # Missing functions/classes in matched (should not exist)
-        unexpectedly_missing = current_keys - match_keys
-        if unexpectedly_missing:
-            raise ValueError(
-                "Raincoat was misconfigured. The following elements "
-                "do not exist in the file : {}. Offending Raincoat "
-                "comments are located here : {}".format(
-                    ", ".join(unexpectedly_missing),
-                    # TODO : refine the next line.
-                    ", ".join(str(match) for match in matches)))
+        all_keys = match_keys | current_keys
 
-        # Missing functions/classes in current
-        disappeared_elements = match_keys - current_keys
-        for element in disappeared_elements:
-            for match in matches:
-                if match.element == element:
-                    self.add_error(
-                        "Code object {} has disappeared"
-                        "".format(element), match)
+        for key in all_keys:
+            match_value = match_dict.get(key)
+            current_value = current_dict.get(key)
 
-        common_keys = match_keys & current_keys
-
-        for match in matches:
-            if match.element not in common_keys:
+            if match_value == current_value:
                 continue
 
-            match_block = match_elements[match.element]
-            current_block = current_elements[match.element]
-            match.check(
-                checker=self,
-                match_block=match_block,
-                current_block=current_block)
+            yield(key, (match_value, current_value))
+
+    def compare_blocks(self, match, match_block, current_block, path):
+        """
+        Compares the matched code against the current code
+        """
+
+        diff = "\n".join(difflib.unified_diff(
+            match_block,
+            current_block,
+            fromfile=path, tofile=path,
+            lineterm=""))
+        return "Code is different:\n{}".format(diff), match
 
 
 class PyPIMatch(Match):
 
     def __init__(self, filename, lineno, package, path, element=None):
-        super(PyPIMatch, self).__init__(filename, lineno)
-
         try:
             self.package, self.version = package.strip().split("==")
         except ValueError:
@@ -192,6 +212,8 @@ class PyPIMatch(Match):
 
         # This may be filled manually later.
         self.other_version = None
+
+        super(PyPIMatch, self).__init__(filename, lineno)
 
     def __str__(self):
         return (
