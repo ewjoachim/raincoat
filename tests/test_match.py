@@ -19,9 +19,10 @@ def test_match_from_comment(match):
 
 
 def test_check_matches(mocker, match):
-    mocker.patch("raincoat.match.pypi.PyPIChecker.check")
+    mocker.patch("raincoat.match.pypi.PyPIChecker.check",
+                 return_value=[1])
 
-    match_module.check_matches({"pypi": [match]})
+    list(match_module.check_matches({"pypi": [match]}))
 
 
 def test_check_matches_no_checker(mocker):
