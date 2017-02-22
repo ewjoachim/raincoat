@@ -8,10 +8,11 @@ from raincoat.raincoat import Raincoat
 
 __version__ = "0.6.0"
 
+CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
 
-@click.command()
 @click.option('--path', default=".", help='Path to analyze (default is "." )')
 def main(path):
+@click.command(context_settings=CONTEXT_SETTINGS)
     raincoat = Raincoat()
 
     errors = list(raincoat.raincoat(path=path))
