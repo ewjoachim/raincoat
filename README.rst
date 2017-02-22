@@ -146,6 +146,8 @@ Caveats and Gotchas
 - You may realize that raincoat works best if you can use some kind of pip cache.
 - Raincoat does not run files (either your files or the package file). Package files are parsed and the AST is analyzed.
 - If for any reason, several code objects are identically named in the file you analyze, there's no guarantee you'll get any specific one.
+- The Django module uses the public GitHub API and does a few calls. This should not be a concern most of the time, but you may experience rate-limiting issues if Raincoat is launched from an IP that does a lot of calls to the GitHub API (e.g. Travis). In this case, from your Travis settings, set the environment variable ``RAINCOAT_GITHUB_TOKEN`` to ``username:github_token``, ``github_token being a token generated `here <https://github.com/settings/tokens>`_ with all checkboxes unchecked.
+- So few people use Raincoat for now that you should expect a few bumps down the road. This being said, fire issues and pull requetes at will and I'll do my best to answer them in a timely manner.
 
 
 Todos

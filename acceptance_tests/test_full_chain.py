@@ -1,3 +1,6 @@
+import pytest
+import traceback
+
 from raincoat import main
 from raincoat import __version__
 
@@ -9,12 +12,16 @@ def test_full_chain(cli_runner):
     """
     result = cli_runner.invoke(main, ["--path=acceptance_tests/test_project"])
 
+    if result.exception and not isinstance(result.exception, SystemExit):
+        traceback.print_exception(*result.exc_info)
+        pytest.fail()
+
     details = ("raincoat == 0.1.4 vs {} "
                "@ raincoat/_acceptance_test.py:use_umbrella "
                "(from acceptance_tests/test_project/__init__.py:2)").format(
                     __version__)
 
-    print(result.output)
+    print(result.output, )
 
     assert details in result.output
     assert "_acceptance_test.py:Umbrella.open" in result.output
@@ -26,4 +33,4 @@ def test_full_chain(cli_runner):
     assert "+        action(umbrella)" in result.output
 
     assert "27754" not in result.output
-    assert "Ticket #26976 has been merged in Django" in result.output
+    assert "Ticket #25981 has been merged in Django" in result.output

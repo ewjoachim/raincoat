@@ -4,6 +4,7 @@ import os
 import tarfile
 import zipfile
 
+from distutils.version import StrictVersion
 import pip
 import pkg_resources
 import requests
@@ -66,8 +67,24 @@ def get_current_or_latest_version(package):
     try:
         return True, pkg_resources.get_distribution(package).version
     except pkg_resources.DistributionNotFound:
-        pypi_url = "http://pypi.python.org/pypi/{}/json".format(package)
-        return False, requests.get(pypi_url).json()["info"]["version"]
+        pass
+    pypi_url = "http://pypi.python.org/pypi/{}/json".format(package)
+    releases = requests.get(pypi_url).json()["releases"]
+
+    versions = []
+
+    for version in releases:
+        try:
+            parsed_version = StrictVersion(version)
+        except ValueError:
+            continue
+
+        if parsed_version.prerelease:
+            continue
+
+        versions.append((parsed_version, version))
+
+    return False, next(iter(sorted(versions, reverse=True)))[1]
 
 
 def get_current_path(package):

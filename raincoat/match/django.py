@@ -1,3 +1,4 @@
+import os
 import re
 
 import requests
@@ -7,7 +8,7 @@ from raincoat.match import Match, NotMatching
 from raincoat import source
 
 
-def get_merge_commit_sha1(ticket):
+def get_merge_commit_sha1(ticket, session):
 
     # This is an adaptation of
     # https://github.com/django/code.djangoproject.com/blob/
@@ -23,7 +24,7 @@ def get_merge_commit_sha1(ticket):
     args = "repo:django/django+state:closed+in:title+type:pr+"
     args += "+".join(pattern.format(ticket)
                      for pattern in pr_title_patterns)
-    response = requests.get(
+    response = session.get(
         url + six.moves.urllib.parse.quote(args, safe="+:"))
     response.raise_for_status()
     search_results = response.json()
@@ -37,12 +38,12 @@ def get_merge_commit_sha1(ticket):
             # skip this element if PR id == ticket id
             continue
 
-        merged = requests.get(
+        merged = session.get(
             "https://api.github.com/repos/django/django/pulls/{}/merge"
             .format(number)).status_code == 204
 
         if merged:
-            response = requests.get(
+            response = session.get(
                     "https://api.github.com/repos/django/django/pulls/{}"
                     .format(number))
             response.raise_for_status()
@@ -51,7 +52,7 @@ def get_merge_commit_sha1(ticket):
             return pr_details["merge_commit_sha"]
 
         # Check if the PR was merged manually
-        response = requests.get(
+        response = session.get(
             "https://api.github.com/repos/django/django/issues/{}/comments"
             .format(number))
         response.raise_for_status()
@@ -62,11 +63,11 @@ def get_merge_commit_sha1(ticket):
                 return merged_in.group(1)
 
 
-def is_commit_in_version(commit, version):
+def is_commit_in_version(commit, version, session):
     url = (
         "https://api.github.com/repos/django/django/compare/{}...{}"
         "".format(commit, version))
-    response = requests.get(url)
+    response = session.get(url)
     response.raise_for_status()
     diff = response.json()
     return not diff.get("status") == "diverged"
@@ -87,16 +88,23 @@ class DjangoChecker(object):
 
         return self.check_matches(match_info, django_version)
 
+    def get_session(self, token=None):
+        session = requests.Session()
+        if token:
+            session.auth = tuple(token.split(":"))
+        return session
+
     def check_matches(self, match_info, django_version):
-        for ticket, ticket_matches in match_info.items():
-            sha1 = get_merge_commit_sha1(ticket)
-            if sha1:
-                if is_commit_in_version(sha1, django_version):
-                    for match in ticket_matches:
-                        yield (
-                            "Ticket #{} has been merged in Django {}"
-                            .format(ticket, django_version),
-                            match)
+        with self.get_session(os.getenv("RAINCOAT_GITHUB_TOKEN")) as session:
+            for ticket, ticket_matches in match_info.items():
+                sha1 = get_merge_commit_sha1(ticket, session)
+                if sha1:
+                    if is_commit_in_version(sha1, django_version, session):
+                        for match in ticket_matches:
+                            yield (
+                                "Ticket #{} has been merged in Django {}"
+                                .format(ticket, django_version),
+                                match)
 
 
 class DjangoMatch(Match):
