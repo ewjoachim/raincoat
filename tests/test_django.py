@@ -40,40 +40,38 @@ def test_ticket_not_a_number():
 
 
 def test_is_commit_in_version_no(mocker):
-    requests = mocker.patch("raincoat.match.django.requests")
-    requests.get.return_value.json.return_value = {"status": "diverged"}
+    session = mocker.MagicMock()
+    session.get.return_value.json.return_value = {"status": "diverged"}
 
-    assert not django.is_commit_in_version("abcdef", "1.9")
+    assert not django.is_commit_in_version("abcdef", "1.9", session)
 
     assert (
-        requests.mock_calls[0] ==
+        session.mock_calls[0] ==
         mocker.call.get("https://api.github.com/repos/django/django/"
                         "compare/abcdef...1.9"))
 
 
 def test_is_commit_in_version_yes(mocker):
-    mocker.patch("raincoat.match.django.requests")
-
-    assert django.is_commit_in_version("abcdef", "1.9")
+    assert django.is_commit_in_version("abcdef", "1.9", mocker.MagicMock())
 
 
 django_repo = 'https://api.github.com/repos/django/django'
 
 
 def test_get_merge_commit_sha1(mocker):
-    requests = mocker.patch("raincoat.match.django.requests")
+    session = mocker.MagicMock()
 
-    requests.get.return_value.status_code = 204
-    requests.get.return_value.json.side_effect = [
+    session.get.return_value.status_code = 204
+    session.get.return_value.json.side_effect = [
         {"items": [{"number": 1234}]},
         {"merge_commit_sha": "deadbeef"},
     ]
 
-    assert django.get_merge_commit_sha1(26976) == "deadbeef"
+    assert django.get_merge_commit_sha1(26976, session) == "deadbeef"
     query = ("repo:django%2Fdjango+state:closed+in:title+"
              "type:pr+%2326976%20+%2326976%2C+%2326976:+%2326976%29")
 
-    assert requests.get.call_args_list == [
+    assert session.get.call_args_list == [
         mocker.call("https://api.github.com/search/issues?q=" + query),
         mocker.call(django_repo + "/pulls/1234/merge"),
         mocker.call(django_repo + "/pulls/1234"),
@@ -81,19 +79,19 @@ def test_get_merge_commit_sha1(mocker):
 
 
 def test_get_merge_commit_sha1_manually_merged(mocker):
-    requests = mocker.patch("raincoat.match.django.requests")
+    session = mocker.MagicMock()
 
-    requests.get.return_value.status_code = 200
-    requests.get.return_value.json.side_effect = [
+    session.get.return_value.status_code = 200
+    session.get.return_value.json.side_effect = [
         {"items": [{"number": 1234}]},
         [{"body": "merged in baadf00d"}],
     ]
 
-    assert django.get_merge_commit_sha1(26976) == "baadf00d"
+    assert django.get_merge_commit_sha1(26976, session) == "baadf00d"
     query = ("repo:django%2Fdjango+state:closed+in:title+"
              "type:pr+%2326976%20+%2326976%2C+%2326976:+%2326976%29")
 
-    assert requests.get.call_args_list == [
+    assert session.get.call_args_list == [
         mocker.call("https://api.github.com/search/issues?q=" + query),
         mocker.call(django_repo + "/pulls/1234/merge"),
         mocker.call(django_repo + "/issues/1234/comments"),
@@ -101,19 +99,19 @@ def test_get_merge_commit_sha1_manually_merged(mocker):
 
 
 def test_get_merge_commit_sha1_not_merged(mocker):
-    requests = mocker.patch("raincoat.match.django.requests")
+    session = mocker.MagicMock()
 
-    requests.get.return_value.status_code = 200
-    requests.get.return_value.json.side_effect = [
+    session.get.return_value.status_code = 200
+    session.get.return_value.json.side_effect = [
         {"items": [{"number": 1234}]},
         [{"body": "yay"}],
     ]
 
-    assert django.get_merge_commit_sha1(26976) is None
+    assert django.get_merge_commit_sha1(26976, session) is None
     query = ("repo:django%2Fdjango+state:closed+in:title+"
              "type:pr+%2326976%20+%2326976%2C+%2326976:+%2326976%29")
 
-    assert requests.get.call_args_list == [
+    assert session.get.call_args_list == [
         mocker.call("https://api.github.com/search/issues?q=" + query),
         mocker.call(django_repo + "/pulls/1234/merge"),
         mocker.call(django_repo + "/issues/1234/comments"),
@@ -121,19 +119,19 @@ def test_get_merge_commit_sha1_not_merged(mocker):
 
 
 def test_get_merge_commit_sha1_same_number(mocker):
-    requests = mocker.patch("raincoat.match.django.requests")
+    session = mocker.MagicMock()
 
-    requests.get.return_value.status_code = 200
-    requests.get.return_value.json.side_effect = [
+    session.get.return_value.status_code = 200
+    session.get.return_value.json.side_effect = [
         {"items": [{"number": 26976}]},
         [{"body": "merged in 01020304"}],
     ]
 
-    assert django.get_merge_commit_sha1(26976) is None
+    assert django.get_merge_commit_sha1(26976, session) is None
     query = ("repo:django%2Fdjango+state:closed+in:title+"
              "type:pr+%2326976%20+%2326976%2C+%2326976:+%2326976%29")
 
-    assert requests.get.call_args_list == [
+    assert session.get.call_args_list == [
         mocker.call("https://api.github.com/search/issues?q=" + query),
     ]
 
@@ -189,3 +187,11 @@ def test_check(mocker, fixed_match):
 
     assert result == [("Ticket #26976 has been merged in Django 1.9",
                        fixed_match)]
+
+
+def test_get_session():
+    assert django.DjangoChecker().get_session(token="a:b").auth == ("a", "b")
+
+
+def test_get_session_no_token():
+    assert django.DjangoChecker().get_session().auth is None
