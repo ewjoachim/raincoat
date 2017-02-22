@@ -26,4 +26,4 @@ def test_full_chain(cli_runner):
     assert "+        action(umbrella)" in result.output
 
     assert "27754" not in result.output
-    assert "Ticket #26976 has been merged in Django" in result.output
+    assert "Ticket #25981 has been merged in Django" in result.output
