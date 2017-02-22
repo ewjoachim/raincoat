@@ -3,11 +3,11 @@
 History
 -------
 
-0.6.0 (unreleased)
+0.6.0 (2017-02-22)
 ++++++++++++++++++
 
 - Refactored the code for easier testing
-- Added Django modult to be informed when Django bugs are fixed
+- Added Django module to be informed when Django bugs are fixed
 
 0.5.0 (2016-11-06)
 ++++++++++++++++++
