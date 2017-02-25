@@ -1,3 +1,6 @@
+from itertools import count
+
+
 class NotMatching(Exception):
     pass
 
@@ -13,6 +16,28 @@ class Match(object):
 
     def __str__(self):
         return "Match in {}:{}".format(self.filename, self.lineno)
+
+    def format(self, message, color):
+        message = message.strip()
+        result = ""
+
+        result += color["match"](str(self)) + "\n"
+
+        lines = message.splitlines()
+        counter = count()
+
+        for line in lines:
+            line = line.strip()
+            if line:
+                result += self.format_line(line, color, next(counter))
+                result += "\n"
+
+        return result
+
+    def format_line(self, line, color, i):
+        if i == 0:
+            line = color["message"](line)
+        return line
 
 
 def match_from_comment(match_type, filename, lineno, **kwargs):

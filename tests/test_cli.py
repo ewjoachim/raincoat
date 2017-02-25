@@ -3,31 +3,33 @@ from raincoat import main, __main__
 
 def test_cli(cli_runner, mocker, match):
 
-    raincoat_class = mocker.patch("raincoat.Raincoat")
-
-    raincoat = raincoat_class.return_value
+    raincoat = mocker.patch("raincoat.raincoat")
 
     match.other_version = "2.0.0"
-    raincoat.raincoat.return_value = [
-        ("Oh :(", match)
+    raincoat.return_value = [
+        "Oh :("
     ]
-    result = cli_runner.invoke(main)
-    assert result.output == ("umbrella == 3.2 vs 2.0.0 @ "
-                             "path/to/file.py:MyClass (from filename:12)\n"
-                             "Oh :(\n\n")
+    result = cli_runner.invoke(main, ["--no-color"])
+    exc = result.exception
+
+    if exc and not isinstance(exc, SystemExit):
+        raise exc
+
+    assert result.output == ("Oh :(\n")
     assert result.exit_code == 1
 
 
 def test_cli_path(cli_runner, mocker, match):
 
-    raincoat_class = mocker.patch("raincoat.Raincoat")
+    raincoat = mocker.patch("raincoat.raincoat")
 
-    print(cli_runner.invoke(main, ["tests", "raincoat", "--exclude=*.py"]))
-    assert raincoat_class.return_value.mock_calls[0] == (
-        mocker.call.raincoat(path="tests", exclude=("*.py",)))
+    cli_runner.invoke(main, ["tests", "raincoat", "--exclude=*.py"])
 
-    assert raincoat_class.return_value.mock_calls[2] == (
-        mocker.call.raincoat(path="raincoat", exclude=("*.py",)))
+    assert raincoat.mock_calls[0] == (
+        mocker.call.raincoat(path="tests", exclude=("*.py",), color=True))
+
+    assert raincoat.mock_calls[2] == (
+        mocker.call.raincoat(path="raincoat", exclude=("*.py",), color=True))
 
 
 # Yeah, I realize how ridiculous it can be, but eh.

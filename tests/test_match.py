@@ -47,3 +47,32 @@ def test_fill_match_types_no_match_type(mocker):
     with pytest.raises(NotImplementedError,
                        message="Unfinished has no match_type"):
         match_module.fill_match_types(match_module.match_types, [Unfinished])
+
+
+def test_format_line_first(match, color):
+    assert match.format_line("haha", color, 0) == "message" "haha" "neutral"
+
+
+def test_format_line_not_first(match, color):
+    assert match.format_line("haha", color, 1) == "haha"
+
+
+def test_format(match, color):
+    assert match.format("haha", color) == (
+        "match" "umbrella == 3.2 @ path/to/file.py:MyClass "
+        "(from filename:12)" "neutral\n"
+        "message" "haha" "neutral\n")
+
+
+def test_format_empty(match, color):
+    assert match.format("", color) == (
+        "matchumbrella == 3.2 @ path/to/file.py:MyClass "
+        "(from filename:12)" "neutral\n")
+
+
+def test_format_space(match, color):
+    assert match.format("haha\n   \nhehe", color) == (
+        "match" "umbrella == 3.2 @ path/to/file.py:MyClass "
+        "(from filename:12)" "neutral\n"
+        "message" "haha" "neutral\n"
+        "hehe\n")

@@ -1,6 +1,6 @@
 import pytest
 
-from raincoat.match.pypi import PyPIChecker
+from raincoat.match.pypi import PyPIChecker, PyPIMatch, NotMatching
 
 
 @pytest.fixture
@@ -404,3 +404,19 @@ def test_check(mocker, match):
         "-    pass\n"
         "+    return None",
         match)]
+
+
+def test_format_diff_plus(color, match):
+    assert match.format_line("+aaa", color, 3) == "diff+" "+aaa" "neutral"
+
+
+def test_format_diff_minus(color, match):
+    assert match.format_line("-aaa", color, 3) == "diff-" "-aaa" "neutral"
+
+
+def test_format_diff_at(color, match):
+    assert match.format_line("@aaa", color, 3) == "diff@" "@aaa" "neutral"
+
+
+def test_format_not_diff(color, match):
+    assert match.format_line("aaa", color, 3) == "aaa"

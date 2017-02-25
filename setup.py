@@ -20,7 +20,7 @@ setup(
     url='https://github.com/novafloss/raincoat',
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
-    install_requires=["sh", "requests", "pip", "click"],
+    install_requires=["sh", "requests", "pip", "click", "colorama"],
     tests_require=["tox"],
     license="MIT",
     zip_safe=False,
