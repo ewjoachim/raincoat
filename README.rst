@@ -155,6 +155,7 @@ Todos
 
 Things I'd like to add at some point
 
+- Add colors to the output
 - An option to update a comment automatically
 - A way to say you want your customized function to be diffed too (in case it's a close copy and you want to keep track of what you've modified)
 - A way to access the original function without the process of downloading the whole package and installing it for nothing. We just want a single file of it.
