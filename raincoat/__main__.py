@@ -1,4 +1,10 @@
 from . import main
 
-if __name__ == '__main__':
-    main()
+
+# What would one do for 100% coverage...
+def launch(name):
+    if name == '__main__':
+        main()
+
+
+launch(__name__)

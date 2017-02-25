@@ -10,7 +10,8 @@ def test_full_chain(cli_runner):
     Note that this test is excluded from coverage because coverage should be
     for unit tests.
     """
-    result = cli_runner.invoke(main, ["--path=acceptance_tests/test_project"])
+    result = cli_runner.invoke(main, ["--exclude=*ignored*",
+                                      "acceptance_tests/test_project"])
 
     if result.exception and not isinstance(result.exception, SystemExit):
         traceback.print_exception(*result.exc_info)
@@ -21,7 +22,9 @@ def test_full_chain(cli_runner):
                "(from acceptance_tests/test_project/__init__.py:2)").format(
                     __version__)
 
-    print(result.output, )
+    # Most of the time, this is useful for debugging and the
+    # output is captured by pytest when the test passes anyway.
+    print(result.output)
 
     assert details in result.output
     assert "_acceptance_test.py:Umbrella.open" in result.output
@@ -31,6 +34,8 @@ def test_full_chain(cli_runner):
 
     assert "-        umbrella.keep_over_me()" in result.output
     assert "+        action(umbrella)" in result.output
+
+    assert "ignored" not in result.output
 
     assert "27754" not in result.output
     assert "Ticket #25981 has been merged in Django" in result.output
