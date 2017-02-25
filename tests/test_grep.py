@@ -91,6 +91,84 @@ def test_list_python_files(mocker):
     ]
 
 
+def test_list_python_files_exclude_dir_dot_slash(mocker):
+    walk = mocker.patch("os.walk")
+    dirs = ["a", "b"]
+    walk.return_value = [
+        (".", dirs, ["b.txt", "c.py"]),
+        ("a", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["./b"])) == [
+        "c.py", "a/e.py"
+    ]
+    assert dirs == ["a"]
+
+
+def test_list_python_files_exclude_dir(mocker):
+    walk = mocker.patch("os.walk")
+    dirs = ["a", "b"]
+    walk.return_value = [
+        (".", dirs, ["b.txt", "c.py"]),
+        ("a", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["b"])) == [
+        "c.py", "a/e.py"
+    ]
+    assert dirs == ["a"]
+
+
+def test_list_python_files_exclude_multiple(mocker):
+    walk = mocker.patch("os.walk")
+    dirs = ["a", "b"]
+    walk.return_value = [
+        (".", dirs, ["b.txt", "c.py"]),
+        ("a", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["b", "a/*"])) == [
+        "c.py"
+    ]
+    assert dirs == ["a"]
+
+
+def test_list_python_files_exclude_dir_wildcard(mocker):
+    walk = mocker.patch("os.walk")
+    dirs = ["aaa", "bbb"]
+    walk.return_value = [
+        (".", dirs, ["b.txt", "c.py"]),
+        ("aaa", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["b*"])) == [
+        "c.py", "aaa/e.py"
+    ]
+    assert dirs == ["aaa"]
+
+
+def test_list_python_files_exclude_file(mocker):
+    walk = mocker.patch("os.walk")
+    walk.return_value = [
+        (".", ["a"], ["b.txt", "c.py"]),
+        ("a", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["a/e.py"])) == [
+        "c.py"]
+
+
+def test_list_python_files_exclude_file_wildcard(mocker):
+    walk = mocker.patch("os.walk")
+    walk.return_value = [
+        (".", ["a"], ["b.txt", "c.py"]),
+        ("a", [], ["d.txt", "e.py"]),
+    ]
+
+    assert list(grep.list_python_files("f", exclude=["a/*.py"])) == [
+        "c.py"]
+
+
 # Full chain test
 def test_find_in_dir(mocker):
     open_responses = iter([

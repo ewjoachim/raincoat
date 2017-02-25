@@ -29,11 +29,12 @@ class Raincoat(object):
     def class_key_id(match):
         return id(match.__class__)
 
-    def raincoat(self, path):
+    def raincoat(self, path, exclude=None):
         """
         Main entrypoint
         """
-        matches = sorted(grep.find_in_dir(path), key=self.class_key_id)
+        matches = sorted(grep.find_in_dir(path, exclude=exclude),
+                         key=self.class_key_id)
         # In order to minimize useless computation, we'll analyze
         # all the match for a given package at the same time.
         matches_dict = {}
