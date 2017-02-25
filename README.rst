@@ -2,10 +2,10 @@
 Raincoat
 ########
 
-.. image:: https://badge.fury.io/py/raincoat.png
+.. image:: https://badge.fury.io/py/raincoat.svg
     :target: https://pypi.org/pypi/raincoat
 
-.. image:: https://travis-ci.org/novafloss/raincoat.png?branch=master
+.. image:: https://travis-ci.org/novafloss/raincoat.svg?branch=master
     :target: https://travis-ci.org/novafloss/raincoat
 
 .. image:: https://img.shields.io/codecov/c/github/novafloss/raincoat/master.svg
