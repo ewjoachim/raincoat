@@ -420,3 +420,8 @@ def test_format_diff_at(color, match):
 
 def test_format_not_diff(color, match):
     assert match.format_line("aaa", color, 3) == "aaa"
+
+
+def test_wrong_package_format():
+    with pytest.raises(NotMatching):
+        PyPIMatch("a", 12, "pytest", "path", "element")
