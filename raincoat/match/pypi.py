@@ -224,5 +224,13 @@ class PyPIMatch(Match):
                 vs_match=" vs {}".format(self.other_version)
                          if self.other_version else "",
                 element=self.element or "whole module"))
+
+    def format_line(self, line, color, i):
+        line = super(PyPIMatch, self).format_line(line, color, i)
+        if line[0] in "+-@":
+            line = color["diff" + line[0]](line)
+
+        return line
+
     checker = PyPIChecker
     match_type = "pypi"

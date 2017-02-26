@@ -1,6 +1,7 @@
 import pytest
 
 from raincoat.match.pypi import PyPIMatch
+from raincoat.color import Color
 
 
 @pytest.fixture
@@ -56,3 +57,16 @@ def match_other_version():
         path="path/to/file.py",
         element="MyClass"
     )
+
+
+class ValuesAreKeys(object):
+    def __getitem__(self, key):
+        return key
+
+    def get(self, key, *args):
+        return key
+
+
+@pytest.fixture
+def color():
+    return Color(ValuesAreKeys())

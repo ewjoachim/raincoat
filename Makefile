@@ -8,11 +8,14 @@ install: ## install project dependencies
 	pip install -r requirements.txt
 
 clean: clean-build clean-pyc ## remove all artifacts
+	rm -rf .tox/  # tox artifacts
+	rm -rf .cache/  # pytest artifacts
+	rm -rf htmlcov .coverage coverage.xml  # coverage artifacts
 
 clean-build: ## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr *.egg-info
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
