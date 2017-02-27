@@ -26,10 +26,10 @@ def test_cli_path(cli_runner, mocker, match):
     cli_runner.invoke(main, ["tests", "raincoat", "--exclude=*.py"])
 
     assert raincoat.mock_calls[0] == (
-        mocker.call.raincoat(path="tests", exclude=("*.py",), color=True))
+        mocker.call.raincoat(path="tests", exclude=("*.py",), color=False))
 
     assert raincoat.mock_calls[2] == (
-        mocker.call.raincoat(path="raincoat", exclude=("*.py",), color=True))
+        mocker.call.raincoat(path="raincoat", exclude=("*.py",), color=False))
 
 
 # Yeah, I realize how ridiculous it can be, but eh.
