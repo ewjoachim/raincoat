@@ -15,8 +15,8 @@ CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
 @click.argument('path', nargs=-1, type=click.Path(exists=True))
 @click.option('--exclude', '-e', multiple=True,
               help="Files and folders to exclude (e.g. 'test_*')")
-@click.option('-c/-nc', '--color/--no-color', default=True,
-              help="Should output be colorized ? (default : yes)")
+@click.option('-c/-nc', '--color/--no-color', default=None,
+              help="Should output be colorized ? (default : yes for TTYs)")
 def main(path, exclude=None, color=True):
     """
     Analyze your code to find outdated copy-pasted snippets.
@@ -26,6 +26,9 @@ def main(path, exclude=None, color=True):
     """
     if not path:
         path = ["."]
+
+    if color is None:
+        color = sys.stdout.isatty()
 
     errors = (error_match
               for element in path
