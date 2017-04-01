@@ -3,7 +3,7 @@
 History
 -------
 
-0.7.0 (unreleased)
+0.7.0 (2017-04-01)
 ++++++++++++++++++
 
 - Added colors to the output
