@@ -73,7 +73,7 @@ You have made your own private copy of ``umbrella.use_umbrella`` (umbrella being
 			time.sleep(1)
 		umbrella.put_pouch()
 
-Now simply add a comment somewhere (preferably juste after the docstring) that says something like:
+Now simply add a comment somewhere (preferably just after the docstring) that says something like:
 
 .. code-block:: python
 
@@ -87,7 +87,7 @@ Now simply add a comment somewhere (preferably juste after the docstring) that s
 
 		...
 
-Now, if you run ``raincoat`` in your project (At this stage, I assumed you've installed it with ``pip install raincoat``)
+Now, if you run ``raincoat`` in your project (At this stage, I assume you've installed it with ``pip install raincoat``)
 
 .. code-block:: bash
 
