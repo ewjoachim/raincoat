@@ -10,6 +10,9 @@ import pkg_resources
 import requests
 
 
+FILE_NOT_FOUND = object()
+
+
 def download_package(package, version, download_dir):
     full_package = "{}=={}".format(package, version)
 
@@ -20,47 +23,56 @@ def download_package(package, version, download_dir):
             full_package))
 
 
-def open_in_wheel(wheel, pathes, package):
+def open_in_wheel(wheel, pathes):
     with zipfile.ZipFile(wheel, 'r') as zf:
-        return {
-            path: zf.open(path, 'r').read().decode("UTF-8")
-            for path in pathes
-        }
+        sources = {}
+        for path in pathes:
+            try:
+                source = zf.open(path, 'r').read().decode("UTF-8")
+            except KeyError:
+                source = FILE_NOT_FOUND
+            sources[path] = source
+        return sources
 
 
-def open_in_tarball(tarball, pathes, package):
-    result = {}
+def open_in_tarball(tarball, pathes):
+    sources = {}
     with tarfile.open(tarball, 'r:gz') as tf:
         for path in pathes:
             top_level_dir = tf.next().name
             try:
                 handler = tf.extractfile(os.path.join(top_level_dir, path))
+                source = handler.read().decode("UTF-8")
             except KeyError:
-                raise ValueError("File {} does not exist in package {}".format(
-                    path, package))
-            result[path] = handler.read().decode("UTF-8")
-    return result
+                source = FILE_NOT_FOUND
+            sources[path] = source
+    return sources
 
 
-def open_downloaded(download_path, pathes, package):
+def open_downloaded(download_path, pathes):
     archive_name, = os.listdir(download_path)
 
     archive_path = os.path.join(download_path, archive_name)
     ext = os.path.splitext(archive_name)[1]
 
     if ext == ".gz":
-        return open_in_tarball(archive_path, pathes, package)
+        return open_in_tarball(archive_path, pathes)
     elif ext == ".whl":
-        return open_in_wheel(archive_path, pathes, package)
+        return open_in_wheel(archive_path, pathes)
     else:
         raise NotImplementedError("Unrecognize archive format {}".format(ext))
 
 
 def open_installed(installed_path, pathes):
-    return {
-        path: open(os.path.join(installed_path, path)).read()
-        for path in pathes
-    }
+    sources = {}
+    for path in pathes:
+        try:
+            source = open(os.path.join(installed_path, path)).read()
+        except IOError:
+            source = FILE_NOT_FOUND
+        sources[path] = source
+
+    return sources
 
 
 def get_current_or_latest_version(package):

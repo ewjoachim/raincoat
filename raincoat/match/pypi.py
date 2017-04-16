@@ -55,12 +55,19 @@ class PyPIChecker(object):
                 package, version, files)
 
             if not current_source:
+                # Retrieve all the files that will be needed for this
+                # particular package
+                current_files = sorted(set.union(*(
+                    set(value)
+                    for (one_package, __), value in match_info.items()
+                    if one_package == package)))
+
                 if installed:
                     current_source = self.retrieve_installed_package(
-                        package, files)
+                        package, current_files)
                 else:
                     current_source = self.download_package(
-                        package, current_version, files)
+                        package, current_version, current_files)
 
                 current_packages[package] = (current_source, current_version)
 
@@ -75,7 +82,7 @@ class PyPIChecker(object):
         with Cleaner() as cleaner:
             path = cleaner.mkdir()
             source.download_package(package, version, path)
-            return source.open_downloaded(path, files, package)
+            return source.open_downloaded(path, files)
 
     def retrieve_installed_package(self, package, files):
         path = source.get_current_path(package)
@@ -94,8 +101,11 @@ class PyPIChecker(object):
                 current_dict=current_source))
 
             for path, (match_file, current_file) in files.items():
-                file_info = package_info[path]
                 if match_file is None:
+                    # This file was not meant for us.
+                    continue
+                file_info = package_info[path]
+                if match_file is source.FILE_NOT_FOUND:
                     for match in self.get_all_matches(file_info):
                         yield ("Invalid Raincoat PyPI comment : {} does not "
                                "exist in {}=={}"
@@ -103,7 +113,7 @@ class PyPIChecker(object):
                                match)
                     continue
 
-                if current_file is None:
+                if current_file is source.FILE_NOT_FOUND:
                     for match in self.get_all_matches(file_info):
                         yield ("File {} disappeared from {}"
                                .format(path, package_name),
