@@ -1,6 +1,7 @@
 import pytest
 
 from raincoat.match.pypi import PyPIChecker, PyPIMatch, NotMatching
+from raincoat.source import FILE_NOT_FOUND
 
 
 @pytest.fixture
@@ -113,7 +114,9 @@ def test_compare_packages(match, match_info):
                 "    pass"},
             {"path/to/file.py":
                 "class MyClass(object):\n"
-                "    return None"})}
+                "    return None",
+             "path/to/ignored/file.py":
+                "# ignored"})}
 
     result = list(PyPIChecker().compare_packages(
         packages, match_info))
@@ -233,7 +236,7 @@ def test_compare_packages_missing_element_in_current(match, match_info):
 def test_compare_packages_missing_file_in_match(match, match_info):
     packages = {
         ("umbrella", "3.2"): (
-            {},
+            {"path/to/file.py": FILE_NOT_FOUND},
             {"path/to/file.py":
                 "class MyClass(object):\n"
                 "    return None"})}
@@ -253,7 +256,7 @@ def test_compare_packages_missing_file_in_current(match, match_info):
             {"path/to/file.py":
                 "class MyClass(object):\n"
                 "    return None"},
-            {})}
+            {"path/to/file.py": FILE_NOT_FOUND})}
 
     result = list(PyPIChecker().compare_packages(
         packages, match_info))
@@ -282,8 +285,7 @@ def test_get_packages(mocker, match_info):
     assert source.mock_calls == [
         mocker.call.get_current_or_latest_version("umbrella"),
         mocker.call.download_package("umbrella", "3.2", "/tmp/clean"),
-        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"],
-                                    "umbrella"),
+        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"]),
         mocker.call.get_current_path("umbrella"),
         mocker.call.open_installed("/sites_packages/umbrella",
                                    ["path/to/file.py"]),
@@ -324,8 +326,10 @@ def test_get_packages_same_version(mocker, match_info):
     assert result == []
 
 
-def test_get_packages_package_cache(mocker, match, match_other_version):
-    match_info = PyPIChecker().get_match_info([match, match_other_version])
+def test_get_packages_package_cache(mocker, match,
+                                    match_other_version_other_file):
+    match_info = PyPIChecker().get_match_info(
+        [match, match_other_version_other_file])
 
     source = mocker.patch("raincoat.match.pypi.source")
     mocker.patch("raincoat.match.pypi.Cleaner.mkdir",
@@ -341,16 +345,21 @@ def test_get_packages_package_cache(mocker, match, match_other_version):
         mocker.call.get_current_or_latest_version("umbrella"),
         # First version
         mocker.call.download_package("umbrella", "3.2", "/tmp/clean"),
-        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"],
-                                    "umbrella"),
-        mocker.call.get_current_path("umbrella"),
-        mocker.call.open_installed("/sites_packages/umbrella",
-                                   ["path/to/file.py"]),
+        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"]),
 
-        # Second version, current version is cached
+        # Current version
+        mocker.call.get_current_path("umbrella"),
+        mocker.call.open_installed(
+            "/sites_packages/umbrella",
+            # check that we do get the 2 files at once !
+            ["path/to/file.py", "path/to/other_file.py"]),
+
+        # Second version
         mocker.call.download_package("umbrella", "3.4", "/tmp/clean"),
-        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"],
-                                    "umbrella"),
+        mocker.call.open_downloaded("/tmp/clean",
+                                    ["path/to/other_file.py"]),
+
+        # Current version is cached, so no more calls
     ]
 
     assert result == [(("umbrella", "3.2"), (1, 2)),
@@ -370,11 +379,9 @@ def test_get_package_not_installed(mocker, match_info):
     assert source.mock_calls == [
         mocker.call.get_current_or_latest_version("umbrella"),
         mocker.call.download_package("umbrella", "3.2", "/tmp/clean"),
-        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"],
-                                    "umbrella"),
+        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"]),
         mocker.call.download_package("umbrella", "3.4", "/tmp/clean"),
-        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"],
-                                    "umbrella"),
+        mocker.call.open_downloaded("/tmp/clean", ["path/to/file.py"]),
     ]
 
     assert result == [(("umbrella", "3.2"), (1, 2))]

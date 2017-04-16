@@ -59,6 +59,17 @@ def match_other_version():
     )
 
 
+@pytest.fixture
+def match_other_version_other_file():
+    return PyPIMatch(
+        filename="filename",
+        lineno=12,
+        package="umbrella==3.4",
+        path="path/to/other_file.py",
+        element="MyClass"
+    )
+
+
 class ValuesAreKeys(object):
     def __getitem__(self, key):
         return key
