@@ -33,7 +33,7 @@ def test_string_normal_whole_module():
     assert match.package == "BLA"
     assert match.version == "1.2.3"
     assert match.path == "yo/yeah.py"
-    assert match.element is None
+    assert match.element == ""
     assert match.lineno == 2
     assert match.filename == "foo/bar"
 

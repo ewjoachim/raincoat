@@ -11,7 +11,7 @@ def match_module():
         lineno=12,
         package="umbrella==3.2",
         path="path/to/file.py",
-        element=None
+        element=""
     )
 
 

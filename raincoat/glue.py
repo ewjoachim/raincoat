@@ -32,8 +32,7 @@ def raincoat(path, exclude=None, color=False):
     """
     matches = sorted(grep.find_in_dir(path, exclude=exclude),
                      key=class_key_name)
-    # In order to minimize useless computation, we'll analyze
-    # all the match for a given package at the same time.
+
     matches_dict = {}
     for match_class, matches_for_class in itertools.groupby(
             matches, key=class_key):
