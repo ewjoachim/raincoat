@@ -3,6 +3,8 @@ from __future__ import absolute_import
 import ast
 from collections import deque
 
+from raincoat.constants import ELEMENT_NOT_FOUND
+
 
 class CodeLocator(ast.NodeVisitor):
     def __init__(self, source, filters):
@@ -61,13 +63,17 @@ def find_elements(source, elements):
     source_lines = source.splitlines()
 
     elements = set(elements)
-    if None in elements:
-        yield None, source_lines
-        elements.remove(None)
+    if "" in elements:
+        yield "", source_lines
+        elements.remove("")
 
-    if elements:
+    if elements and source:
 
         locator = CodeLocator(source=source, filters=elements)
 
         for node_name, node in locator.load().items():
+            elements.remove(node_name)
             yield node_name, source_lines[node.lineno - 1:node.end_lineno]
+
+    for element in elements:
+        yield element, ELEMENT_NOT_FOUND

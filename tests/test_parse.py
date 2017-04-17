@@ -1,5 +1,6 @@
 import os
 
+from raincoat import constants
 from raincoat import parse
 
 
@@ -50,12 +51,12 @@ def test_find_class():
 
 def test_find_module():
     code_blocks = list(parse.find_elements(
-        open(umbrella_file).read(), [None]))
+        open(umbrella_file).read(), [""]))
 
     assert len(code_blocks) == 1
 
     for name, lines in code_blocks:
-        assert name is None
+        assert name == ""
         assert len(lines) == 92
         assert lines[0] == ('"""')
         assert lines[-1] == ('    pass')
@@ -63,7 +64,7 @@ def test_find_module():
 
 def test_find_several():
     code_blocks = list(parse.find_elements(
-        open(umbrella_file).read(), ["use_umbrella", "Umbrella.open", None]))
+        open(umbrella_file).read(), ["use_umbrella", "Umbrella.open", ""]))
 
     assert len(code_blocks) == 3
 
@@ -91,3 +92,13 @@ def test_one_liner():
         assert name == "a"
         assert len(lines) == 1
         assert lines == ['def a(): pass  # noqa']
+
+
+def test_find_function_not_found():
+    code_blocks = list(parse.find_elements(" ", ["a"]))
+
+    assert code_blocks == [("a", constants.ELEMENT_NOT_FOUND)]
+
+
+def test_empty_file():
+    list(parse.find_elements("", ["a"]))

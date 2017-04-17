@@ -9,8 +9,7 @@ import pip
 import pkg_resources
 import requests
 
-
-FILE_NOT_FOUND = object()
+from raincoat.constants import FILE_NOT_FOUND
 
 
 def download_package(package, version, download_dir):
