@@ -10,6 +10,7 @@ import pkg_resources
 import requests
 
 from raincoat.constants import FILE_NOT_FOUND
+from raincoat import github_utils
 
 
 def download_package(package, version, download_dir):
@@ -100,3 +101,30 @@ def get_current_or_latest_version(package):
 
 def get_current_path(package):
     return pkg_resources.get_distribution(package).location
+
+
+def get_branch_commit(repo, branch):
+    # This may fail, but so far, I don't really know how.
+    url = "https://api.github.com/repos/{}/branches/{}".format(repo, branch)
+    with github_utils.get_session() as session:
+        response = session.get(url)
+        response.raise_for_status()
+        return response.json()["commit"]["sha"]
+
+
+def download_files_from_repo(repo, commit, files):
+    result = {}
+
+    template = "https://raw.githubusercontent.com/{}/{}/{}"
+    with github_utils.get_session() as session:
+        for file in files:
+            url = template.format(repo, commit, file)
+            response = session.get(url)
+            if response.status_code != 200:
+                content = FILE_NOT_FOUND
+            else:
+                content = response.text
+
+            result[file] = content
+
+    return result

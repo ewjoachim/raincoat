@@ -77,7 +77,8 @@ def fill_match_types(match_types, match_classes):
 
 from .pypi import PyPIMatch  # noqa
 from .django import DjangoMatch  # noqa
-match_classes = [PyPIMatch, DjangoMatch]
+from .pygithub import PyGithubMatch  # noqa
+match_classes = [PyPIMatch, DjangoMatch, PyGithubMatch]
 
 match_types = {}
 
