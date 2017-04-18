@@ -3,6 +3,11 @@
 History
 -------
 
+0.8.0 (unreleased)
+++++++++++++++++++
+
+- Added PyGitHub module to follow python sources on GitHub that are not PyPI packages
+
 0.7.0 (2017-04-01)
 ++++++++++++++++++
 

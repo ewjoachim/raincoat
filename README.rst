@@ -135,6 +135,14 @@ For now Raincoat comes with:
 
 	# Raincoat: django ticket: #26976
 
+- *PyGitHub* : Same as the PyPI module but using Github. It's useful if your upstream is a python
+  package that's not on PyPI, like, say, the Python Standard Library itself.
+  Say you want to know if the element ``Maildir._lookup`` in the file ``Lib/mailbox.py`` changed on the master branch since commit 43ba8861. What you can do is:
+
+.. code-block:: python
+
+	# Raincoat: pygithub repo: python/cpython@43ba8861 branch: master path: Lib/mailbox.py element: Maildir._lookup
+
 Of course, feel free to code your own !
 
 
