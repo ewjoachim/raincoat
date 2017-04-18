@@ -147,3 +147,39 @@ def test_file_not_found_installed(tmpdir, mocker):
         source.get_current_path("pytest"), ["bla.py"])
 
     assert result == {"bla.py": source.FILE_NOT_FOUND}
+
+
+def test_get_branch_commit(mocker):
+    get_session = mocker.patch('raincoat.github_utils.get_session')
+    get = get_session.return_value.__enter__.return_value.get
+    response = get.return_value
+    response.json.return_value = {"commit": {"sha": "123321"}}
+
+    assert source.get_branch_commit("a/b", "bla") == "123321"
+    assert get.mock_calls[0] == mocker.call(
+        "https://api.github.com/repos/a/b/branches/bla")
+
+
+def test_download_files_from_repo(mocker):
+    get_session = mocker.patch('raincoat.github_utils.get_session')
+    get = get_session.return_value.__enter__.return_value.get
+    response = get.return_value
+    response.status_code = 200
+    response.text = "bla"
+
+    result = source.download_files_from_repo("a/b", "123321", ["f.py"])
+
+    assert result == {"f.py": "bla"}
+    assert get.mock_calls[0] == mocker.call(
+        "https://raw.githubusercontent.com/a/b/123321/f.py")
+
+
+def test_download_files_from_repo_not_found(mocker):
+    get_session = mocker.patch('raincoat.github_utils.get_session')
+    get = get_session.return_value.__enter__.return_value.get
+    response = get.return_value
+    response.status_code = 404
+
+    result = source.download_files_from_repo("a/b", "123321", ["f.py"])
+
+    assert result == {"f.py": source.FILE_NOT_FOUND}

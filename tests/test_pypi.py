@@ -3,11 +3,6 @@ import pytest
 from raincoat.match import pypi
 
 
-@pytest.fixture
-def match_info(match):
-    return pypi.PyPIChecker().get_match_info([match])
-
-
 def test_match_str(match):
     assert(
         str(match) ==
@@ -21,22 +16,6 @@ def test_match_str_other_version(match):
         "umbrella == 3.2 vs 3.4 @ path/to/file.py:MyClass (from filename:12)")
 
 
-def test_format_diff_plus(color, match):
-    assert match.format_line("+aaa", color, 3) == "diff+" "+aaa" "neutral"
-
-
-def test_format_diff_minus(color, match):
-    assert match.format_line("-aaa", color, 3) == "diff-" "-aaa" "neutral"
-
-
-def test_format_diff_at(color, match):
-    assert match.format_line("@aaa", color, 3) == "diff@" "@aaa" "neutral"
-
-
-def test_format_not_diff(color, match):
-    assert match.format_line("aaa", color, 3) == "aaa"
-
-
 def test_wrong_package_format():
     with pytest.raises(pypi.NotMatching):
         pypi.PyPIMatch("a", 12, "pytest", "path", "element")
@@ -44,13 +23,30 @@ def test_wrong_package_format():
 
 def test_current_source_key(mocker, match):
     mocker.patch(
-        "raincoat.match.pypi.source.get_current_or_latest_version",
-        return_value=(True, "3.4"))
+        "raincoat.source.get_current_or_latest_version",
+        return_value=(True, "3.8"))
 
     assert pypi.PyPIChecker().current_source_key(match) == (
-        "umbrella", "3.4", True)
+        "umbrella", "3.8", True)
 
-    assert match.other_version == "3.4"
+    assert match.other_version == "3.8"
+
+
+def test_current_source_key_cache(mocker, match):
+    get_version = mocker.patch(
+        "raincoat.match.pypi.source.get_current_or_latest_version",
+        return_value=(True, "3.7"))
+
+    checker = pypi.PyPIChecker()
+    a = checker.current_source_key(match)
+    assert len(get_version.mock_calls) == 1
+
+    get_version.reset_mock()
+
+    b = checker.current_source_key(match)
+
+    assert get_version.mock_calls == []
+    assert a == b
 
 
 def test_match_source_key(match):

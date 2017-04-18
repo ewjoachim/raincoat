@@ -155,3 +155,10 @@ class PythonMatch(Match):
 
     def get_element(self):
         return self.element
+
+    def format_line(self, line, color, i):
+        line = super(PythonMatch, self).format_line(line, color, i)
+        if line[0] in "+-@":
+            line = color["diff" + line[0]](line)
+
+        return line

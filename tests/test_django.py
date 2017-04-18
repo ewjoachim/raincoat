@@ -187,11 +187,3 @@ def test_check(mocker, fixed_match):
 
     assert result == [("Ticket #26976 has been merged in Django 1.9",
                        fixed_match)]
-
-
-def test_get_session():
-    assert django.DjangoChecker().get_session(token="a:b").auth == ("a", "b")
-
-
-def test_get_session_no_token():
-    assert django.DjangoChecker().get_session().auth is None
