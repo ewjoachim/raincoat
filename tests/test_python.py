@@ -39,18 +39,26 @@ class Match(python.PythonMatch):
         self.element = element
 
 
+@pytest.fixture
+def python_match():
+    return Match("path1.py", "element1")
+
+
+@pytest.fixture
+def python_match2():
+    return Match("path2.py", "element2")
+
+
 def sources(file_source, element_names):
     for name in element_names:
         yield name, ["{} in {}".format(name, "".join(file_source))]
 
 
-def test_check(mocker):
+def test_check(mocker, python_match, python_match2):
     mocker.patch("raincoat.match.python.parse.find_elements",
                  side_effect=sources)
-    match1 = Match("path1.py", "element1")
-    match2 = Match("path2.py", "element2")
 
-    result = list(Checker().check([match1, match2]))
+    result = list(Checker().check([python_match, python_match2]))
 
     assert result == [
         ('Code is different:\n'
@@ -58,20 +66,17 @@ def test_check(mocker):
          '+++ path1.py\n'
          '@@ -1 +1 @@\n'
          '-element1 in apath1.py\n'
-         '+element1 in bpath1.py', match1),
+         '+element1 in bpath1.py', python_match),
         ('Code is different:\n'
          '--- path2.py\n'
          '+++ path2.py\n'
          '@@ -1 +1 @@\n'
          '-element2 in apath2.py\n'
-         '+element2 in bpath2.py', match2)]
+         '+element2 in bpath2.py', python_match2)]
 
 
-def test_get_source_keys():
-    match1 = Match("path1.py", "element1")
-    match2 = Match("path2.py", "element2")
-
-    assert list(Checker().get_source_keys([match1, match2])) == [
+def test_get_source_keys(python_match, python_match2):
+    assert list(Checker().get_source_keys([python_match, python_match2])) == [
         ('a', 'path1.py', 'element1'),
         ('b', 'path1.py', 'element1'),
         ('a', 'path2.py', 'element2'),
@@ -99,7 +104,7 @@ def test_get_elements_file_not_found(mocker):
         ('a', 'path1.py', 'element1'): constants.FILE_NOT_FOUND}
 
 
-def test_run_matches():
+def test_run_matches(python_match):
     all_kwargs = []
 
     counter = count()
@@ -109,17 +114,15 @@ def test_run_matches():
             all_kwargs.append(kwargs)
             return next(counter)
 
-    match = Match("path1.py", "element1")
-
     elements = {
         ('a', 'path1.py', 'element1'): "i",
         ('b', 'path1.py', 'element1'): "j"}
 
-    assert list(NoRun().run_matches([match], elements)) == [0]
+    assert list(NoRun().run_matches([python_match], elements)) == [0]
 
     assert len(all_kwargs) == 1
     assert all_kwargs[0] == {
-        "match": match,
+        "match": python_match,
         "match_key": ("a", "path1.py", "element1"),
         "match_element": "i",
         "current_key": ("b", "path1.py", "element1"),
@@ -127,25 +130,22 @@ def test_run_matches():
     }
 
 
-def test_run_matches_identical():
+def test_run_matches_identical(python_match):
 
     class NoRun(Checker):
         def run_match(self, **kwargs):
             raise AssertionError("should not be there")
 
-    match = Match("path1.py", "element1")
-
     elements = {
         ('a', 'path1.py', 'element1'): "i",
         ('b', 'path1.py', 'element1'): "i"}
 
-    assert list(NoRun().run_matches([match], elements)) == []
+    assert list(NoRun().run_matches([python_match], elements)) == []
 
 
-def test_run_match():
-    match = Match("path1.py", "element1")
+def test_run_match(python_match):
 
-    result = Checker().run_match(match=match,
+    result = Checker().run_match(match=python_match,
                                  match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
                                  current_key=("b", "path1", "element1"),
@@ -157,26 +157,25 @@ def test_run_match():
         '+++ path1.py\n'
         '@@ -1 +1 @@\n'
         '-element a\n'
-        '+element b', match)
+        '+element b', python_match)
 
 
-def test_run_match_file_not_found():
-    match = Match("path1.py", "element1")
+def test_run_match_file_not_found(python_match):
 
-    result = Checker().run_match(match=match,
+    result = Checker().run_match(match=python_match,
                                  match_key=("a", "path1", "element1"),
                                  match_element=constants.FILE_NOT_FOUND,
                                  current_key=("b", "path1", "element1"),
                                  current_element=["element b"])
 
     assert result == (
-        'Invalid Raincoat PyPI comment : path1.py does not exist', match)
+        'Invalid Raincoat PyPI comment : path1.py does not exist',
+        python_match)
 
 
-def test_run_match_element_not_found():
-    match = Match("path1.py", "element1")
+def test_run_match_element_not_found(python_match):
 
-    result = Checker().run_match(match=match,
+    result = Checker().run_match(match=python_match,
                                  match_key=("a", "path1", "element1"),
                                  match_element=constants.ELEMENT_NOT_FOUND,
                                  current_key=("b", "path1", "element1"),
@@ -184,33 +183,31 @@ def test_run_match_element_not_found():
 
     assert result == (
         'Invalid Raincoat PyPI comment : element1 does not exist in path1.py',
-        match)
+        python_match)
 
 
-def test_run_match_current_file_not_found():
-    match = Match("path1.py", "element1")
+def test_run_match_current_file_not_found(python_match):
 
-    result = Checker().run_match(match=match,
+    result = Checker().run_match(match=python_match,
                                  match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
                                  current_key=("b", "path1", "element1"),
                                  current_element=constants.FILE_NOT_FOUND)
 
     assert result == (
-        'File path1.py disappeared', match)
+        'File path1.py disappeared', python_match)
 
 
-def test_run_match_current_element_not_found():
-    match = Match("path1.py", "element1")
+def test_run_match_current_element_not_found(python_match):
 
-    result = Checker().run_match(match=match,
+    result = Checker().run_match(match=python_match,
                                  match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
                                  current_key=("b", "path1", "element1"),
                                  current_element=constants.ELEMENT_NOT_FOUND)
 
     assert result == (
-        'Element element1 disappeared from path1.py', match)
+        'Element element1 disappeared from path1.py', python_match)
 
 
 def test_current_source_key():
@@ -226,3 +223,23 @@ def test_match_source_key():
 def test_get_source():
     with pytest.raises(NotImplementedError):
         python.PythonChecker().get_source(0, 1)
+
+
+def test_format_diff_plus(color, python_match):
+    val = python_match.format_line("+aaa", color, 3)
+    assert val == "diff+" "+aaa" "neutral"
+
+
+def test_format_diff_minus(color, python_match):
+    val = python_match.format_line("-aaa", color, 3)
+    assert val == "diff-" "-aaa" "neutral"
+
+
+def test_format_diff_at(color, python_match):
+    val = python_match.format_line("@aaa", color, 3)
+    assert val == "diff@" "@aaa" "neutral"
+
+
+def test_format_not_diff(color, python_match):
+    val = python_match.format_line("aaa", color, 3)
+    assert val == "aaa"

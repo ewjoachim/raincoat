@@ -1,11 +1,10 @@
-import os
 import re
 
-import requests
 import six
 
 from raincoat.match import Match, NotMatching
 from raincoat import source
+from raincoat import github_utils
 
 
 def get_merge_commit_sha1(ticket, session):
@@ -88,14 +87,8 @@ class DjangoChecker(object):
 
         return self.check_matches(match_info, django_version)
 
-    def get_session(self, token=None):
-        session = requests.Session()
-        if token:
-            session.auth = tuple(token.split(":"))
-        return session
-
     def check_matches(self, match_info, django_version):
-        with self.get_session(os.getenv("RAINCOAT_GITHUB_TOKEN")) as session:
+        with github_utils.get_session() as session:
             for ticket, ticket_matches in match_info.items():
                 sha1 = get_merge_commit_sha1(ticket, session)
                 if sha1:
