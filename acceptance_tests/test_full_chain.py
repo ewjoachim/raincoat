@@ -40,7 +40,4 @@ def test_full_chain(cli_runner):
     assert "27754" not in result.output
     assert "Ticket #25981 has been merged in Django" in result.output
 
-    # https://github.com/python/cpython/commit/5affd23e6\
-    # #diff-78e8ea3354eac632b8978306b0275826
-    assert "python/cpython@43ba8861 vs master branch" in result.output
-    assert "key: %s' % key) from None" in result.output
+    assert "novafloss/raincoat@a35df1d vs master branch" in result.output

@@ -6,5 +6,6 @@ def test_get_session(mocker):
     assert github_utils.get_session().auth == ("a", "b")
 
 
-def test_get_session_no_token():
+def test_get_session_no_token(mocker):
+    mocker.patch("os.getenv", return_value=None)
     assert github_utils.get_session().auth is None
