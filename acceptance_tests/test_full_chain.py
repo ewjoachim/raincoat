@@ -42,6 +42,7 @@ def test_full_chain(cli_runner):
 
     assert "novafloss/raincoat@a35df1d vs master branch" in result.output
 
-    assert "non_existant does not exist in raincoat/_acceptance_test.py"
+    assert ("non_existant does not exist in raincoat/_acceptance_test.py"
+            in result.output)
 
-    assert "raincoat/non_existant.py does not exist"
+    assert "raincoat/non_existant.py does not exist" in result.output

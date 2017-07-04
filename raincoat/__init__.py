@@ -6,7 +6,7 @@ import click
 
 from .glue import raincoat
 
-__version__ = "0.7.0"
+__version__ = "0.8.2"
 
 CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
 
