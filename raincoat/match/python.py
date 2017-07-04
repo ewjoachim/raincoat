@@ -89,7 +89,10 @@ class PythonChecker(object):
             match_element = elements.get(match_key)
             current_element = elements.get(current_key)
 
-            if match_element != current_element:
+            not_found = match_element in (constants.FILE_NOT_FOUND,
+                                          constants.ELEMENT_NOT_FOUND)
+
+            if match_element != current_element or not_found:
                 yield self.run_match(
                     match=match,
                     match_key=match_key, match_element=match_element,

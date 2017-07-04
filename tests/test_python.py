@@ -143,6 +143,41 @@ def test_run_matches_identical(python_match):
     assert list(NoRun().run_matches([python_match], elements)) == []
 
 
+def test_run_matches_identical_file_not_found(python_match):
+    all_kwargs = []
+
+    counter = count()
+
+    class NoRun(Checker):
+        def run_match(self, **kwargs):
+            all_kwargs.append(kwargs)
+            return next(counter)
+
+    elements = {
+        ('a', 'path1.py', 'element1'): constants.FILE_NOT_FOUND,
+        ('b', 'path1.py', 'element1'): constants.FILE_NOT_FOUND}
+
+    assert list(NoRun().run_matches([python_match], elements)) == [0]
+
+
+def test_run_matches_identical_element_not_found(python_match):
+    all_kwargs = []
+
+    counter = count()
+
+    class NoRun(Checker):
+        def run_match(self, **kwargs):
+            all_kwargs.append(kwargs)
+            return next(counter)
+
+    elements = {
+        ('a', 'path1.py', 'element1'): constants.FILE_NOT_FOUND,
+        ('b', 'path1.py', 'element1'): constants.FILE_NOT_FOUND}
+
+    assert list(NoRun().run_matches([python_match], elements)) == [0]
+
+
+
 def test_run_match(python_match):
 
     result = Checker().run_match(match=python_match,
@@ -208,6 +243,32 @@ def test_run_match_current_element_not_found(python_match):
 
     assert result == (
         'Element element1 disappeared from path1.py', python_match)
+
+
+def test_run_match_both_files_not_found(python_match):
+
+    result = Checker().run_match(match=python_match,
+                                 match_key=("a", "path1", "element1"),
+                                 match_element=constants.FILE_NOT_FOUND,
+                                 current_key=("b", "path1", "element1"),
+                                 current_element=constants.FILE_NOT_FOUND)
+
+    assert result == (
+        'Invalid Raincoat PyPI comment : path1.py does not exist',
+        python_match)
+
+
+def test_run_match_both_elements_not_found(python_match):
+
+    result = Checker().run_match(match=python_match,
+                                 match_key=("a", "path1", "element1"),
+                                 match_element=constants.ELEMENT_NOT_FOUND,
+                                 current_key=("b", "path1", "element1"),
+                                 current_element=constants.ELEMENT_NOT_FOUND)
+
+    assert result == (
+        'Invalid Raincoat PyPI comment : element1 does not exist in path1.py',
+        python_match)
 
 
 def test_current_source_key():

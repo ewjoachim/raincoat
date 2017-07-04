@@ -3,7 +3,12 @@
 History
 -------
 
-0.8.0 (unreleased)
+0.8.1 (2017-07-04)
+++++++++++++++++++
+
+- Fixed warning not appearing for invalid Raincoat comments
+
+0.8.0 (2017-04-18)
 ++++++++++++++++++
 
 - Added PyGitHub module to follow python sources on GitHub that are not PyPI packages

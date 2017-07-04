@@ -1,2 +1,6 @@
-FILE_NOT_FOUND = object()
-ELEMENT_NOT_FOUND = object()
+class FILE_NOT_FOUND(object):
+    pass
+
+
+class ELEMENT_NOT_FOUND(object):
+    pass

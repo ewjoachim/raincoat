@@ -41,3 +41,7 @@ def test_full_chain(cli_runner):
     assert "Ticket #25981 has been merged in Django" in result.output
 
     assert "novafloss/raincoat@a35df1d vs master branch" in result.output
+
+    assert "non_existant does not exist in raincoat/_acceptance_test.py"
+
+    assert "raincoat/non_existant.py does not exist"
