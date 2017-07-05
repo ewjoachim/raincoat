@@ -177,7 +177,6 @@ def test_run_matches_identical_element_not_found(python_match):
     assert list(NoRun().run_matches([python_match], elements)) == [0]
 
 
-
 def test_run_match(python_match):
 
     result = Checker().run_match(match=python_match,
