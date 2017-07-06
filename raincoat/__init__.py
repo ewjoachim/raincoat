@@ -3,21 +3,40 @@ from __future__ import absolute_import
 import sys
 
 import click
+import pkg_resources
 
 from .glue import raincoat
 
-__version__ = "0.8.2"
+try:
+    __version__ = pkg_resources.get_distribution("raincoat").version
+except pkg_resources.DistributionNotFound:
+    from setuptools.config import read_configuration
+    from os import path as _p
+    _conf = read_configuration(
+        _p.join(_p.dirname(_p.dirname(__file__)),
+                "setup.cfg"))
+    __version__ = _conf["metadata"]["version"]
+
 
 CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
 
 
+def print_version(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo("Raincoat version {}".format(__version__))
+    ctx.exit()
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
+@click.option('--version', '-v', is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True)
 @click.argument('path', nargs=-1, type=click.Path(exists=True))
-@click.option('--exclude', '-e', multiple=True,
+@click.option('-e', '--exclude', multiple=True,
               help="Files and folders to exclude (e.g. 'test_*')")
 @click.option('-c/-nc', '--color/--no-color', default=None,
               help="Should output be colorized ? (default : yes for TTYs)")
-def main(path, exclude=None, color=True):
+def main(path, exclude=None, color=True, version=False):
     """
     Analyze your code to find outdated copy-pasted snippets.
     "Raincoat has you covered when your code is not DRY."

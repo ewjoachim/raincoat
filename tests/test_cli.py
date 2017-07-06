@@ -43,3 +43,12 @@ def test_main_executed(mocker):
     main = mocker.patch("raincoat.__main__.main")
     __main__.launch("__main__")
     assert main.mock_calls == [mocker.call()]
+
+
+def test_cli_version(cli_runner, mocker):
+    raincoat = mocker.patch("raincoat.raincoat")
+
+    result = cli_runner.invoke(main, ["tests", "raincoat", "--version"])
+
+    assert raincoat.mock_calls == []
+    assert result.output.startswith("Raincoat version")
