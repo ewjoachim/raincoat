@@ -1,4 +1,4 @@
-from raincoat import main, __main__
+from raincoat import main, __main__, _extract_version
 
 
 def test_cli(cli_runner, mocker, match):
@@ -52,3 +52,21 @@ def test_cli_version(cli_runner, mocker):
 
     assert raincoat.mock_calls == []
     assert result.output.startswith("Raincoat version")
+
+
+def test_extract_version_match(mocker):
+    installed = _extract_version("raincoat")
+    not_installed = _extract_version("a")
+
+    assert installed == not_installed
+
+
+def test_extract_version(mocker):
+
+    get_dist = mocker.patch(
+        "pkg_resources.get_distribution")
+    get_dist.return_value.version = "1.2.3"
+
+    mocked = _extract_version("raincoat")
+
+    assert mocked == "1.2.3"

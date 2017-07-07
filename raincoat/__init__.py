@@ -3,19 +3,8 @@ from __future__ import absolute_import
 import sys
 
 import click
-import pkg_resources
 
 from .glue import raincoat
-
-try:
-    __version__ = pkg_resources.get_distribution("raincoat").version
-except pkg_resources.DistributionNotFound:
-    from setuptools.config import read_configuration
-    from os import path as _p
-    _conf = read_configuration(
-        _p.join(_p.dirname(_p.dirname(__file__)),
-                "setup.cfg"))
-    __version__ = _conf["metadata"]["version"]
 
 
 CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
@@ -60,3 +49,19 @@ def main(path, exclude=None, color=True, version=False):
         click.echo(line)
 
     sys.exit(int(has_errors))
+
+
+def _extract_version(package_name):
+    try:
+        import pkg_resources
+        return pkg_resources.get_distribution(package_name).version
+    except pkg_resources.DistributionNotFound:
+        from setuptools.config import read_configuration
+        from os import path as _p
+        _conf = read_configuration(
+            _p.join(_p.dirname(_p.dirname(__file__)),
+                    "setup.cfg"))
+        return _conf["metadata"]["version"]
+
+
+__version__ = _extract_version("raincoat")
