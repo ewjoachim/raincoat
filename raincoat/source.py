@@ -4,7 +4,7 @@ import os
 import tarfile
 import zipfile
 
-from distutils.version import StrictVersion
+from distutils.version import StrictVersion  # pylint: disable=import-error
 import pip
 import pkg_resources
 import requests

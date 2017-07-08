@@ -16,6 +16,7 @@ class PythonChecker(object):
 
     This is an abstract class.
     """
+
     def current_source_key(self, match):
         """
         Should return a hashable identifier of the source code
@@ -93,13 +94,11 @@ class PythonChecker(object):
                                           constants.ELEMENT_NOT_FOUND)
 
             if match_element != current_element or not_found:
-                yield self.run_match(
-                    match=match,
-                    match_key=match_key, match_element=match_element,
-                    current_key=current_key, current_element=current_element)
+                yield self.run_match(match=match,
+                                     match_element=match_element,
+                                     current_element=current_element)
 
-    def run_match(self, match, match_key, match_element,
-                  current_key, current_element):
+    def run_match(self, match, match_element, current_element):
 
         if match_element is constants.FILE_NOT_FOUND:
             return ("Invalid Raincoat PyPI comment : {match.path} does "
@@ -133,11 +132,15 @@ class PythonChecker(object):
 
 def group_composite(elements):
     """
-    >>> group_composite(["abc", "abd", "acd", "bbc"])
-    {"a": {"b": ["c", "d"], "c": ["d"]}, "b": {"b": ["c"]}}
+    Create a nested structure by grouping iterables
+    based on common first elements
 
     Input is expected to be sorted.
     All input is expected to be of the same length
+
+    >>> group_composite(["abc", "abd", "acd", "bbc"])
+    {"a": {"b": ["c", "d"], "c": ["d"]}, "b": {"b": ["c"]}}
+
     """
     elements = list(elements)
 

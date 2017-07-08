@@ -19,7 +19,7 @@ def test_full_chain(cli_runner):
 
     details = ("raincoat == 0.1.4 vs {} "
                "@ raincoat/_acceptance_test.py:use_umbrella "
-               "(from acceptance_tests/test_project/__init__.py:2)").format(
+               "(from acceptance_tests/test_project/__init__.py:7)").format(
                     __version__)
 
     # Most of the time, this is useful for debugging and the

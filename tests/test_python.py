@@ -123,9 +123,7 @@ def test_run_matches(python_match):
     assert len(all_kwargs) == 1
     assert all_kwargs[0] == {
         "match": python_match,
-        "match_key": ("a", "path1.py", "element1"),
         "match_element": "i",
-        "current_key": ("b", "path1.py", "element1"),
         "current_element": "j",
     }
 
@@ -180,9 +178,7 @@ def test_run_matches_identical_element_not_found(python_match):
 def test_run_match(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
-                                 current_key=("b", "path1", "element1"),
                                  current_element=["element b"])
 
     assert result == (
@@ -197,9 +193,7 @@ def test_run_match(python_match):
 def test_run_match_file_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=constants.FILE_NOT_FOUND,
-                                 current_key=("b", "path1", "element1"),
                                  current_element=["element b"])
 
     assert result == (
@@ -210,9 +204,7 @@ def test_run_match_file_not_found(python_match):
 def test_run_match_element_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=constants.ELEMENT_NOT_FOUND,
-                                 current_key=("b", "path1", "element1"),
                                  current_element=["element b"])
 
     assert result == (
@@ -223,9 +215,7 @@ def test_run_match_element_not_found(python_match):
 def test_run_match_current_file_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
-                                 current_key=("b", "path1", "element1"),
                                  current_element=constants.FILE_NOT_FOUND)
 
     assert result == (
@@ -235,9 +225,7 @@ def test_run_match_current_file_not_found(python_match):
 def test_run_match_current_element_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=["element a"],
-                                 current_key=("b", "path1", "element1"),
                                  current_element=constants.ELEMENT_NOT_FOUND)
 
     assert result == (
@@ -247,9 +235,7 @@ def test_run_match_current_element_not_found(python_match):
 def test_run_match_both_files_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=constants.FILE_NOT_FOUND,
-                                 current_key=("b", "path1", "element1"),
                                  current_element=constants.FILE_NOT_FOUND)
 
     assert result == (
@@ -260,9 +246,7 @@ def test_run_match_both_files_not_found(python_match):
 def test_run_match_both_elements_not_found(python_match):
 
     result = Checker().run_match(match=python_match,
-                                 match_key=("a", "path1", "element1"),
                                  match_element=constants.ELEMENT_NOT_FOUND,
-                                 current_key=("b", "path1", "element1"),
                                  current_element=constants.ELEMENT_NOT_FOUND)
 
     assert result == (

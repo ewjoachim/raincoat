@@ -1,3 +1,23 @@
+"""
+Raincoat has you covered when you code is not dry.
+
+Project homepage is https://github.com/novafloss/raincoat/
+
+Documentation available at
+http://raincoat.readthedocs.io/en/latest/?badge=latest
+
+Done with :heart: by Joachim "ewjoachim" Jablon, with support
+from Smart Impulse and PeopleDoc
+
+Thank you for using this package !
+
+MIT License - Copyright (c) 2016, Joachim Jablon
+Full license text available at
+https://github.com/novafloss/raincoat/blob/master/LICENSE
+
+up up down down left right left right b a
+"""
+
 from __future__ import absolute_import
 
 import sys
@@ -10,7 +30,7 @@ from .glue import raincoat
 CONTEXT_SETTINGS = {'help_option_names': ['-h', '--help']}
 
 
-def print_version(ctx, param, value):
+def print_version(ctx, __, value):
     if not value or ctx.resilient_parsing:
         return
     click.echo("Raincoat version {}".format(__version__))
@@ -18,14 +38,14 @@ def print_version(ctx, param, value):
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--version', '-v', is_flag=True, callback=print_version,
-              expose_value=False, is_eager=True)
 @click.argument('path', nargs=-1, type=click.Path(exists=True))
 @click.option('-e', '--exclude', multiple=True,
               help="Files and folders to exclude (e.g. 'test_*')")
 @click.option('-c/-nc', '--color/--no-color', default=None,
               help="Should output be colorized ? (default : yes for TTYs)")
-def main(path, exclude=None, color=True, version=False):
+@click.option('--version', '-v', is_flag=True, callback=print_version,
+              expose_value=False, is_eager=True)
+def main(path, exclude=None, color=True):
     """
     Analyze your code to find outdated copy-pasted snippets.
     "Raincoat has you covered when your code is not DRY."
