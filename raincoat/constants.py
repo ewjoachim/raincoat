@@ -1,6 +1,3 @@
-class FILE_NOT_FOUND(object):
-    pass
+FILE_NOT_FOUND = "FILE_NOT_FOUND"
 
-
-class ELEMENT_NOT_FOUND(object):
-    pass
+ELEMENT_NOT_FOUND = "ELEMENT_NOT_FOUND"
