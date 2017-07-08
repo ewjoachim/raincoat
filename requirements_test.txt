@@ -1,9 +1,0 @@
-pytest
-pytest-cov
-pytest-mock
-pytest_click
-pytest-catchlog
-mock
-six
-
--r requirements.txt
