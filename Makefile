@@ -24,7 +24,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '__pycache__' -exec rm -rf {} +
 
 lint: ## check style with flake8
-	flake8 --exclude=".tox,docs,build,tests/package/umbrella" .
+	prospector --with-tool pyroma
 
 test: ## run tests quickly with the default Python
 	./runtests
