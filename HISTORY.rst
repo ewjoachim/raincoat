@@ -3,7 +3,7 @@
 History
 =======
 
-0.8.3 (unreleased)
+0.8.3 (2017-07-09)
 ==================
 
 - Replace setup.py with setup.cfg
