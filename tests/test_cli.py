@@ -58,7 +58,7 @@ def test_extract_version_match(mocker):
     installed = _extract_version("raincoat")
     not_installed = _extract_version("a")
 
-    assert installed == not_installed
+    assert installed.split(".")[:2] == not_installed.split(".")[:2]
 
 
 def test_extract_version(mocker):
