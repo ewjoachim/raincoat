@@ -7,6 +7,7 @@ History
 ==================
 
 - Replace setup.py with setup.cfg
+- Lot of packaging work to make it simpler to test / lint / release
 
 0.8.2 (2017-07-04)
 ==================
