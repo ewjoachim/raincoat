@@ -117,14 +117,14 @@ def download_files_from_repo(repo, commit, files):
 
     template = "https://raw.githubusercontent.com/{}/{}/{}"
     with github_utils.get_session() as session:
-        for file in files:
-            url = template.format(repo, commit, file)
+        for filename in files:
+            url = template.format(repo, commit, filename)
             response = session.get(url)
             if response.status_code != 200:
                 content = FILE_NOT_FOUND
             else:
                 content = response.text
 
-            result[file] = content
+            result[filename] = content
 
     return result

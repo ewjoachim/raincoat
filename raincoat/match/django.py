@@ -24,7 +24,7 @@ def get_merge_commit_sha1(ticket, session):
     args += "+".join(pattern.format(ticket)
                      for pattern in pr_title_patterns)
     response = session.get(
-        url + six.moves.urllib.parse.quote(args, safe="+:"))
+        url + six.moves.urllib.parse.quote(args, safe="+:"))  # pylint: disable=redundant-keyword-arg
     response.raise_for_status()
     search_results = response.json()
 

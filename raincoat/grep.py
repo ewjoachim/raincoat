@@ -61,16 +61,17 @@ def list_python_files(base_dir=".", exclude=None):
             folders[:] = set(folders) - folders_to_remove
 
         # Prune excluded files
-        full_pathes = [os.path.normpath(os.path.join(root, file))
-                       for file in files]
+        full_pathes = [os.path.normpath(os.path.join(root, filename))
+                       for filename in files]
 
-        files_to_remove = {os.path.basename(file)
+        files_to_remove = {os.path.basename(filename)
                            for pattern in exclude
-                           for file in fnmatch.filter(full_pathes, pattern)}
+                           for filename in fnmatch.filter(full_pathes,
+                                                          pattern)}
 
-        for file in set(files) - files_to_remove:
-            if file.endswith(".py"):
-                yield os.path.normpath(os.path.join(root, file))
+        for filename in set(files) - files_to_remove:
+            if filename.endswith(".py"):
+                yield os.path.normpath(os.path.join(root, filename))
 
 
 def find_in_dir(base_dir=".", exclude=None):
