@@ -25,21 +25,21 @@ Lets say you're using a lib named ``umbrella`` which provides a function named `
 
 .. code-block:: python
 
-	def use_umbrella(umbrella):
+    def use_umbrella(umbrella):
 
-		# Prepare umbrella
-		umbrella.remove_pouch()
-		umbrella.open()
+        # Prepare umbrella
+        umbrella.remove_pouch()
+        umbrella.open()
 
-		# Use umbrella
-		while rain_detector.still_raining():
-			umbrella.keep_over_me()
+        # Use umbrella
+        while rain_detector.still_raining():
+            umbrella.keep_over_me()
 
-		# Put umbrella away
-		umbrella.close()
-		while not umbrella.is_wet():
-			time.sleep(1)
-		umbrella.put_pouch()
+        # Put umbrella away
+        umbrella.close()
+        while not umbrella.is_wet():
+            time.sleep(1)
+        umbrella.put_pouch()
 
 This function does what it says it does, but it's not ideally splitted, depending on your needs. For example, maybe at some point you realize you need each of the 3 separate parts to be a function of its own. Or maybe you can't call time.sleep in your app. Or do something else with the ``umbrella`` when it's open like dance with it.
 
@@ -55,37 +55,37 @@ You have made your own private copy of ``umbrella.use_umbrella`` (umbrella being
 
 .. code-block:: python
 
-	def dance_with_umbrella(umbrella):
-		"""
-		I'm siiiiiinging in the rain !
-		"""
-		# Prepare umbrella
-		umbrella.remove_pouch()
-		umbrella.open()
+    def dance_with_umbrella(umbrella):
+	    """
+        I'm siiiiiinging in the rain !
+        """
+        # Prepare umbrella
+        umbrella.remove_pouch()
+        umbrella.open()
 
-		# Use umbrella
-		while rain_detector.still_raining():
-			Dancer.sing_in_the_rain(umbrella)
+        # Use umbrella
+        while rain_detector.still_raining():
+            Dancer.sing_in_the_rain(umbrella)
 
-		# Put umbrella away
-		umbrella.close()
-		while not umbrella.is_wet()
-			time.sleep(1)
-		umbrella.put_pouch()
+        # Put umbrella away
+        umbrella.close()
+        while not umbrella.is_wet()
+            time.sleep(1)
+        umbrella.put_pouch()
 
 Now simply add a comment somewhere (preferably just after the docstring) that says something like:
 
 .. code-block:: python
 
-	def dance_with_umbrella(umbrella):
-		"""
-		I'm siiiiiinging in the rain !
-		"""
-		# This code was adapted from the original umbrella.use_umbrella function
-		# (we just changed the part inside the middle while loop)
-		# Raincoat: pypi package: umbrella==14.5.7 path: umbrella/__init__.py element: use_umbrella
+    def dance_with_umbrella(umbrella):
+        """
+        I'm siiiiiinging in the rain !
+        """
+        # This code was adapted from the original umbrella.use_umbrella function
+        # (we just changed the part inside the middle while loop)
+        # Raincoat: pypi package: umbrella==14.5.7 path: umbrella/__init__.py element: use_umbrella
 
-		...
+        ...
 
 Now, if you run ``raincoat`` in your project (At this stage, I assume you've installed it with ``pip install raincoat``)
 
