@@ -4,7 +4,7 @@ History
 =======
 
 
-0.8.4 (unreleased)
+0.8.4 (2017-08-27)
 ==================
 
 - Nothing changed yet
