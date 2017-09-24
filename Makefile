@@ -3,7 +3,7 @@
 
 # Launch "make" or "make help" for details on every target
 help:
-	@python -c "import re; print(*('\033[36m{:25}\033[0m {}'.format(*l.groups()) for l in re.finditer('(.+): +##(.+)', open('Makefile').read())), sep='\n')
+	@python -c "import re; print(*sorted('\033[36m{:25}\033[0m {}'.format(*l.groups()) for l in re.finditer('(.+):.+##(.+)', open('Makefile').read())), sep='\n')"
 
 install: ## install project dependencies
 	pip install -r requirements.txt
