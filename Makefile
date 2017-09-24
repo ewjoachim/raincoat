@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 
 help:
-	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
+	@python -c "import re; print(*('\033[36m{:25}\033[0m {}'.format(*l.groups()) for l in re.finditer('(.+): +##(.+)', open('Makefile').read())), sep='\n')
 
 install: ## install project dependencies
 	pip install -r requirements.txt
