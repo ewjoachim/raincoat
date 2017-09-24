@@ -1,4 +1,4 @@
-.PHONY: clean-pyc clean-build docs help lint test test-all coverage release sdist acceptance-tests
+.PHONY: help install clean clean-pyc clean-build docs tests acceptance-tests coverage lint docs release
 .DEFAULT_GOAL := help
 
 # Launch "make" or "make help" for details on every target
