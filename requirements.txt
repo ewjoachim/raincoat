@@ -1,1 +1,1 @@
--e .[dev,tests]
+-e .[dev,test,lint]
