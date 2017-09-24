@@ -2,28 +2,27 @@
 language: python
 
 matrix:
-    include:
-      # Python version is just for the look on travis.
+  include:
+  # Python version is just for the look on travis.
+  - python: 2.7
+    env: TOX_ENV=py27-unit-tests
 
-        - python: 2.7
-          env: TOX_ENV=py27-unit-tests
+  - python: 2.7
+    env: TOX_ENV=py27-acceptance-tests
 
-        - python: 2.7
-          env: TOX_ENV=py27-acceptance-tests
+  - python: 3.4
+    env: TOX_ENV=py34-unit-tests
 
-        - python: 3.4
-          env: TOX_ENV=py34-unit-tests
+  - python: 3.4
+    env: TOX_ENV=py34-acceptance-tests
 
-        - python: 3.4
-          env: TOX_ENV=py34-acceptance-tests
+  - python: 3.5
+    env: TOX_ENV=py35-unit-tests
 
-        - python: 3.5
-          env: TOX_ENV=py35-unit-tests
+  - python: 3.5
+    env: TOX_ENV=py35-acceptance-tests
 
-        - python: 3.5
-          env: TOX_ENV=py35-acceptance-tests
-
-        - env: TOX_ENV=linters
+  - env: TOX_ENV=linters
 
 install:
   - pip install tox codecov
