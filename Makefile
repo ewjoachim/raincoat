@@ -1,11 +1,14 @@
 .PHONY: clean-pyc clean-build docs help lint test test-all coverage release sdist acceptance-tests
 .DEFAULT_GOAL := help
 
+# Launch "make" or "make help" for details on every target
 help:
 	@python -c "import re; print(*('\033[36m{:25}\033[0m {}'.format(*l.groups()) for l in re.finditer('(.+): +##(.+)', open('Makefile').read())), sep='\n')
 
 install: ## install project dependencies
 	pip install -r requirements.txt
+
+# ------- Cleaning commands -------
 
 clean: clean-build clean-pyc ## remove all artifacts
 	rm -rf .tox/  # tox artifacts
@@ -23,17 +26,21 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -rf {} +
 
-lint: ## check style with flake8
-	prospector --with-tool pyroma
+# ------- Testing commands -------
 
-test: ## run tests quickly with the default Python
-	./runtests
+tests: ## run tests quickly with the default Python
+	pytest tests/
 
-acceptance-tests:
+acceptance-tests: ## Launch acceptance tests (full integration tests without mocks)
 	pytest acceptance_tests/
 
-coverage: ## check code coverage quickly with the default Python
-	COVERAGE=1 ./runtests
+coverage: ## run tests quickly with the default Python
+	pytest --cov --cov-report xml --cov-report term --cov-report html tests/
+
+lint: ## check style with prospector
+	prospector --with-tool pyroma
+
+# ------- Other commands -------
 
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/raincoat.rst
