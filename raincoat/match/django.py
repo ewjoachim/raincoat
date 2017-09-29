@@ -102,7 +102,6 @@ class DjangoChecker(object):
 
 class DjangoMatch(Match):
     checker = DjangoChecker
-    match_type = "django"
     ticket_regex = re.compile(r'^#?(\d+)$')
 
     def __init__(self, filename, lineno, ticket):

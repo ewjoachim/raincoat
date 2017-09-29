@@ -1,12 +1,17 @@
 import io
 import tempfile
+import pytest
 
 import six
 
 from raincoat import grep
 
+@pytest.fixture
+def match_class(match, mocker):
+    mocker.patch("raincoat.match.match_types", {"pypi": match.__class__})
 
-def test_string_normal():
+
+def test_string_normal(match_class):
     matches = list(grep.find_in_string("""
         # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo
     """, filename="foo/bar"))
@@ -22,7 +27,7 @@ def test_string_normal():
     assert match.filename == "foo/bar"
 
 
-def test_string_normal_whole_module():
+def test_string_normal_whole_module(match_class):
     matches = list(grep.find_in_string("""
         # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py
     """, filename="foo/bar"))
@@ -52,7 +57,7 @@ def test_empty():
     assert len(matches) == 0
 
 
-def test_find_in_file():
+def test_find_in_file(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
         handler.write("""
             # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo
@@ -62,7 +67,7 @@ def test_find_in_file():
         assert len(matches) == 1
 
 
-def test_find_in_file_oneliner():
+def test_find_in_file_oneliner(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
         handler.write('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo''')  # noqa
         handler.seek(0)
@@ -70,7 +75,7 @@ def test_find_in_file_oneliner():
         assert len(matches) == 1
 
 
-def test_find_in_file_with_comment():
+def test_find_in_file_with_comment(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
         handler.write('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo  # noqa''')  # noqa
         handler.seek(0)
@@ -170,7 +175,7 @@ def test_list_python_files_exclude_file_wildcard(mocker):
 
 
 # Full chain test
-def test_find_in_dir(mocker):
+def test_find_in_dir(mocker, match_class):
     open_responses = iter([
         ("c.py", io.StringIO(
             six.u('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo'''))),  # noqa

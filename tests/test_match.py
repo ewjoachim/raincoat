@@ -1,3 +1,5 @@
+from pkg_resources import EntryPoint, get_distribution
+
 import pytest
 
 from raincoat import match as match_module
@@ -21,8 +23,9 @@ def test_match_from_comment(match):
 def test_check_matches(mocker, match):
     mocker.patch("raincoat.match.pypi.PyPIChecker.check",
                  return_value=[1])
+    mocker.patch("raincoat.match.match_types", {"pypi": match.__class__})
 
-    list(match_module.check_matches({"pypi": [match]}))
+    assert list(match_module.check_matches({"pypi": [match]})) == [1]
 
 
 def test_check_matches_no_checker(mocker):
@@ -40,13 +43,48 @@ def test_check_matches_no_checker(mocker):
         match_module.match_types.pop("unfinished")
 
 
-def test_fill_match_types_no_match_type(mocker):
-    class Unfinished(match_module.Match):
-        pass
+def test_compute_match_types(mocker):
+    iep = mocker.patch("raincoat.match.iter_entry_points")
+    class MatchFactory(object):
+        def __init__(self, name):
+            self.name = name
+        def __repr__(self):
+            return self.name
+    MatchA, MatchB = MatchFactory("A"), MatchFactory("B")
 
-    with pytest.raises(NotImplementedError,
-                       message="Unfinished has no match_type"):
-        match_module.fill_match_types(match_module.match_types, [Unfinished])
+    entry_a, entry_b = iep.return_value = [
+        EntryPoint("a", "aaa"),
+        EntryPoint("b", "bbb"),
+    ]
+    entry_a.load = lambda: MatchA
+    entry_b.load = lambda: MatchB
+
+    assert match_module.compute_match_types() == {"a": MatchA, "b": MatchB}
+    assert MatchA.match_type == "a"
+    assert MatchB.match_type == "b"
+
+
+def test_compute_match_types_duplicate(mocker, caplog):
+    iep = mocker.patch("raincoat.match.iter_entry_points")
+    class MatchFactory(object):
+        def __init__(self, name):
+            self.name = name
+        def __repr__(self):
+            return self.name
+    MatchA, MatchB = MatchFactory("A"), MatchFactory("B")
+
+    entry_a, entry_b = iep.return_value = [
+        EntryPoint("a", "aaa"),
+        EntryPoint("a", "bbb"),
+    ]
+    entry_a.load = lambda: MatchA
+    entry_b.load = lambda: MatchB
+
+    assert match_module.compute_match_types() == {"a": MatchA}
+
+    assert "Several classes registered for the match type a" in caplog.records[0].message
+    assert "B will be ignored" in caplog.records[0].message
+    assert "A will be used" in caplog.records[0].message
 
 
 def test_format_line_first(match, color):

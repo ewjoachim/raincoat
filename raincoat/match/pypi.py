@@ -70,4 +70,3 @@ class PyPIMatch(PythonMatch):
                 element=self.element or "whole module"))
 
     checker = PyPIChecker
-    match_type = "pypi"
