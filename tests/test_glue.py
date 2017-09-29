@@ -1,7 +1,18 @@
+import pytest
+
 from raincoat.glue import raincoat
 
 
-def test_raincoat(mocker, match, match_module):
+@pytest.fixture
+def match_class(match, mocker):
+    mocker.patch("raincoat.match.match_types", {"pypi": match.__class__})
+    orig, match.__class__.match_type = match.__class__.match_type, "pypi"
+    yield
+    match.__class__.match_type = orig
+
+
+def test_raincoat(mocker, match, match_module, match_class):
+    match.__class__.match_type = "pypi"
     mocker.patch("raincoat.grep.find_in_dir",
                  return_value=[match, match_module])
     check_matches = mocker.patch("raincoat.glue.check_matches",

@@ -66,4 +66,3 @@ class PyGithubMatch(PythonMatch):
                 element=self.element or "whole module"))
 
     checker = PyGithubChecker
-    match_type = "pygithub"

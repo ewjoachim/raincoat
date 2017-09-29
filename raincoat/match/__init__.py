@@ -4,17 +4,19 @@ All different types of matches.
 When coded, every new type of match should be added
 in the match_classes list at the end of this file
 """
-
+import logging
 from itertools import count
+from pkg_resources import iter_entry_points
 
+
+logger = logging.getLogger(__name__)
 
 class NotMatching(Exception):
     pass
 
 
 class Match(object):
-    # Filled at the end of the module
-    match_type = NotImplemented
+    match_type = None  # Will dynamically be given the name of the entrypoint
     checker = NotImplemented
 
     def __init__(self, filename, lineno):
@@ -71,22 +73,23 @@ def check_matches(matches):
             yield difference
 
 
-def fill_match_types(match_types, match_classes):
-    for match_class in match_classes:
-        match_type = match_class.match_type
+def compute_match_types():
+    # Even builtin match types are defined using the entry points.
+    match_types = {}
+    for match_entry_point in iter_entry_points('raincoat.match'):
+        match_type = match_entry_point.name
+        match_class = match_entry_point.load()
+        match_class.match_type = match_type
 
-        if match_type is NotImplemented:
-            raise NotImplementedError(
-                "{} has no match_type".format(match_class))
+        if match_type in match_types:
+            logger.warning("Several classes registered for the match type {}. "
+                           "{} will be ignored, {} will be used."
+                           "".format(match_type, match_class, match_types[match_type]))
+            continue
 
         match_types[match_type] = match_class
 
+    return match_types
 
-from .pypi import PyPIMatch  # noqa
-from .django import DjangoMatch  # noqa
-from .pygithub import PyGithubMatch  # noqa
-match_classes = [PyPIMatch, DjangoMatch, PyGithubMatch]
 
-match_types = {}
-
-fill_match_types(match_types, match_classes)
+match_types = compute_match_types()

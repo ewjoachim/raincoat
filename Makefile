@@ -1,4 +1,4 @@
-.PHONY: clean-pyc clean-build docs help lint test test-all coverage release sdist acceptance-tests
+.PHONY: help install clean clean-pyc clean-build docs tests acceptance-tests coverage lint docs release
 .DEFAULT_GOAL := help
 
 # Launch "make" or "make help" for details on every target
@@ -32,7 +32,7 @@ tests: ## run tests quickly with the default Python
 	pytest tests/
 
 acceptance-tests: ## Launch acceptance tests (full integration tests without mocks)
-	pytest acceptance_tests/
+	python acceptance_tests/test_full_chain.py
 
 coverage: ## run tests quickly with the default Python
 	pytest --cov --cov-report xml --cov-report term --cov-report html tests/
