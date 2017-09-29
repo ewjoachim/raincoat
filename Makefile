@@ -32,7 +32,7 @@ tests: ## run tests quickly with the default Python
 	pytest tests/
 
 acceptance-tests: ## Launch acceptance tests (full integration tests without mocks)
-	pytest acceptance_tests/
+	python acceptance_tests/test_full_chain.py
 
 coverage: ## run tests quickly with the default Python
 	pytest --cov --cov-report xml --cov-report term --cov-report html tests/
