@@ -5,11 +5,11 @@ Raincoat
 .. image:: https://badge.fury.io/py/raincoat.svg
     :target: https://pypi.org/pypi/raincoat
 
-.. image:: https://travis-ci.org/novafloss/raincoat.svg?branch=master
-    :target: https://travis-ci.org/novafloss/raincoat
+.. image:: https://travis-ci.org/peopledoc/raincoat.svg?branch=master
+    :target: https://travis-ci.org/peopledoc/raincoat
 
-.. image:: https://img.shields.io/codecov/c/github/novafloss/raincoat/master.svg
-    :target: https://codecov.io/github/novafloss/raincoat?branch=master
+.. image:: https://img.shields.io/codecov/c/github/peopledoc/raincoat/master.svg
+    :target: https://codecov.io/github/peopledoc/raincoat?branch=master
 
 .. image:: https://readthedocs.org/projects/raincoat/badge/?version=latest
     :target: http://raincoat.readthedocs.io/en/latest/?badge=latest

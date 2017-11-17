@@ -45,7 +45,7 @@ def check_output(output):
     assert "27754" not in output
     assert "Ticket #25981 has been merged in Django" in output
 
-    assert "novafloss/raincoat@a35df1d vs master branch" in output
+    assert "peopledoc/raincoat@a35df1d vs master branch" in output
 
     assert ("non_existant does not exist in raincoat/_acceptance_test.py"
             in output)

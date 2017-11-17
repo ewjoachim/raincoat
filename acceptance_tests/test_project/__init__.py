@@ -12,7 +12,7 @@ def simple_function():
     # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/non_existant.py # noqa
     # Raincoat: django ticket: #25981
     # Raincoat: django ticket: #27754
-    # Raincoat: pygithub repo: novafloss/raincoat@a35df1d path: raincoat/_acceptance_test.py element: Umbrella.open  # noqa
+    # Raincoat: pygithub repo: peopledoc/raincoat@a35df1d path: raincoat/_acceptance_test.py element: Umbrella.open  # noqa
     pass
 
 
