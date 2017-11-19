@@ -1,7 +1,7 @@
 """
 Raincoat has you covered when you code is not dry.
 
-Project homepage is https://github.com/novafloss/raincoat/
+Project homepage is https://github.com/peopledoc/raincoat/
 
 Documentation available at
 http://raincoat.readthedocs.io/en/latest/?badge=latest
@@ -13,7 +13,7 @@ Thank you for using this package !
 
 MIT License - Copyright (c) 2016, Joachim Jablon
 Full license text available at
-https://github.com/novafloss/raincoat/blob/master/LICENSE
+https://github.com/peopledoc/raincoat/blob/master/LICENSE
 
 up up down down left right left right b a
 """
