@@ -1,6 +1,7 @@
 pep257:
   disable:
     - D105  # Missing docstring in magic method
+    - D107  # Missing docstring in __init__
     - D200  # One-line docstring should fit on one line with quotes
     - D203  # 1 blank line required before class docstring
     - D204  # 1 blank line required after class docstring
