@@ -6,7 +6,9 @@ import time
 
 
 def some_decorator(*args):
-    pass
+    def wrappedFunc(func):
+        return func
+    return wrappedFunc
 
 
 class Umbrella(object):
@@ -26,8 +28,7 @@ class Umbrella(object):
             self.slide_runner()
         self.side = "pointy side up"
 
-    @some_decorator(
-        "argument")
+    @some_decorator("argument")
     def close(self):
         pass
 
