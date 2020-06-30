@@ -81,7 +81,10 @@ def get_current_or_latest_version(package):
     except pkg_resources.DistributionNotFound:
         pass
     pypi_url = "https://pypi.python.org/pypi/{}/json".format(package)
-    releases = requests.get(pypi_url).json()["releases"]
+    response = requests.get(pypi_url)
+    assert response.status_code == 200, ("Unable to get information for "
+                                         "package {} on pypi.".format(package))
+    releases = response.json()["releases"]
 
     versions = []
 

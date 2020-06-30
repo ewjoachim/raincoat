@@ -71,6 +71,7 @@ def test_current_version(mocker):
 
 def test_latest_version(mocker):
     get = mocker.patch("requests.get")
+    get.return_value.status_code = 200
     get.return_value.json.return_value = {
         "releases": {"1.0.0": None, "1.0.1": None}}
     assert source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
@@ -78,6 +79,7 @@ def test_latest_version(mocker):
 
 def test_latest_version_no_prerelease(mocker):
     get = mocker.patch("requests.get")
+    get.return_value.status_code = 200
     get.return_value.json.return_value = {
         "releases": {"1.0.1": None, "1.0.2a1": None}}
     assert source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
@@ -85,9 +87,17 @@ def test_latest_version_no_prerelease(mocker):
 
 def test_latest_version_invalid(mocker):
     get = mocker.patch("requests.get")
+    get.return_value.status_code = 200
     get.return_value.json.return_value = {
         "releases": {"1.0.1": None, "1.0.2rc1": None}}
     assert source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
+
+
+def test_not_a_valid_response_from_pipy(mocker):
+    get = mocker.patch("requests.get")
+    get.return_value.status_code = 403
+    with pytest.raises(AssertionError):
+        source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
 
 
 def test_get_current_path():
