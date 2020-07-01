@@ -97,7 +97,7 @@ def test_not_a_valid_response_from_pipy(mocker):
     get = mocker.patch("requests.get")
     get.return_value.status_code = 403
     with pytest.raises(AssertionError):
-        source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
+        source.get_current_or_latest_version("fr2csv")
 
 
 def test_get_current_path():
