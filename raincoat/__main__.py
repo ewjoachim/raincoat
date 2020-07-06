@@ -1,10 +1,10 @@
-from . import main
+from raincoat import cli
 
 
-# What would one do for 100% coverage...
-def launch(name):
-    if name == '__main__':
-        main()  # pylint: disable=no-value-for-parameter
+def main(name):
+    # The curse of 100% coverage
+    if name == "__main__":
+        cli.cli()
 
 
-launch(__name__)
+main(__name__)

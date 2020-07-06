@@ -26,8 +26,10 @@ class Color(object):
         color[<color_code>] returns a function that colors
         given text to that color
         """
+
         def apply_color(content):
             return self.get(name) + content + self.get("neutral")
+
         return apply_color
 
 

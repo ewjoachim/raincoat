@@ -1,0 +1,30 @@
+name-template: '$RESOLVED_VERSION: TODO: set meaningful title - UNRELEASED'
+tag-template: '$RESOLVED_VERSION'
+categories:
+  - title: 'Breaking changes'
+    label: 'PR type: breaking'
+  - title: 'Features'
+    label: 'PR type: feature'
+  - title: 'Bug Fixes'
+    label: 'PR type: bugfix'
+  - title: 'Miscellaneous'
+    label: 'PR type: miscellaneous'
+change-template: '- $TITLE (#$NUMBER)'
+version-resolver:
+  default: minor
+  major:
+    label: 'PR scope: major'
+  minor:
+    label: 'PR scope: minor'
+  patch:
+    label: 'PR scope: incremental'
+exclude-labels:
+- 'PR: Skip changelog'
+template: |
+  ## TODO: please categorize
+
+  $CHANGES
+
+  ## Kudos:
+
+  $CONTRIBUTORS

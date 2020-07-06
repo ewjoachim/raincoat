@@ -9,7 +9,6 @@ PyGithubKey = namedtuple("PyGithubKey", "repo commit")
 
 
 class PyGithubChecker(PythonChecker):
-
     def __init__(self, *args, **kwargs):
         super(PyGithubChecker, self).__init__(*args, **kwargs)
         self.branch_commit_cache = {}
@@ -21,8 +20,7 @@ class PyGithubChecker(PythonChecker):
             match.branch_commit = key.commit
             return key
 
-        commit = source.get_branch_commit(
-            match.repo, match.branch)
+        commit = source.get_branch_commit(match.repo, match.branch)
         github_key = PyGithubKey(repo=match.repo, commit=commit)
 
         self.branch_commit_cache[(match.repo, match.branch)] = github_key
@@ -35,13 +33,12 @@ class PyGithubChecker(PythonChecker):
 
     def get_source(self, key, files):
         return source.download_files_from_repo(
-            repo=key.repo, commit=key.commit, files=files)
+            repo=key.repo, commit=key.commit, files=files
+        )
 
 
 class PyGithubMatch(PythonMatch):
-
-    def __init__(self, filename, lineno, repo, path, element="",
-                 branch="master"):
+    def __init__(self, filename, lineno, repo, path, element="", branch="master"):
         try:
             self.repo, self.commit = repo.strip().split("@")
         except ValueError:
@@ -62,7 +59,10 @@ class PyGithubMatch(PythonMatch):
             "(from {match.filename}:{match.lineno})".format(
                 match=self,
                 branch_commit=" ({})".format(self.branch_commit)
-                              if self.branch_commit else "",
-                element=self.element or "whole module"))
+                if self.branch_commit
+                else "",
+                element=self.element or "whole module",
+            )
+        )
 
     checker = PyGithubChecker

@@ -74,8 +74,7 @@ class PythonChecker(object):
                         full_key = (source_key, path, element_name)
                         yield full_key, constants.FILE_NOT_FOUND
                 else:
-                    elements = parse.find_elements(
-                        file_source, element_names)
+                    elements = parse.find_elements(file_source, element_names)
                     for element_name, element_source in elements:
                         full_key = (source_key, path, element_name)
                         yield full_key, element_source
@@ -90,43 +89,51 @@ class PythonChecker(object):
             match_element = elements.get(match_key)
             current_element = elements.get(current_key)
 
-            not_found = match_element in (constants.FILE_NOT_FOUND,
-                                          constants.ELEMENT_NOT_FOUND)
+            not_found = match_element in (
+                constants.FILE_NOT_FOUND,
+                constants.ELEMENT_NOT_FOUND,
+            )
 
             if match_element != current_element or not_found:
-                yield self.run_match(match=match,
-                                     match_element=match_element,
-                                     current_element=current_element)
+                yield self.run_match(
+                    match=match,
+                    match_element=match_element,
+                    current_element=current_element,
+                )
 
     def run_match(self, match, match_element, current_element):
 
         if match_element is constants.FILE_NOT_FOUND:
-            return ("Invalid Raincoat PyPI comment : {match.path} does "
-                    "not exist"
-                    "".format(match=match),
-                    match)
+            return (
+                "Invalid Raincoat PyPI comment : {match.path} does "
+                "not exist"
+                "".format(match=match),
+                match,
+            )
         if match_element is constants.ELEMENT_NOT_FOUND:
-            return ("Invalid Raincoat PyPI comment : {match.element} does "
-                    "not exist in {match.path}"
-                    "".format(match=match),
-                    match)
+            return (
+                "Invalid Raincoat PyPI comment : {match.element} does "
+                "not exist in {match.path}"
+                "".format(match=match),
+                match,
+            )
 
         if current_element is constants.FILE_NOT_FOUND:
-            return ("File {match.path} disappeared"
-                    "".format(match=match),
-                    match)
+            return ("File {match.path} disappeared" "".format(match=match), match)
         if current_element is constants.ELEMENT_NOT_FOUND:
-            return ("Element {match.element} disappeared from "
-                    "{match.path}"
-                    "".format(match=match),
-                    match)
+            return (
+                "Element {match.element} disappeared from "
+                "{match.path}"
+                "".format(match=match),
+                match,
+            )
 
         path = match.get_path()
-        diff = "\n".join(difflib.unified_diff(
-            match_element,
-            current_element,
-            fromfile=path, tofile=path,
-            lineterm=""))
+        diff = "\n".join(
+            difflib.unified_diff(
+                match_element, current_element, fromfile=path, tofile=path, lineterm=""
+            )
+        )
         return "Code is different:\n{}".format(diff), match
 
 

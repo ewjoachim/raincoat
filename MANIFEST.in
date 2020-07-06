@@ -1,14 +1,13 @@
-include LICENSE
-recursive-exclude * __pycache__
-recursive-exclude * *.pyc
-recursive-exclude * *.pyo
-recursive-exclude * *.orig
-prune docs
 prune tests
-prune acceptance_tests
-exclude *.rst
-exclude Makefile
-exclude tox.ini
-exclude runtests
-exclude .prospector.yml
+prune docs
+
+include LICENSE.rst
+
+exclude .editorconfig
+exclude .readthedocs.yml
+exclude CHANGELOG.rst
+exclude CODE_OF_CONDUCT.md
+exclude CONTRIBUTING.rst
+exclude pre-commit-hook
 exclude requirements.txt
+exclude tox.ini

@@ -1,19 +1,14 @@
-.. Raincoat documentation master file, created by
-   sphinx-quickstart on Wed Oct 12 01:11:07 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Raincoat's documentation!
-====================================
-
-Contents:
+.. include:: ../README.rst
+  :end-before: end-of-index-doc
 
 .. toctree::
-   :maxdepth: 2
+   :titlesonly:
 
-   readme
-   installation
-   usage
+   quickstart
+   howto_index
+   discussions
+   reference
+   glossary
+   conduct
    contributing
-   authors
-   history
+   changelog

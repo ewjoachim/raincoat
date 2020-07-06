@@ -1,35 +1,27 @@
-import traceback
-
-import sh
+import subprocess
 
 from raincoat import __version__
 
 
-def main():
+def test_full_chain():
     """
     Note that this test is excluded from coverage because coverage should be
     for unit tests.
     """
 
-    result = sh.raincoat(
-        "acceptance_tests/test_project", exclude="*ignored*",
-        _ok_code=1)
-
+    result = subprocess.Popen(
+        ["raincoat", "acceptance_tests/test_project", "--exclude=*ignored*"],
+        stdout=subprocess.PIPE,
+    )
     output = result.stdout.decode("utf-8")
-    try:
-        check_output(output)
-    except AssertionError:
-        print("Full output:\n", output)
-        raise
+    print(output)
+    assert result.returncode == 1
 
-    print("Ok")
-
-
-def check_output(output):
-    details = ("raincoat == 0.1.4 vs {} "
-               "@ raincoat/_acceptance_test.py:use_umbrella "
-               "(from acceptance_tests/test_project/__init__.py:7)").format(
-                    __version__)
+    details = (
+        f"raincoat == 0.1.4 vs {__version__} "
+        "@ raincoat/_acceptance_test.py:use_umbrella "
+        "(from acceptance_tests/test_project/__init__.py:7)"
+    )
 
     assert details in output
     assert "_acceptance_test.py:Umbrella.open" in output
@@ -47,11 +39,6 @@ def check_output(output):
 
     assert "peopledoc/raincoat@a35df1d vs master branch" in output
 
-    assert ("non_existant does not exist in raincoat/_acceptance_test.py"
-            in output)
+    assert "non_existant does not exist in raincoat/_acceptance_test.py" in output
 
     assert "raincoat/non_existant.py does not exist" in output
-
-
-if __name__ == '__main__':
-    main()

@@ -4,7 +4,7 @@ import os
 import tarfile
 import zipfile
 
-from distutils.version import StrictVersion  # pylint: disable=import-error
+from distutils.version import StrictVersion
 import pip
 import pkg_resources
 import requests
@@ -16,19 +16,17 @@ from raincoat import github_utils
 def download_package(package, version, download_dir):
     full_package = "{}=={}".format(package, version)
 
-    exit_code = pip.main(
-        ["download", "--no-deps", "-d", download_dir, full_package])
+    exit_code = pip.main(["download", "--no-deps", "-d", download_dir, full_package])
     if exit_code != 0:
-        raise ValueError("Error while fetching {} via pip.".format(
-            full_package))
+        raise ValueError("Error while fetching {} via pip.".format(full_package))
 
 
 def open_in_wheel(wheel, pathes):
-    with zipfile.ZipFile(wheel, 'r') as zf:
+    with zipfile.ZipFile(wheel, "r") as zf:
         sources = {}
         for path in pathes:
             try:
-                source = zf.open(path, 'r').read().decode("UTF-8")
+                source = zf.open(path, "r").read().decode("UTF-8")
             except KeyError:
                 source = FILE_NOT_FOUND
             sources[path] = source
@@ -37,7 +35,7 @@ def open_in_wheel(wheel, pathes):
 
 def open_in_tarball(tarball, pathes):
     sources = {}
-    with tarfile.open(tarball, 'r:gz') as tf:
+    with tarfile.open(tarball, "r:gz") as tf:
         for path in pathes:
             top_level_dir = tf.next().name
             try:
@@ -50,7 +48,7 @@ def open_in_tarball(tarball, pathes):
 
 
 def open_downloaded(download_path, pathes):
-    archive_name, = os.listdir(download_path)
+    (archive_name,) = os.listdir(download_path)
 
     archive_path = os.path.join(download_path, archive_name)
     ext = os.path.splitext(archive_name)[1]

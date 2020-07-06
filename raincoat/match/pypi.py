@@ -10,7 +10,6 @@ PyPIKey = namedtuple("PyPIKey", "package version installed")
 
 
 class PyPIChecker(PythonChecker):
-
     def __init__(self, *args, **kwargs):
         super(PyPIChecker, self).__init__(*args, **kwargs)
         self.package_cache = {}
@@ -21,8 +20,7 @@ class PyPIChecker(PythonChecker):
             match.other_version = key.version
             return key
 
-        installed, version = source.get_current_or_latest_version(
-            match.package)
+        installed, version = source.get_current_or_latest_version(match.package)
         pypi_key = PyPIKey(match.package, version, installed)
 
         self.package_cache[match.package] = pypi_key
@@ -45,7 +43,6 @@ class PyPIChecker(PythonChecker):
 
 
 class PyPIMatch(PythonMatch):
-
     def __init__(self, filename, lineno, package, path, element=""):
         try:
             self.package, self.version = package.strip().split("==")
@@ -66,7 +63,10 @@ class PyPIMatch(PythonMatch):
             "(from {match.filename}:{match.lineno})".format(
                 match=self,
                 vs_match=" vs {}".format(self.other_version)
-                         if self.other_version else "",
-                element=self.element or "whole module"))
+                if self.other_version
+                else "",
+                element=self.element or "whole module",
+            )
+        )
 
     checker = PyPIChecker

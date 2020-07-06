@@ -45,14 +45,13 @@ class CodeLocator(ast.NodeVisitor):
     def visit_FunctionDef(self, node):
         self.visit_node(node)
         if node.decorator_list:
-            node.lineno = min(decorator.lineno
-                              for decorator in node.decorator_list)
+            node.lineno = min(decorator.lineno for decorator in node.decorator_list)
 
     def visit_ClassDef(self, node):
         self.visit_node(node)
 
     def visit(self, node):
-        end_lineno = getattr(node, 'lineno', 1) - 1
+        end_lineno = getattr(node, "lineno", 1) - 1
         self.mark_end_lineno(end_lineno)
 
         super(CodeLocator, self).visit(node)
@@ -73,7 +72,7 @@ def find_elements(source, elements):
 
         for node_name, node in locator.load().items():
             elements.remove(node_name)
-            yield node_name, source_lines[node.lineno - 1:node.end_lineno]
+            yield node_name, source_lines[node.lineno - 1 : node.end_lineno]
 
     for element in elements:
         yield element, ELEMENT_NOT_FOUND
