@@ -4,7 +4,6 @@ from raincoat import source
 from raincoat.match import NotMatching
 from raincoat.match.python import PythonChecker, PythonMatch
 
-
 PyGithubKey = namedtuple("PyGithubKey", "repo commit")
 
 

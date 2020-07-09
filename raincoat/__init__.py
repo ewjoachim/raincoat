@@ -19,7 +19,7 @@ up up down down left right left right b a
 """
 
 from raincoat import metadata as _metadata_module
-from raincoat.match import Match, Checker, NotMatching
+from raincoat.match import Checker, Match, NotMatching
 
 __all__ = ["Match", "Checker", "NotMatching"]
 

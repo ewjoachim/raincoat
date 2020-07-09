@@ -1,10 +1,8 @@
 import re
+import urllib
 
-import six
-
+from raincoat import github_utils, source
 from raincoat.match import Match, NotMatching
-from raincoat import source
-from raincoat import github_utils
 
 
 def get_merge_commit_sha1(ticket, session):
@@ -22,7 +20,7 @@ def get_merge_commit_sha1(ticket, session):
     url = "https://api.github.com/search/issues?q="
     args = "repo:django/django+state:closed+in:title+type:pr+"
     args += "+".join(pattern.format(ticket) for pattern in pr_title_patterns)
-    response = session.get(url + six.moves.urllib.parse.quote(args, safe="+:"))
+    response = session.get(url + urllib.parse.quote(args, safe="+:"))
     response.raise_for_status()
     search_results = response.json()
 

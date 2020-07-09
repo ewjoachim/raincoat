@@ -1,4 +1,4 @@
-from raincoat.color import get_color, Color, COLOR_DICT
+from raincoat.color import COLOR_DICT, Color, get_color
 
 
 def test_get_color_no_color():

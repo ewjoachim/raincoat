@@ -1,7 +1,7 @@
 import pytest
 
-from raincoat.match.pypi import PyPIMatch
 from raincoat.color import Color
+from raincoat.match.pypi import PyPIMatch
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def match_module():
         lineno=12,
         package="umbrella==3.2",
         path="path/to/file.py",
-        element=""
+        element="",
     )
 
 
@@ -22,7 +22,7 @@ def match():
         lineno=12,
         package="umbrella==3.2",
         path="path/to/file.py",
-        element="MyClass"
+        element="MyClass",
     )
 
 
@@ -33,7 +33,7 @@ def match_other_file():
         lineno=12,
         package="umbrella==3.2",
         path="path/to/other_file.py",
-        element="MyOtherClass"
+        element="MyOtherClass",
     )
 
 
@@ -44,7 +44,7 @@ def match_other_package():
         lineno=12,
         package="poncho==3.2",
         path="some/file.py",
-        element="SomeClass"
+        element="SomeClass",
     )
 
 
@@ -55,7 +55,7 @@ def match_other_version():
         lineno=12,
         package="umbrella==3.4",
         path="path/to/file.py",
-        element="MyClass"
+        element="MyClass",
     )
 
 
@@ -66,7 +66,7 @@ def match_other_version_other_file():
         lineno=12,
         package="umbrella==3.4",
         path="path/to/other_file.py",
-        element="MyClass"
+        element="MyClass",
     )
 
 

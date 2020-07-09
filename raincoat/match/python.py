@@ -3,8 +3,7 @@ from collections import OrderedDict
 from itertools import groupby
 from operator import itemgetter
 
-from raincoat import parse
-from raincoat import constants
+from raincoat import constants, parse
 from raincoat.match import Match
 
 

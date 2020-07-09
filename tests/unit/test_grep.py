@@ -1,10 +1,10 @@
 import io
 import tempfile
+
 import pytest
 
-import six
-
 from raincoat import grep
+
 
 @pytest.fixture
 def match_class(match, mocker):
@@ -12,12 +12,17 @@ def match_class(match, mocker):
 
 
 def test_string_normal(match_class):
-    matches = list(grep.find_in_string("""
+    matches = list(
+        grep.find_in_string(
+            """
         # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo
-    """, filename="foo/bar"))
+    """,
+            filename="foo/bar",
+        )
+    )
 
     assert len(matches) == 1
-    match, = matches
+    (match,) = matches
 
     assert match.package == "BLA"
     assert match.version == "1.2.3"
@@ -28,12 +33,17 @@ def test_string_normal(match_class):
 
 
 def test_string_normal_whole_module(match_class):
-    matches = list(grep.find_in_string("""
+    matches = list(
+        grep.find_in_string(
+            """
         # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py
-    """, filename="foo/bar"))
+    """,
+            filename="foo/bar",
+        )
+    )
 
     assert len(matches) == 1
-    match, = matches
+    (match,) = matches
 
     assert match.package == "BLA"
     assert match.version == "1.2.3"
@@ -44,9 +54,14 @@ def test_string_normal_whole_module(match_class):
 
 
 def test_other_operator(caplog):
-    matches = list(grep.find_in_string("""
+    matches = list(
+        grep.find_in_string(
+            """
         # Raincoat: pypi package: BLA>=1.2.3 path: yo/yeah.py: foo
-    """, "foo/bar"))
+    """,
+            "foo/bar",
+        )
+    )
     assert "Unrecognized Raincoat comment" in caplog.records[0].message
     assert len(matches) == 0
 
@@ -59,9 +74,11 @@ def test_empty():
 
 def test_find_in_file(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
-        handler.write("""
+        handler.write(
+            """
             # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo
-        """)
+        """
+        )
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
         assert len(matches) == 1
@@ -69,7 +86,9 @@ def test_find_in_file(match_class):
 
 def test_find_in_file_oneliner(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
-        handler.write('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo''')  # noqa
+        handler.write(
+            """# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo"""
+        )  # noqa
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
         assert len(matches) == 1
@@ -77,7 +96,9 @@ def test_find_in_file_oneliner(match_class):
 
 def test_find_in_file_with_comment(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
-        handler.write('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo  # noqa''')  # noqa
+        handler.write(
+            """# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo  # noqa"""
+        )  # noqa
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
         assert len(matches) == 1
@@ -91,9 +112,7 @@ def test_list_python_files(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f")) == [
-        "c.py", "a/e.py"
-    ]
+    assert list(grep.list_python_files("f")) == ["c.py", "a/e.py"]
 
 
 def test_list_python_files_exclude_dir_dot_slash(mocker):
@@ -104,9 +123,7 @@ def test_list_python_files_exclude_dir_dot_slash(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["./b"])) == [
-        "c.py", "a/e.py"
-    ]
+    assert list(grep.list_python_files("f", exclude=["./b"])) == ["c.py", "a/e.py"]
     assert dirs == ["a"]
 
 
@@ -118,9 +135,7 @@ def test_list_python_files_exclude_dir(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["b"])) == [
-        "c.py", "a/e.py"
-    ]
+    assert list(grep.list_python_files("f", exclude=["b"])) == ["c.py", "a/e.py"]
     assert dirs == ["a"]
 
 
@@ -132,9 +147,7 @@ def test_list_python_files_exclude_multiple(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["b", "a/*"])) == [
-        "c.py"
-    ]
+    assert list(grep.list_python_files("f", exclude=["b", "a/*"])) == ["c.py"]
     assert dirs == ["a"]
 
 
@@ -146,9 +159,7 @@ def test_list_python_files_exclude_dir_wildcard(mocker):
         ("aaa", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["b*"])) == [
-        "c.py", "aaa/e.py"
-    ]
+    assert list(grep.list_python_files("f", exclude=["b*"])) == ["c.py", "aaa/e.py"]
     assert dirs == ["aaa"]
 
 
@@ -159,8 +170,7 @@ def test_list_python_files_exclude_file(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["a/e.py"])) == [
-        "c.py"]
+    assert list(grep.list_python_files("f", exclude=["a/e.py"])) == ["c.py"]
 
 
 def test_list_python_files_exclude_file_wildcard(mocker):
@@ -170,18 +180,29 @@ def test_list_python_files_exclude_file_wildcard(mocker):
         ("a", [], ["d.txt", "e.py"]),
     ]
 
-    assert list(grep.list_python_files("f", exclude=["a/*.py"])) == [
-        "c.py"]
+    assert list(grep.list_python_files("f", exclude=["a/*.py"])) == ["c.py"]
 
 
 # Full chain test
 def test_find_in_dir(mocker, match_class):
-    open_responses = iter([
-        ("c.py", io.StringIO(
-            six.u('''# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo'''))),  # noqa
-        ("a/e.py", io.StringIO(
-            six.u('''# Raincoat: pypi package: BLU==1.2.4 path: yo/hai.py element: bar'''))),  # noqa
-    ])
+    open_responses = iter(
+        [
+            (
+                "c.py",
+                io.StringIO(
+                    """# Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py """
+                    """element: foo"""
+                ),
+            ),  # noqa
+            (
+                "a/e.py",
+                io.StringIO(
+                    """# Raincoat: pypi package: BLU==1.2.4 path: yo/hai.py """
+                    """element: bar"""
+                ),
+            ),  # noqa
+        ]
+    )
 
     def fake_open(file):
         expected_file, response = next(open_responses)

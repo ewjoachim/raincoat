@@ -14,8 +14,8 @@ from __future__ import absolute_import
 import itertools
 
 from . import grep
-from .match import check_matches
 from .color import get_color
+from .match import check_matches
 
 
 def class_key(match):

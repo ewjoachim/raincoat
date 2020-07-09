@@ -1,8 +1,6 @@
 import os
 
-from raincoat import constants
-from raincoat import parse
-
+from raincoat import constants, parse
 
 umbrella_dir = os.path.normpath(os.path.join(os.path.dirname(__file__), "umbrella"))
 

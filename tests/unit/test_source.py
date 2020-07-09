@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 import pytest
 
@@ -33,12 +34,14 @@ def test_open_in_wheel():
 
 
 def test_download_package(mocker):
-    pip = mocker.patch("pip.main", return_value=0)
+    pip = mocker.patch("subprocess.run", return_value=mocker.Mock(returncode=0))
 
     source.download_package("fr2csv", "1.0.1", "/tmp/clean/")
 
     assert pip.mock_calls == [
-        mocker.call(["download", "--no-deps", "-d", "/tmp/clean/", "fr2csv==1.0.1"])
+        mocker.call(
+            ["pip", "download", "--no-deps", "-d", "/tmp/clean/", "fr2csv==1.0.1"]
+        )
     ]
 
 
@@ -65,8 +68,7 @@ def test_open_downloaded_tarball(mocker):
 
 
 def test_current_version(mocker):
-    dist = mocker.patch("raincoat.source.pkg_resources.get_distribution")()
-    dist.version = "1.2.3"
+    mocker.patch("importlib_metadata.version", return_value="1.2.3")
     assert source.get_current_or_latest_version("pytest") == (True, "1.2.3")
 
 
@@ -88,13 +90,16 @@ def test_latest_version_invalid(mocker):
     assert source.get_current_or_latest_version("fr2csv") == (False, "1.0.1")
 
 
-def test_get_current_path():
-    assert source.get_current_path("pytest").endswith("site-packages")
+def test_get_distributed_files():
+    pathname = "pytest/__init__.py"
+    path = pathlib.Path(pathname)
+
+    assert source.get_distributed_files("pytest")[pathname] == path
 
 
 def test_open_installed():
     source_dict = source.open_installed(
-        source.get_current_path("pytest"), ["pytest/__init__.py"]
+        source.get_distributed_files("pytest"), ["pytest/__init__.py"]
     )
     assert len(source_dict) == 1
     assert "pytest/__init__.py" in source_dict
@@ -115,10 +120,14 @@ def test_unrecognized_format(tmpdir):
 def test_pip_error(tmpdir, mocker):
     install_dir = tmpdir.mkdir("install_dir")
 
-    mocker.patch("pip.main", return_value=1)
+    mocker.patch(
+        "subprocess.run", return_value=mocker.Mock(returncode=1, stdout=b"Foo")
+    )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc_info:
         source.download_package("fr2csv", "1.0.1", install_dir.strpath)
+
+    assert str(exc_info.value) == "Error while fetching fr2csv==1.0.1 via pip: Foo"
 
 
 def test_file_not_found_tarball(tmpdir, mocker):
@@ -143,7 +152,7 @@ def test_file_not_found_wheel(tmpdir, mocker):
 
 def test_file_not_found_installed(tmpdir, mocker):
 
-    result = source.open_installed(source.get_current_path("pytest"), ["bla.py"])
+    result = source.open_installed(source.get_distributed_files("pytest"), ["bla.py"])
 
     assert result == {"bla.py": source.FILE_NOT_FOUND}
 

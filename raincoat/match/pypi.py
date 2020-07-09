@@ -5,7 +5,6 @@ from raincoat.match import NotMatching
 from raincoat.match.python import PythonChecker, PythonMatch
 from raincoat.utils import Cleaner
 
-
 PyPIKey = namedtuple("PyPIKey", "package version installed")
 
 
@@ -33,8 +32,8 @@ class PyPIChecker(PythonChecker):
 
     def get_source(self, key, files):
         if key.installed:
-            path = source.get_current_path(key.package)
-            return source.open_installed(path, files)
+            all_files = source.get_distributed_files(key.package)
+            return source.open_installed(all_files, files_to_open=files)
         else:
             with Cleaner() as cleaner:
                 path = cleaner.mkdir()
