@@ -6,16 +6,19 @@ in the match_classes list at the end of this file
 """
 import logging
 from itertools import count
-from pkg_resources import iter_entry_points
 
+import importlib_metadata
+
+from raincoat.exceptions import NotMatching  # TODO
 
 logger = logging.getLogger(__name__)
 
-class NotMatching(Exception):
+
+class Checker:
     pass
 
 
-class Match(object):
+class Match:
     match_type = None  # Will dynamically be given the name of the entrypoint
     checker = NotImplemented
 
@@ -66,25 +69,30 @@ def check_matches(matches):
         checker = match_class.checker
 
         if checker is NotImplemented:
-            raise NotImplementedError(
-                "{} has no checker".format(match_class))
+            raise NotImplementedError("{} has no checker".format(match_class))
 
         for difference in checker().check(matches_for_type):
             yield difference
 
 
+def get_match_entrypoints():
+    return importlib_metadata.entry_points()["raincoat.match"]
+
+
 def compute_match_types():
     # Even builtin match types are defined using the entry points.
     match_types = {}
-    for match_entry_point in iter_entry_points('raincoat.match'):
+    for match_entry_point in get_match_entrypoints():
         match_type = match_entry_point.name
         match_class = match_entry_point.load()
         match_class.match_type = match_type
 
         if match_type in match_types:
-            logger.warning("Several classes registered for the match type {}. "
-                           "{} will be ignored, {} will be used."
-                           "".format(match_type, match_class, match_types[match_type]))
+            logger.warning(
+                "Several classes registered for the match type {}. "
+                "{} will be ignored, {} will be used."
+                "".format(match_type, match_class, match_types[match_type])
+            )
             continue
 
         match_types[match_type] = match_class

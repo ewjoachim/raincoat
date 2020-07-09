@@ -10,29 +10,28 @@ from .match import NotMatching, match_from_comment
 logger = logging.getLogger(__name__)
 
 
-REGEX = re.compile(r'# Raincoat: ([a-z]+) (.+)(\n|#|$)')
-ARGS_REGEX = re.compile(r' *([^ ]+): *([^ ]+)(?: *|$)')
+REGEX = re.compile(r"# Raincoat: ([a-z]+) (.+)(\n|#|$)")
+ARGS_REGEX = re.compile(r" *([^ ]+): *([^ ]+)(?: *|$)")
 
 
 def find_in_string(file_content, filename):
     for match in REGEX.finditer(file_content):
-        lineno = lineno = file_content.count(
-            os.linesep, 0, match.start()) + 1
+        lineno = lineno = file_content.count(os.linesep, 0, match.start()) + 1
 
         kwargs_str = match.group(2).strip()
-        kwargs = dict(
-            pair.groups()
-            for pair in ARGS_REGEX.finditer(kwargs_str))
+        kwargs = dict(pair.groups() for pair in ARGS_REGEX.finditer(kwargs_str))
 
         try:
-            match = match_from_comment(match_type=match.group(1),
-                                       filename=filename,
-                                       lineno=lineno,
-                                       **kwargs)
+            match = match_from_comment(
+                match_type=match.group(1), filename=filename, lineno=lineno, **kwargs
+            )
 
         except NotMatching:
-            logger.warning("Unrecognized Raincoat comment at {}:{}\n{}".format(
-                filename, lineno, match.group(0)))
+            logger.warning(
+                "Unrecognized Raincoat comment at {}:{}\n{}".format(
+                    filename, lineno, match.group(0)
+                )
+            )
             continue
 
         yield match
@@ -49,25 +48,29 @@ def list_python_files(base_dir=".", exclude=None):
     for root, folders, files in os.walk(base_dir, topdown=True):
 
         # Prune excluded folders
-        full_pathes = [os.path.normpath(os.path.join(root, folder))
-                       for folder in folders]
+        full_pathes = [
+            os.path.normpath(os.path.join(root, folder)) for folder in folders
+        ]
 
         folders_to_remove = {
             os.path.basename(folder)
             for pattern in exclude
-            for folder in fnmatch.filter(full_pathes, pattern)}
+            for folder in fnmatch.filter(full_pathes, pattern)
+        }
 
         if folders_to_remove:
             folders[:] = set(folders) - folders_to_remove
 
         # Prune excluded files
-        full_pathes = [os.path.normpath(os.path.join(root, filename))
-                       for filename in files]
+        full_pathes = [
+            os.path.normpath(os.path.join(root, filename)) for filename in files
+        ]
 
-        files_to_remove = {os.path.basename(filename)
-                           for pattern in exclude
-                           for filename in fnmatch.filter(full_pathes,
-                                                          pattern)}
+        files_to_remove = {
+            os.path.basename(filename)
+            for pattern in exclude
+            for filename in fnmatch.filter(full_pathes, pattern)
+        }
 
         for filename in set(files) - files_to_remove:
             if filename.endswith(".py"):

@@ -14,8 +14,8 @@ from __future__ import absolute_import
 import itertools
 
 from . import grep
-from .match import check_matches
 from .color import get_color
+from .match import check_matches
 
 
 def class_key(match):
@@ -30,12 +30,10 @@ def raincoat(path, exclude=None, color=False):
     """
     Main entrypoint
     """
-    matches = sorted(grep.find_in_dir(path, exclude=exclude),
-                     key=class_key_name)
+    matches = sorted(grep.find_in_dir(path, exclude=exclude), key=class_key_name)
 
     matches_dict = {}
-    for match_class, matches_for_class in itertools.groupby(
-            matches, key=class_key):
+    for match_class, matches_for_class in itertools.groupby(matches, key=class_key):
         matches_for_class = list(matches_for_class)
         matches_dict[match_class.match_type] = matches_for_class
 

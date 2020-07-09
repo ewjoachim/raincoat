@@ -3,32 +3,36 @@ from __future__ import absolute_import
 import os
 import tarfile
 import zipfile
+from distutils.version import StrictVersion
+import subprocess
 
-from distutils.version import StrictVersion  # pylint: disable=import-error
-import pip
-import pkg_resources
+import importlib_metadata
 import requests
 
-from raincoat.constants import FILE_NOT_FOUND
 from raincoat import github_utils
+from raincoat.constants import FILE_NOT_FOUND
 
 
 def download_package(package, version, download_dir):
     full_package = "{}=={}".format(package, version)
 
-    exit_code = pip.main(
-        ["download", "--no-deps", "-d", download_dir, full_package])
-    if exit_code != 0:
-        raise ValueError("Error while fetching {} via pip.".format(
-            full_package))
+    result = subprocess.run(
+        ["pip", "download", "--no-deps", "-d", download_dir, full_package]
+    )
+    if result.returncode != 0:
+        raise ValueError(
+            "Error while fetching {} via pip: {}".format(
+                full_package, result.stdout.decode("utf-8")
+            )
+        )
 
 
 def open_in_wheel(wheel, pathes):
-    with zipfile.ZipFile(wheel, 'r') as zf:
+    with zipfile.ZipFile(wheel, "r") as zf:
         sources = {}
         for path in pathes:
             try:
-                source = zf.open(path, 'r').read().decode("UTF-8")
+                source = zf.open(path, "r").read().decode("UTF-8")
             except KeyError:
                 source = FILE_NOT_FOUND
             sources[path] = source
@@ -37,7 +41,7 @@ def open_in_wheel(wheel, pathes):
 
 def open_in_tarball(tarball, pathes):
     sources = {}
-    with tarfile.open(tarball, 'r:gz') as tf:
+    with tarfile.open(tarball, "r:gz") as tf:
         for path in pathes:
             top_level_dir = tf.next().name
             try:
@@ -50,7 +54,7 @@ def open_in_tarball(tarball, pathes):
 
 
 def open_downloaded(download_path, pathes):
-    archive_name, = os.listdir(download_path)
+    (archive_name,) = os.listdir(download_path)
 
     archive_path = os.path.join(download_path, archive_name)
     ext = os.path.splitext(archive_name)[1]
@@ -63,25 +67,30 @@ def open_downloaded(download_path, pathes):
         raise NotImplementedError("Unrecognize archive format {}".format(ext))
 
 
-def open_installed(installed_path, pathes):
+def open_installed(all_files, files_to_open):
     sources = {}
-    for path in pathes:
+    for file in files_to_open:
         try:
-            source = open(os.path.join(installed_path, path)).read()
-        except IOError:
+            dist_file = all_files[file]
+        except KeyError:
             source = FILE_NOT_FOUND
-        sources[path] = source
+        else:
+            source = dist_file.read_text()
+
+        sources[file] = source
 
     return sources
 
 
 def get_current_or_latest_version(package):
     try:
-        return True, pkg_resources.get_distribution(package).version
-    except pkg_resources.DistributionNotFound:
+        return True, importlib_metadata.version(package)
+    except importlib_metadata.PackageNotFoundError:
         pass
-    pypi_url = "http://pypi.python.org/pypi/{}/json".format(package)
-    releases = requests.get(pypi_url).json()["releases"]
+    pypi_url = "https://pypi.python.org/pypi/{}/json".format(package)
+    response = requests.get(pypi_url)
+    response.raise_for_status()
+    releases = response.json()["releases"]
 
     versions = []
 
@@ -99,8 +108,8 @@ def get_current_or_latest_version(package):
     return False, next(iter(sorted(versions, reverse=True)))[1]
 
 
-def get_current_path(package):
-    return pkg_resources.get_distribution(package).location
+def get_distributed_files(package):
+    return {str(f): f for f in importlib_metadata.files(package) or []}
 
 
 def get_branch_commit(repo, branch):

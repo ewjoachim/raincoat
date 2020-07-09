@@ -1,10 +1,8 @@
 import re
+import urllib
 
-import six
-
+from raincoat import github_utils, source
 from raincoat.match import Match, NotMatching
-from raincoat import source
-from raincoat import github_utils
 
 
 def get_merge_commit_sha1(ticket, session):
@@ -21,14 +19,12 @@ def get_merge_commit_sha1(ticket, session):
     pr_title_patterns = ["#{} ", "#{},", "#{}:", "#{})"]
     url = "https://api.github.com/search/issues?q="
     args = "repo:django/django+state:closed+in:title+type:pr+"
-    args += "+".join(pattern.format(ticket)
-                     for pattern in pr_title_patterns)
-    response = session.get(
-        url + six.moves.urllib.parse.quote(args, safe="+:"))  # pylint: disable=redundant-keyword-arg
+    args += "+".join(pattern.format(ticket) for pattern in pr_title_patterns)
+    response = session.get(url + urllib.parse.quote(args, safe="+:"))
     response.raise_for_status()
     search_results = response.json()
 
-    merged_regex = re.compile(r'(?:merged|fixed) in \b([0-9a-f]{6,40})\b')
+    merged_regex = re.compile(r"(?:merged|fixed) in \b([0-9a-f]{6,40})\b")
 
     for pr in search_results["items"]:
         number = pr["number"]
@@ -37,14 +33,19 @@ def get_merge_commit_sha1(ticket, session):
             # skip this element if PR id == ticket id
             continue
 
-        merged = session.get(
-            "https://api.github.com/repos/django/django/pulls/{}/merge"
-            .format(number)).status_code == 204
+        merged = (
+            session.get(
+                "https://api.github.com/repos/django/django/pulls/{}/merge".format(
+                    number
+                )
+            ).status_code
+            == 204
+        )
 
         if merged:
             response = session.get(
-                    "https://api.github.com/repos/django/django/pulls/{}"
-                    .format(number))
+                "https://api.github.com/repos/django/django/pulls/{}".format(number)
+            )
             response.raise_for_status()
             pr_details = response.json()
 
@@ -52,8 +53,10 @@ def get_merge_commit_sha1(ticket, session):
 
         # Check if the PR was merged manually
         response = session.get(
-            "https://api.github.com/repos/django/django/issues/{}/comments"
-            .format(number))
+            "https://api.github.com/repos/django/django/issues/{}/comments".format(
+                number
+            )
+        )
         response.raise_for_status()
         comments = response.json()
         for comment in comments:
@@ -63,9 +66,9 @@ def get_merge_commit_sha1(ticket, session):
 
 
 def is_commit_in_version(commit, version, session):
-    url = (
-        "https://api.github.com/repos/django/django/compare/{}...{}"
-        "".format(commit, version))
+    url = "https://api.github.com/repos/django/django/compare/{}...{}" "".format(
+        commit, version
+    )
     response = session.get(url)
     response.raise_for_status()
     diff = response.json()
@@ -73,7 +76,6 @@ def is_commit_in_version(commit, version, session):
 
 
 class DjangoChecker(object):
-
     def get_match_info(self, matches):
         info = {}
         for match in matches:
@@ -95,14 +97,16 @@ class DjangoChecker(object):
                     if is_commit_in_version(sha1, django_version, session):
                         for match in ticket_matches:
                             yield (
-                                "Ticket #{} has been merged in Django {}"
-                                .format(ticket, django_version),
-                                match)
+                                "Ticket #{} has been merged in Django {}".format(
+                                    ticket, django_version
+                                ),
+                                match,
+                            )
 
 
 class DjangoMatch(Match):
     checker = DjangoChecker
-    ticket_regex = re.compile(r'^#?(\d+)$')
+    ticket_regex = re.compile(r"^#?(\d+)$")
 
     def __init__(self, filename, lineno, ticket):
         super(DjangoMatch, self).__init__(filename, lineno)
@@ -116,4 +120,5 @@ class DjangoMatch(Match):
     def __str__(self):
         return (
             "Django ticket #{match.ticket} "
-            "(from {match.filename}:{match.lineno})".format(match=self))
+            "(from {match.filename}:{match.lineno})".format(match=self)
+        )
