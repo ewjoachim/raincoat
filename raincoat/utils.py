@@ -31,7 +31,10 @@ class Cleaner(object):
         return self
 
     def add(self, path):
-        self.files.add(path)
+        if os.path.isdir(path):
+            self.dirs.add(path)
+        else:
+            self.files.add(path)
         return path
 
     def mkdir(self):

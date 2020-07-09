@@ -94,12 +94,12 @@ def test_get_current_path():
 
 def test_open_installed():
     source_dict = source.open_installed(
-        source.get_current_path("pytest"), ["pytest.py"]
+        source.get_current_path("pytest"), ["pytest/__init__.py"]
     )
     assert len(source_dict) == 1
-    assert "pytest.py" in source_dict
+    assert "pytest/__init__.py" in source_dict
     assert ("pytest: unit and functional " "testing with Python.\n") in source_dict[
-        "pytest.py"
+        "pytest/__init__.py"
     ]
 
 

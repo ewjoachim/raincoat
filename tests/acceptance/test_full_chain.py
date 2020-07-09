@@ -9,18 +9,18 @@ def test_full_chain():
     for unit tests.
     """
 
-    result = subprocess.Popen(
-        ["raincoat", "acceptance_tests/test_project", "--exclude=*ignored*"],
+    result = subprocess.run(
+        ["raincoat", "tests/acceptance/test_project", "--exclude=*ignored*"],
         stdout=subprocess.PIPE,
     )
     output = result.stdout.decode("utf-8")
     print(output)
-    assert result.returncode == 1
+    assert result.returncode != 0
 
     details = (
         f"raincoat == 0.1.4 vs {__version__} "
         "@ raincoat/_acceptance_test.py:use_umbrella "
-        "(from acceptance_tests/test_project/__init__.py:7)"
+        "(from tests/acceptance/test_project/__init__.py:7)"
     )
 
     assert details in output

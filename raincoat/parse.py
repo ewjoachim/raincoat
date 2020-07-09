@@ -2,36 +2,28 @@ from __future__ import absolute_import
 
 import ast
 from collections import deque
+from typing import Iterable, Tuple
+
+import asttokens
 
 from raincoat.constants import ELEMENT_NOT_FOUND
+
+Line = str
+Lines = Iterable[Line]
 
 
 class CodeLocator(ast.NodeVisitor):
     def __init__(self, source, filters):
         self.path = deque()
         self.source = source
-        self.source_lines = source.splitlines()
         self.filters = filters
-        self.ended_nodes = deque()
+        self.open_nodes = deque()
 
     def load(self):
         self.nodes = {}
-        nodes = ast.parse(self.source)
-        self.visit(nodes)
-        self.mark_end_lineno(self.source.rstrip().count("\n") + 1)
+        self.marked_ast = asttokens.ASTTokens(self.source, parse=True)
+        self.visit(self.marked_ast.tree)
         return self.nodes
-
-    def mark_end_lineno(self, lineno):
-        # Empty lines are not counted
-        while not self.source_lines[lineno - 1]:
-            lineno -= 1
-
-        # Mark all finshed nodes
-        try:
-            while True:
-                self.ended_nodes.pop().end_lineno = lineno
-        except IndexError:
-            pass
 
     def visit_node(self, node):
         self.path.append(node.name)
@@ -40,30 +32,28 @@ class CodeLocator(ast.NodeVisitor):
             self.nodes[node_name] = node
         ast.NodeVisitor.generic_visit(self, node)
         self.path.pop()
-        self.ended_nodes.append(node)
+        self.open_nodes.append(node)
 
     def visit_FunctionDef(self, node):
         self.visit_node(node)
-        if node.decorator_list:
-            node.lineno = min(decorator.lineno for decorator in node.decorator_list)
 
     def visit_ClassDef(self, node):
         self.visit_node(node)
 
-    def visit(self, node):
-        end_lineno = getattr(node, "lineno", 1) - 1
-        self.mark_end_lineno(end_lineno)
+    def get_source(self, node):
+        start, end = self.marked_ast.get_text_range(node)
+        line_start = self.source[:start].rfind("\n") + 1
+        line_start = 0 if line_start == -1 else line_start
+        line_end = self.source[end:].find("\n")
+        line_end = None if line_end == -1 else line_end + end
+        return self.source[line_start:line_end].splitlines()
 
-        super(CodeLocator, self).visit(node)
 
-
-def find_elements(source, elements):
-
-    source_lines = source.splitlines()
+def find_elements(source, elements) -> Iterable[Tuple[str, Lines]]:
 
     elements = set(elements)
     if "" in elements:
-        yield "", source_lines
+        yield "", source.splitlines()
         elements.remove("")
 
     if elements and source:
@@ -72,7 +62,7 @@ def find_elements(source, elements):
 
         for node_name, node in locator.load().items():
             elements.remove(node_name)
-            yield node_name, source_lines[node.lineno - 1 : node.end_lineno]
+            yield node_name, locator.get_source(node)
 
     for element in elements:
         yield element, ELEMENT_NOT_FOUND

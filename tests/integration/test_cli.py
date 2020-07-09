@@ -11,12 +11,6 @@ def entrypoint(cli_runner):
     return ep
 
 
-def test_cli(entrypoint):
-    result = entrypoint()
-    # assuming subcommand is required
-    assert result.output.startswith("Usage:")
-
-
 def test_version(entrypoint):
     result = entrypoint("--version")
 

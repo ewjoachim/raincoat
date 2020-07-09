@@ -15,12 +15,14 @@ def test_find_function():
     )
 
     assert len(code_blocks) == 1
+    name, lines = code_blocks[0]
 
-    for name, lines in code_blocks:
-        assert name == "use_umbrella"
-        assert len(lines) == 15
-        assert lines[0] == ("def use_umbrella(umbrella, action):")
-        assert lines[-1] == ("    umbrella.put_pouch()")
+    print(lines)
+
+    assert name == "use_umbrella"
+    assert len(lines) == 15
+    assert lines[0] == ("def use_umbrella(umbrella, action):")
+    assert lines[-1] == ("    umbrella.put_pouch()")
 
 
 def test_find_method():
@@ -29,36 +31,39 @@ def test_find_method():
     )
 
     assert len(code_blocks) == 1
+    name, lines = code_blocks[0]
 
-    for name, lines in code_blocks:
-        assert name == "Umbrella.open"
-        assert len(lines) == 9
-        assert lines[0] == ("    def open(self):")
-        assert lines[-1] == ('        self.side = "pointy side up"')
+    print(lines)
+    assert name == "Umbrella.open"
+    assert len(lines) == 9
+    assert lines[0] == ("    def open(self):")
+    assert lines[-1] == ('        self.side = "pointy side up"')
 
 
 def test_find_class():
     code_blocks = list(parse.find_elements(open(umbrella_file).read(), ["Umbrella"]))
 
     assert len(code_blocks) == 1
+    name, lines = code_blocks[0]
 
-    for name, lines in code_blocks:
-        assert name == "Umbrella"
-        assert len(lines) == 27
-        assert lines[0] == ("class Umbrella(object):")
-        assert lines[-1] == ("        return True")
+    print(lines)
+    assert name == "Umbrella"
+    assert len(lines) == 27
+    assert lines[0] == ("class Umbrella(object):")
+    assert lines[-1] == ("        return True")
 
 
 def test_find_module():
     code_blocks = list(parse.find_elements(open(umbrella_file).read(), [""]))
 
     assert len(code_blocks) == 1
+    name, lines = code_blocks[0]
 
-    for name, lines in code_blocks:
-        assert name == ""
-        assert len(lines) == 92
-        assert lines[0] == ('"""')
-        assert lines[-1] == ("    pass")
+    print(lines)
+    assert name == ""
+    assert len(lines) == 92
+    assert lines[0] == ('"""')
+    assert lines[-1] == ("    pass")
 
 
 def test_find_several():
@@ -89,11 +94,12 @@ def test_one_liner():
     code_blocks = list(parse.find_elements(open(one_liner_file).read(), ["a"]))
 
     assert len(code_blocks) == 1
+    name, lines = code_blocks[0]
 
-    for name, lines in code_blocks:
-        assert name == "a"
-        assert len(lines) == 1
-        assert lines == ["def a(): pass  # noqa"]
+    print(lines)
+    assert name == "a"
+    assert len(lines) == 1
+    assert lines == ["def a(): pass  # noqa"]
 
 
 def test_find_function_not_found():
