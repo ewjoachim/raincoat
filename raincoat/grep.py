@@ -39,7 +39,11 @@ def find_in_string(file_content, filename):
 
 def find_in_file(filename):
     with open(filename) as handler:
-        return find_in_string(handler.read(), filename)
+        try:
+            return find_in_string(handler.read(), filename)
+        except UnicodeDecodeError:
+            logger.warning("Unable to read non-utf-8 file", exc_info=True)
+            return []
 
 
 def list_python_files(base_dir=".", exclude=None):
