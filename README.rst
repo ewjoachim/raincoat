@@ -33,8 +33,8 @@ that you can update your local copy.
 The problem
 -----------
 
-Lets say you're using a lib named ``umbrella`` which provides a function named
-``use_umbrella`` and it reads as such :
+Let's say you're using a lib named ``umbrella`` which provides a function named
+``use_umbrella`` and it reads as such:
 
 .. code-block:: python
 
@@ -54,31 +54,32 @@ Lets say you're using a lib named ``umbrella`` which provides a function named
             time.sleep(1)
         umbrella.put_pouch()
 
-This function does what it says it does, but it's not ideally splitted, depending on
+
+This function does what it says it does, but it's not ideally split, depending on
 your needs. For example, maybe at some point you realize you need each of the 3 separate
-parts to be a function of its own. Or maybe you can't call time.sleep in your app. Or do
-something else with the ``umbrella`` when it's open like dance with it.
+parts to be a function of its own. Or maybe you can't call ``time.sleep`` in your app. Or do
+something else with the ``umbrella`` when it's opened, like dance with it.
 
 It's also possible that you can't really make a pull request because your needs are
 specific, or you don't have the time (that's sad but, hey, I know it happens) or any
-other personnal reason. So what do you do? There's no real alternative. You copy and
-paste the code, modify it to fit your needs and use your modified version. And whenever
+other personal reason. So what do you do? There's no real alternative. You copy/paste
+the code, modify it to fit your needs and use your modified version. And whenever
 there's a change to the upstream function, chances are you'll never know.
 
 
 The solution
 ------------
 
-Enter Raincoat.
+*Enter Raincoat.*
 
 You have made your own private copy of ``umbrella.use_umbrella`` (umbrella being at the
-time at version 14.5.7) and it looks like this :
+time at version 14.5.7) and it looks like this:
 
 .. code-block:: python
 
     def dance_with_umbrella(umbrella):
-	    """
-        I'm siiiiiinging in the rain !
+        """
+        I'm siiiiiinging in the rain!
         """
         # Prepare umbrella
         umbrella.remove_pouch()
@@ -101,7 +102,7 @@ something like:
 
     def dance_with_umbrella(umbrella):
         """
-        I'm siiiiiinging in the rain !
+        I'm siiiiiinging in the rain!
         """
         # This code was adapted from the original umbrella.use_umbrella function
         # (we just changed the part inside the middle while loop)
@@ -114,22 +115,23 @@ Now, install and run ``raincoat`` in your project:
 .. code-block:: console
 
     $ pip install raincoat
-	$ raincoat
+    $ raincoat
 
 
 It will:
 
-- Grep the code for all ``# Raincoat:`` comments and for each comment:
-- Look at the currently installed version of the lib (say, umbrella 16.0.3) (or, if not
-  found, the latest version)
-- Compare with the version in the Raincoat comment (here, 14.5.7)
-- If they are different, download and pip install the specified version in a temp dir
-  (using cached wheel as pip does by default, this should be quite fast in most cases)
-- Locate the code using the provided path for both the downloaded and the currently
-  installed versions
-- Diff it
-- Tell you if there's a difference (and mention the location of the original Raincoat
-  comment)
+Grep the code for all ``# Raincoat:`` comments and for each comment:
+
+#. Look at the currently installed version of the lib (say, umbrella 16.0.3) (or, if not
+   found, the latest version)
+#. Compare with the version in the Raincoat comment (here, 14.5.7)
+#. If they are different, download and pip install the specified version in a temp dir
+   (using cached wheel as pip does by default, this should be quite fast in most cases)
+#. Locate the code using the provided path for both the downloaded and the currently
+   installed versions
+#. Diff it
+#. Tell you if there's a difference (and mention the location of the original Raincoat
+   comment)
 
 Whether there is something to change or not, you've now verified your code with umbrella
 16.0.3, so you can update manually the umbrella comment.
@@ -141,8 +143,8 @@ Whether there is something to change or not, you've now verified your code with 
 Raincoat can be used like a linter, you can integrate it in CI, make it a tox target...
 
 
-And beyond !
-------------
+And beyond!
+-----------
 
 Actually, the base principle of Raincoat can be extended to many other subjects than
 PyPI packages. To fit this, Raincoat was written with a modular achitecture allowing
@@ -158,7 +160,7 @@ For now Raincoat comes with:
 
 	# Raincoat: django ticket: #26976
 
-- *PyGitHub* : Same as the PyPI module but using Github. It's useful if your upstream is
+- *PyGitHub*: Same as the PyPI module but using Github. It's useful if your upstream is
   a python package that's not on PyPI, like, say, the Python Standard Library itself.
   Say you want to know if the element ``Maildir._lookup`` in the file ``Lib/mailbox.py``
   changed on the master branch since commit 43ba8861. What you can do is:
