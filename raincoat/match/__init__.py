@@ -76,7 +76,12 @@ def check_matches(matches):
 
 
 def get_match_entrypoints():
-    return importlib_metadata.entry_points()["raincoat.match"]
+    entry_points = importlib_metadata.entry_points()
+    try:
+        return entry_points["raincoat.match"]
+    except KeyError:
+        # The old way of getting entry points was deprecated in importlib_metadata v5.0.0
+        return importlib_metadata.entry_points(group='raincoat.match')
 
 
 def compute_match_types():
