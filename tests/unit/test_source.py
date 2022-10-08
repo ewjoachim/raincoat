@@ -103,7 +103,7 @@ def test_open_installed():
     )
     assert len(source_dict) == 1
     assert "pytest/__init__.py" in source_dict
-    assert ("pytest: unit and functional " "testing with Python.\n") in source_dict[
+    assert ("pytest: unit and functional testing with Python.") in source_dict[
         "pytest/__init__.py"
     ]
 
