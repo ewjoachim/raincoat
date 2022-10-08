@@ -1,6 +1,9 @@
 from typing import Mapping
 
-import importlib_metadata
+try:
+    from importlib import metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
 
 
 def extract_metadata() -> Mapping[str, str]:

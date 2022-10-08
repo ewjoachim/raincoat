@@ -7,9 +7,13 @@ in the match_classes list at the end of this file
 import logging
 from itertools import count
 
-import importlib_metadata
-
 from raincoat.exceptions import NotMatching  # TODO
+
+try:
+    from importlib import metadata as importlib_metadata
+except ImportError:
+    import importlib_metadata
+
 
 logger = logging.getLogger(__name__)
 
