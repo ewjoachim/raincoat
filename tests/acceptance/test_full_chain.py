@@ -1,7 +1,5 @@
 import subprocess
 
-from raincoat import __version__
-
 
 def test_full_chain():
     """
@@ -18,7 +16,7 @@ def test_full_chain():
     assert result.returncode != 0
 
     details = (
-        f"raincoat == 0.1.4 vs {__version__} "
+        f"raincoat == 0.1.4 vs 0.0.0 "
         "@ raincoat/_acceptance_test.py:use_umbrella "
         "(from tests/acceptance/test_project/__init__.py:7)"
     )
