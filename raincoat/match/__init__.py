@@ -5,14 +5,15 @@ When coded, every new type of match should be added
 in the match_classes list at the end of this file
 """
 import logging
+import sys
 from itertools import count
 
 from raincoat.exceptions import NotMatching  # TODO
 
-try:
-    from importlib import metadata as importlib_metadata
-except ImportError:
+if sys.version_info < (3, 10):
     import importlib_metadata
+else:
+    from importlib import metadata as importlib_metadata
 
 
 logger = logging.getLogger(__name__)
@@ -80,7 +81,7 @@ def check_matches(matches):
 
 
 def get_match_entrypoints():
-    return importlib_metadata.entry_points()["raincoat.match"]
+    return importlib_metadata.entry_points(group="raincoat.match")
 
 
 def compute_match_types():

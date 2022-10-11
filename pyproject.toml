@@ -38,7 +38,7 @@ asttokens = "*"
 click = "*"
 colorama = "*"
 requests = "*"
-importlib-metadata = {version = "*", python = "<3.8"}
+importlib-metadata = {version = "*", python = "<3.10"}
 
 [tool.poetry.group.dev.dependencies]
 tox = "*"
