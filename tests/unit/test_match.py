@@ -1,5 +1,4 @@
 import attr
-import importlib_metadata
 import pytest
 
 from raincoat import match as match_module

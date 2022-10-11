@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
 import os
+import subprocess
 import tarfile
 import zipfile
 from distutils.version import StrictVersion
-import subprocess
 
 import importlib_metadata
 import requests
