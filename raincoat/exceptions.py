@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class RaincoatException(Exception):
     """
     Unexpected raincoat error.

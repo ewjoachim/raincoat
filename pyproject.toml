@@ -65,6 +65,7 @@ enable = true
 [tool.isort]
 profile = "black"
 known_first_party = "raincoat"
+add_imports = "__future__.annotations"
 
 [tool.doc8]
 max-line-length = 88

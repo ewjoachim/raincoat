@@ -3,6 +3,9 @@ Raincoat comments that are checked in acceptance tests
 """
 
 
+from __future__ import annotations
+
+
 def simple_function():
     # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: main
     # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: Drop.fall

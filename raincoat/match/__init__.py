@@ -4,6 +4,8 @@ All different types of matches.
 When coded, every new type of match should be added
 in the match_classes list at the end of this file
 """
+from __future__ import annotations
+
 import logging
 import sys
 from itertools import count

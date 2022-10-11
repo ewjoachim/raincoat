@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from raincoat.color import COLOR_DICT, Color, get_color
 
 

@@ -18,6 +18,8 @@ https://github.com/peopledoc/raincoat/blob/master/LICENSE
 up up down down left right left right b a
 """
 
+from __future__ import annotations
+
 from raincoat import metadata as _metadata_module
 from raincoat.match import Checker, Match, NotMatching
 
