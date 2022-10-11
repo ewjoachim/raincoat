@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import sys
 from typing import Mapping
 
-try:
-    from importlib import metadata as importlib_metadata
-except ImportError:
+if sys.version_info < (3, 10):
     import importlib_metadata
+else:
+    from importlib import metadata as importlib_metadata
 
 
 def extract_metadata() -> Mapping[str, str]:

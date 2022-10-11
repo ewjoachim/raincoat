@@ -9,6 +9,9 @@ from __future__ import annotations
 import logging
 import sys
 from itertools import count
+from typing import Iterable
+
+from typing_extensions import Protocol
 
 from raincoat.exceptions import NotMatching  # TODO
 
@@ -21,13 +24,14 @@ else:
 logger = logging.getLogger(__name__)
 
 
-class Checker:
-    pass
+class Checker(Protocol):
+    def check(self, matches: Match) -> Iterable[Match]:
+        pass
 
 
 class Match:
     match_type = None  # Will dynamically be given the name of the entrypoint
-    checker = NotImplemented
+    checker: type[Checker] | None = None
 
     def __init__(self, filename, lineno):
         self.filename = filename
@@ -75,7 +79,7 @@ def check_matches(matches):
         match_class = match_types[match_type]
         checker = match_class.checker
 
-        if checker is NotImplemented:
+        if checker is None:
             raise NotImplementedError("{} has no checker".format(match_class))
 
         for difference in checker().check(matches_for_type):
