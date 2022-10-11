@@ -4,12 +4,11 @@ import logging
 import os
 import shutil
 import tempfile
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
-def causes(exc: Optional[BaseException]):
+def causes(exc: BaseException | None):
     """
     From a single exception with a chain of causes and contexts, make an iterable
     going through every exception in the chain.

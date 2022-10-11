@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+import pathlib
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -15,9 +18,6 @@ from __future__ import annotations
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import os
-import pathlib
-from typing import List
 
 # -- Project information -----------------------------------------------------
 
@@ -77,7 +77,7 @@ html_theme = "alabaster"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
-html_static_path: List[str] = []
+html_static_path: list[str] = []
 
 autoclass_content = "both"
 
