@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.ref }}
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+          python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+
+    name: "py${{ matrix.python-version }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ matrix.python-version }}"
+          cache: "poetry"
+
+      - name: Configure Poetry to use Python ${{ matrix.python-version }}
+        run: poetry env use "${{ matrix.python-version }}"
+
+      - name: Install deps
+        run: poetry install
+
+      - name: Run tests
+        run: poetry run pytest
+
+
+  report-status:
+    name: success
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+
+      - name: Report success
+        run: echo 'Success !'
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: 'coverage'
+
+      - name: Display coverage
+        uses: ewjoachim/python-coverage-comment-action@v3
+        with:
+          MERGE_COVERAGE_FILES: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Store Pull Request comment to be posted
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-coverage-comment-action
+          path: python-coverage-comment-action.txt
