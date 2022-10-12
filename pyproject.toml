@@ -97,4 +97,5 @@ exclude_lines = [
     "raise NotImplementedError",
     "coverage: exclude",
     "if TYPE_CHECKING:",
+    "^ +\\.\\.\\.$",
 ]
