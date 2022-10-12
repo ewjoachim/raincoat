@@ -39,6 +39,7 @@ click = "*"
 colorama = "*"
 requests = "*"
 importlib-metadata = {version = "*", python = "<3.10"}
+typing-extensions = "*"
 
 [tool.poetry.group.dev.dependencies]
 tox = "*"
@@ -46,7 +47,6 @@ black = "*"
 isort = "*"
 flake8 = "*"
 mypy = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
