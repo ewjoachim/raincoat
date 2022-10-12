@@ -13,8 +13,8 @@ Raincoat
     :target: https://travis-ci.org/ewjoachim/raincoat
     :alt: Continuous Integration Status
 
-.. image:: https://codecov.io/gh/ewjoachim/raincoat/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/ewjoachim/raincoat
+.. image:: https://raw.githubusercontent.com/ewjoachim/raincoat/python-coverage-comment-action-data/badge.svg
+    :target: https://github.com/ewjoachim/raincoat/tree/python-coverage-comment-action-data
     :alt: Coverage Status
 
 .. image:: https://img.shields.io/badge/License-MIT-green.svg
