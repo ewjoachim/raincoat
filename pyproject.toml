@@ -90,6 +90,7 @@ no_implicit_optional = true
 
 [tool.coverage.run]
 omit = ["raincoat/_acceptance_test.py"]
+relative_files = true
 
 [tool.coverage.report]
 exclude_lines = [
