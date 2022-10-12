@@ -1,16 +1,21 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 import os
+import subprocess
+import sys
 import tarfile
 import zipfile
 from distutils.version import StrictVersion
-import subprocess
 
-import importlib_metadata
 import requests
 
 from raincoat import github_utils
 from raincoat.constants import FILE_NOT_FOUND
+
+if sys.version_info < (3, 10):
+    import importlib_metadata
+else:
+    from importlib import metadata as importlib_metadata
 
 
 def download_package(package, version, download_dir):

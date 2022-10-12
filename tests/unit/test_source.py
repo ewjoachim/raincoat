@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import pathlib
 
@@ -68,7 +70,10 @@ def test_open_downloaded_tarball(mocker):
 
 
 def test_current_version(mocker):
-    mocker.patch("importlib_metadata.version", return_value="1.2.3")
+    # The path for this patch is very strange but in the raincoat.source module,
+    # importlib_metadata may be either the package importlib_metadata or
+    # importlib.metadata from the standard lib depending on the python version
+    mocker.patch("raincoat.source.importlib_metadata.version", return_value="1.2.3")
     assert source.get_current_or_latest_version("pytest") == (True, "1.2.3")
 
 
@@ -103,7 +108,7 @@ def test_open_installed():
     )
     assert len(source_dict) == 1
     assert "pytest/__init__.py" in source_dict
-    assert ("pytest: unit and functional " "testing with Python.\n") in source_dict[
+    assert ("pytest: unit and functional testing with Python.") in source_dict[
         "pytest/__init__.py"
     ]
 

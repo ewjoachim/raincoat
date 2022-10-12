@@ -1,5 +1,7 @@
+from __future__ import annotations
+
+import attr
 import pytest
-import importlib_metadata
 
 from raincoat import match as match_module
 
@@ -48,47 +50,61 @@ def test_check_matches_no_checker(mocker):
 def test_compute_match_types(mocker):
     gme = mocker.patch("raincoat.match.get_match_entrypoints")
 
-    class MatchFactory(object):
+    class Match(object):
         def __init__(self, name):
             self.name = name
 
         def __repr__(self):
             return self.name
 
-    MatchA, MatchB = MatchFactory("A"), MatchFactory("B")
+    @attr.dataclass
+    class EntryPoint:
+        name: str
+        match: Match
+
+        def load(self):
+            return self.match
+
+    match_a, match_b = Match("A"), Match("B")
 
     entry_a, entry_b = gme.return_value = [
-        importlib_metadata.EntryPoint(name="a", value="aaa", group=""),
-        importlib_metadata.EntryPoint(name="b", value="bbb", group=""),
+        EntryPoint(name="a", match=match_a),
+        EntryPoint(name="b", match=match_b),
     ]
-    entry_a.load = lambda: MatchA
-    entry_b.load = lambda: MatchB
+    entry_a.load = lambda: match_a
+    entry_b.load = lambda: match_b
 
-    assert match_module.compute_match_types() == {"a": MatchA, "b": MatchB}
-    assert MatchA.match_type == "a"
-    assert MatchB.match_type == "b"
+    assert match_module.compute_match_types() == {"a": match_a, "b": match_b}
+    assert match_a.match_type == "a"
+    assert match_b.match_type == "b"
 
 
 def test_compute_match_types_duplicate(mocker, caplog):
     iep = mocker.patch("raincoat.match.get_match_entrypoints")
 
-    class MatchFactory(object):
+    class Match(object):
         def __init__(self, name):
             self.name = name
 
         def __repr__(self):
             return self.name
 
-    MatchA, MatchB = MatchFactory("A"), MatchFactory("B")
+    @attr.dataclass
+    class EntryPoint:
+        name: str
+        match: Match
+
+        def load(self):
+            return self.match
+
+    match_a, match_b = Match("A"), Match("B")
 
     entry_a, entry_b = iep.return_value = [
-        importlib_metadata.EntryPoint(name="a", value="aaa", group=""),
-        importlib_metadata.EntryPoint(name="a", value="bbb", group=""),
+        EntryPoint(name="a", match=match_a),
+        EntryPoint(name="a", match=match_b),
     ]
-    entry_a.load = lambda: MatchA
-    entry_b.load = lambda: MatchB
 
-    assert match_module.compute_match_types() == {"a": MatchA}
+    assert match_module.compute_match_types() == {"a": match_a}
 
     assert (
         "Several classes registered for the match type a" in caplog.records[0].message

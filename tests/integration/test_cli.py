@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 from raincoat import __version__, cli

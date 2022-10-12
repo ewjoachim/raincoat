@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -eux
+
+# This script is expected to be passed a PYPI_TOKEN env var
+
+poetry publish --no-interaction --build --username "__token__" --password "$PYPI_TOKEN"

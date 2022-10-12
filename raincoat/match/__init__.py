@@ -4,23 +4,34 @@ All different types of matches.
 When coded, every new type of match should be added
 in the match_classes list at the end of this file
 """
-import logging
-from itertools import count
+from __future__ import annotations
 
-import importlib_metadata
+import logging
+import sys
+from itertools import count
+from typing import Iterable
+
+from typing_extensions import Protocol
 
 from raincoat.exceptions import NotMatching  # TODO
+
+if sys.version_info < (3, 10):
+    import importlib_metadata
+else:
+    from importlib import metadata as importlib_metadata
+
 
 logger = logging.getLogger(__name__)
 
 
-class Checker:
-    pass
+class Checker(Protocol):
+    def check(self, matches: Match) -> Iterable[Match]:
+        pass
 
 
 class Match:
     match_type = None  # Will dynamically be given the name of the entrypoint
-    checker = NotImplemented
+    checker: type[Checker] | None = None
 
     def __init__(self, filename, lineno):
         self.filename = filename
@@ -68,7 +79,7 @@ def check_matches(matches):
         match_class = match_types[match_type]
         checker = match_class.checker
 
-        if checker is NotImplemented:
+        if checker is None:
             raise NotImplementedError("{} has no checker".format(match_class))
 
         for difference in checker().check(matches_for_type):
@@ -76,7 +87,7 @@ def check_matches(matches):
 
 
 def get_match_entrypoints():
-    return importlib_metadata.entry_points()["raincoat.match"]
+    return importlib_metadata.entry_points(group="raincoat.match")
 
 
 def compute_match_types():

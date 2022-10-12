@@ -1,0 +1,100 @@
+[build-system]
+requires = ["poetry-core", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "raincoat"
+version = "0.0.0"
+description = "Raincoat has you covered when you cannot stay DRY. Linter for copy-pasted code."
+authors = ["Joachim Jablon <ewjoachim@gmail.com>"]
+license = "MIT License"
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 5 - Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+]
+keywords = ["linter", "copy-paste"]
+homepage = "https://raincoat.readthedocs.io/"
+repository = "https://github.com/ewjoachim/raincoat"
+documentation = "https://raincoat.readthedocs.io/"
+
+[tool.poetry.scripts]
+raincoat = 'raincoat.cli:main'
+
+[tool.poetry.plugins."raincoat.match"]
+pypi = "raincoat.match.pypi:PyPIMatch"
+django = "raincoat.match.django:DjangoMatch"
+pygithub = "raincoat.match.pygithub:PyGithubMatch"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+asttokens = "*"
+click = "*"
+colorama = "*"
+requests = "*"
+importlib-metadata = {version = "*", python = "<3.10"}
+
+[tool.poetry.group.dev.dependencies]
+tox = "*"
+black = "*"
+isort = "*"
+flake8 = "*"
+mypy = "*"
+typing-extensions = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+pytest-mock = "*"
+pytest-cov = "*"
+pytest-click = "*"
+
+[tool.poetry.group.docs.dependencies]
+doc8 = "*"
+sphinx = "*"
+sphinx_autodoc_typehints = "*"
+sphinxcontrib-programoutput = "*"
+
+
+[tool.poetry.group.types.dependencies]
+types-colorama = "^0.4.15"
+types-requests = "^2.28.11.2"
+types-click = "^7.1.8"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[tool.isort]
+profile = "black"
+known_first_party = "raincoat"
+add_imports = "__future__.annotations"
+
+[tool.doc8]
+max-line-length = 88
+ignore-path = "docs/_build"
+
+[tool.pytest.ini_options]
+addopts = """
+    --cov-report term-missing --cov-branch --cov-report html --cov-report term
+    --cov=raincoat -vv --strict-markers -rfE --ignore=raincoat/_acceptance_test.py
+"""
+testpaths = ["tests/unit", "tests/integration", "tests/acceptance"]
+
+[tool.mypy]
+no_implicit_optional = true
+
+[tool.coverage.run]
+omit = ["raincoat/_acceptance_test.py"]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "raise NotImplementedError",
+    "coverage: exclude",
+    "if TYPE_CHECKING:",
+]

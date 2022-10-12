@@ -1,8 +1,8 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 import ast
 from collections import deque
-from typing import Iterable, Tuple
+from typing import Iterable
 
 import asttokens
 
@@ -49,7 +49,7 @@ class CodeLocator(ast.NodeVisitor):
         return self.source[line_start:line_end].splitlines()
 
 
-def find_elements(source, elements) -> Iterable[Tuple[str, Lines]]:
+def find_elements(source, elements) -> Iterable[tuple[str, Lines]]:
 
     elements = set(elements)
     if "" in elements:

@@ -3,16 +3,19 @@ Raincoat comments that are checked in acceptance tests
 """
 
 
+from __future__ import annotations
+
+
 def simple_function():
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/_acceptance_test.py element: use_umbrella  # noqa
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/_acceptance_test.py element: Umbrella.open  # noqa
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/_acceptance_test.py element: Umbrella  # noqa
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/_acceptance_test.py # noqa
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/_acceptance_test.py element: non_existant # noqa
-    # Raincoat: pypi package: raincoat==0.1.4 path: raincoat/non_existant.py # noqa
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: main
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: Drop.fall
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: Drop
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/__init__.py element: non_existant
+    # Raincoat: pypi package: raincoat_umbrella==1.0.0 path: umbrella/non_existant.py
     # Raincoat: django ticket: #25981
     # Raincoat: django ticket: #27754
-    # Raincoat: pygithub repo: peopledoc/raincoat@a35df1d path: raincoat/_acceptance_test.py element: Umbrella.open  # noqa
+    # Raincoat: pygithub repo: ewjoachim/umbrella@1.0.0 path: umbrella/__init__.py element: main
     pass
 
 
