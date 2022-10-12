@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class Checker(Protocol):
     def check(self, matches: Match) -> Iterable[Match]:
-        pass
+        ...
 
 
 class Match:
