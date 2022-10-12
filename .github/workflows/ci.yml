@@ -40,7 +40,7 @@ jobs:
         run: poetry env use "${{ matrix.python-version }}"
 
       - name: Install deps
-        run: poetry install
+        run: poetry install --only=test
 
       - name: Run tests
         run: poetry run pytest

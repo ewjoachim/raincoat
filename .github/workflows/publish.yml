@@ -22,9 +22,6 @@ jobs:
           python-version: "3"
           cache: "poetry"
 
-      - name: Install Dev dependencies
-        run: poetry install
-
       - name: Wait for tests to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-ci
