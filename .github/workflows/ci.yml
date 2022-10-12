@@ -45,6 +45,12 @@ jobs:
       - name: Run tests
         run: poetry run pytest
 
+      - name: Store coverage file
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: .coverage.${{ matrix.python-version }}
+
 
   report-status:
     name: success
