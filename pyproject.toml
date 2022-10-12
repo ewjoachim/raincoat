@@ -68,6 +68,7 @@ types-click = "^7.1.8"
 
 [tool.poetry-dynamic-versioning]
 enable = true
+pattern = '(?P<base>\d+\.\d+\.\d+)'
 
 [tool.isort]
 profile = "black"
