@@ -41,8 +41,7 @@ requests = "*"
 importlib-metadata = {version = "*", python = "<3.10"}
 typing-extensions = "*"
 
-[tool.poetry.group.dev.dependencies]
-tox = "*"
+[tool.poetry.group.lint.dependencies]
 black = "*"
 isort = "*"
 flake8 = "*"
@@ -59,7 +58,6 @@ doc8 = "*"
 sphinx = "*"
 sphinx_autodoc_typehints = "*"
 sphinxcontrib-programoutput = "*"
-
 
 [tool.poetry.group.types.dependencies]
 types-colorama = "^0.4.15"
