@@ -82,8 +82,7 @@ def check_matches(matches):
         if checker is None:
             raise NotImplementedError("{} has no checker".format(match_class))
 
-        for difference in checker().check(matches_for_type):
-            yield difference
+        yield from checker().check(matches_for_type)
 
 
 def get_match_entrypoints():

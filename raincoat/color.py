@@ -16,7 +16,7 @@ COLOR_DICT = {
 SEPARATOR = "=" * 80
 
 
-class Color(object):
+class Color:
     def __init__(self, color_dict):
         self.color_dict = color_dict
 

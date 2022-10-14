@@ -1,4 +1,4 @@
-from __future__ import absolute_import, annotations
+from __future__ import annotations
 
 import fnmatch
 import logging
@@ -83,5 +83,4 @@ def list_python_files(base_dir=".", exclude=None):
 
 def find_in_dir(base_dir=".", exclude=None):
     for python_file in list_python_files(base_dir, exclude=exclude):
-        for match in find_in_file(python_file):
-            yield match
+        yield from find_in_file(python_file)

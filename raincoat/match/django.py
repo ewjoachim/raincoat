@@ -77,7 +77,7 @@ def is_commit_in_version(commit, version, session):
     return not diff.get("status") == "diverged"
 
 
-class DjangoChecker(object):
+class DjangoChecker:
     def get_match_info(self, matches):
         info = {}
         for match in matches:
@@ -111,7 +111,7 @@ class DjangoMatch(Match):
     ticket_regex = re.compile(r"^#?(\d+)$")
 
     def __init__(self, filename, lineno, ticket):
-        super(DjangoMatch, self).__init__(filename, lineno)
+        super().__init__(filename, lineno)
 
         try:
             regex_match = self.ticket_regex.match(ticket)

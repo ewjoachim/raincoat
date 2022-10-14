@@ -11,7 +11,7 @@ PyGithubKey = namedtuple("PyGithubKey", "repo commit")
 
 class PyGithubChecker(PythonChecker):
     def __init__(self, *args, **kwargs):
-        super(PyGithubChecker, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.branch_commit_cache = {}
 
     def current_source_key(self, match):
@@ -51,7 +51,7 @@ class PyGithubMatch(PythonMatch):
         # This may be filled manually later.
         self.branch_commit = None
 
-        super(PyGithubMatch, self).__init__(filename, lineno)
+        super().__init__(filename, lineno)
 
     def __str__(self):
         return (

@@ -9,7 +9,7 @@ from raincoat import constants, parse
 from raincoat.match import Match
 
 
-class PythonChecker(object):
+class PythonChecker:
     """
     Find the matches related to the same source, find all the
     files it needs, then parse these files and compare the elements
@@ -171,7 +171,7 @@ class PythonMatch(Match):
         return self.element
 
     def format_line(self, line, color, i):
-        line = super(PythonMatch, self).format_line(line, color, i)
+        line = super().format_line(line, color, i)
         if line[0] in "+-@":
             line = color["diff" + line[0]](line)
 

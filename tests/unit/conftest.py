@@ -72,7 +72,7 @@ def match_other_version_other_file():
     )
 
 
-class ValuesAreKeys(object):
+class ValuesAreKeys:
     def __getitem__(self, key):
         return key
 

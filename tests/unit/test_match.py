@@ -50,7 +50,7 @@ def test_check_matches_no_checker(mocker):
 def test_compute_match_types(mocker):
     gme = mocker.patch("raincoat.match.get_match_entrypoints")
 
-    class Match(object):
+    class Match:
         def __init__(self, name):
             self.name = name
 
@@ -82,7 +82,7 @@ def test_compute_match_types(mocker):
 def test_compute_match_types_duplicate(mocker, caplog):
     iep = mocker.patch("raincoat.match.get_match_entrypoints")
 
-    class Match(object):
+    class Match:
         def __init__(self, name):
             self.name = name
 

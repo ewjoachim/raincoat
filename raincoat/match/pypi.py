@@ -12,7 +12,7 @@ PyPIKey = namedtuple("PyPIKey", "package version installed")
 
 class PyPIChecker(PythonChecker):
     def __init__(self, *args, **kwargs):
-        super(PyPIChecker, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.package_cache = {}
 
     def current_source_key(self, match):
@@ -55,7 +55,7 @@ class PyPIMatch(PythonMatch):
         # This may be filled manually later.
         self.other_version = None
 
-        super(PyPIMatch, self).__init__(filename, lineno)
+        super().__init__(filename, lineno)
 
     def __str__(self):
         return (

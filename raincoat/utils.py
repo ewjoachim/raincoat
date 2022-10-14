@@ -18,7 +18,7 @@ def causes(exc: BaseException | None):
         exc = exc.__cause__ or exc.__context__
 
 
-class Cleaner(object):
+class Cleaner:
     """
     Context manager that takes care of deleting
     file when it goes out of scope.
