@@ -88,7 +88,7 @@ html_theme_options = {
     "sidebar_width": "235px",
     "github_user": "ewjoachim",
     "github_repo": "raincoat",
-    "badge_branch": "master",
+    "badge_branch": "main",
     "codecov_button": True,
     "github_banner": True,
     "github_button": True,

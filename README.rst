@@ -9,7 +9,7 @@ Raincoat
     :target: http://raincoat.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/ewjoachim/raincoat.svg?branch=master
+.. image:: https://travis-ci.org/ewjoachim/raincoat.svg?branch=main
     :target: https://travis-ci.org/ewjoachim/raincoat
     :alt: Continuous Integration Status
 
@@ -18,7 +18,7 @@ Raincoat
     :alt: Coverage Status
 
 .. image:: https://img.shields.io/badge/License-MIT-green.svg
-    :target: https://github.com/ewjoachim/raincoat/blob/master/LICENSE
+    :target: https://github.com/ewjoachim/raincoat/blob/main/LICENSE
     :alt: MIT License
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg
