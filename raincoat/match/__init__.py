@@ -38,7 +38,7 @@ class Match:
         self.lineno = lineno
 
     def __str__(self):
-        return "Match in {}:{}".format(self.filename, self.lineno)
+        return f"Match in {self.filename}:{self.lineno}"
 
     def format(self, message, color):
         message = message.strip()
@@ -80,7 +80,7 @@ def check_matches(matches):
         checker = match_class.checker
 
         if checker is None:
-            raise NotImplementedError("{} has no checker".format(match_class))
+            raise NotImplementedError(f"{match_class} has no checker")
 
         yield from checker().check(matches_for_type)
 

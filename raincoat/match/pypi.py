@@ -63,9 +63,7 @@ class PyPIMatch(PythonMatch):
             "@ {match.path}:{element} "
             "(from {match.filename}:{match.lineno})".format(
                 match=self,
-                vs_match=" vs {}".format(self.other_version)
-                if self.other_version
-                else "",
+                vs_match=f" vs {self.other_version}" if self.other_version else "",
                 element=self.element or "whole module",
             )
         )

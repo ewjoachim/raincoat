@@ -19,7 +19,7 @@ else:
 
 
 def download_package(package, version, download_dir):
-    full_package = "{}=={}".format(package, version)
+    full_package = f"{package}=={version}"
 
     result = subprocess.run(
         ["pip", "download", "--no-deps", "-d", download_dir, full_package]
@@ -69,7 +69,7 @@ def open_downloaded(download_path, pathes):
     elif ext == ".whl":
         return open_in_wheel(archive_path, pathes)
     else:
-        raise NotImplementedError("Unrecognize archive format {}".format(ext))
+        raise NotImplementedError(f"Unrecognize archive format {ext}")
 
 
 def open_installed(all_files, files_to_open):
@@ -92,7 +92,7 @@ def get_current_or_latest_version(package):
         return True, importlib_metadata.version(package)
     except importlib_metadata.PackageNotFoundError:
         pass
-    pypi_url = "https://pypi.python.org/pypi/{}/json".format(package)
+    pypi_url = f"https://pypi.python.org/pypi/{package}/json"
     response = requests.get(pypi_url)
     response.raise_for_status()
     releases = response.json()["releases"]
@@ -119,7 +119,7 @@ def get_distributed_files(package):
 
 def get_branch_commit(repo, branch):
     # This may fail, but so far, I don't really know how.
-    url = "https://api.github.com/repos/{}/branches/{}".format(repo, branch)
+    url = f"https://api.github.com/repos/{repo}/branches/{branch}"
     with github_utils.get_session() as session:
         response = session.get(url)
         response.raise_for_status()

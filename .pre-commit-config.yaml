@@ -17,6 +17,7 @@ repos:
   rev: "v3.1.0"
   hooks:
   - id: pyupgrade
+    args: ["--py37-plus"]
 
 - repo: https://github.com/hadialqattan/pycln
   rev: "v2.1.1"

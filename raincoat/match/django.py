@@ -46,7 +46,7 @@ def get_merge_commit_sha1(ticket, session):
 
         if merged:
             response = session.get(
-                "https://api.github.com/repos/django/django/pulls/{}".format(number)
+                f"https://api.github.com/repos/django/django/pulls/{number}"
             )
             response.raise_for_status()
             pr_details = response.json()

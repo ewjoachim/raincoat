@@ -135,7 +135,7 @@ class PythonChecker:
                 match_element, current_element, fromfile=path, tofile=path, lineterm=""
             )
         )
-        return "Code is different:\n{}".format(diff), match
+        return f"Code is different:\n{diff}", match
 
 
 def group_composite(elements):
