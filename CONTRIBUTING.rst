@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/peopledoc/raincoat/issues.
+Report bugs at https://github.com/ewjoachim/raincoat/issues.
 
 If you are reporting a bug, please include:
 
@@ -110,7 +110,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.6, 2.7, and 3.3, and for PyPy. Check
-   https://travis-ci.org/peopledoc/raincoat/pull_requests
+   https://travis-ci.org/ewjoachim/raincoat/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips
