@@ -43,7 +43,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/peopledoc/raincoat/issues.
+The best way to send feedback is to file an issue at https://github.com/ewjoachim/raincoat/issues.
 
 If you are proposing a feature:
 
