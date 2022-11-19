@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import difflib
+import re
 import subprocess
 
 
@@ -17,9 +19,11 @@ def test_full_chain():
     print(output)
     assert result.returncode != 0
 
+    # If the test fails, copy/paste the output in place of the string below and
+    # inspect the git diff.
     expected = """
 Django ticket #25981 (from tests/acceptance/test_project/__init__.py:16)
-Ticket #25981 has been merged in Django 4.1.2
+Ticket #25981 has been merged in Django XXX
 
 ewjoachim/umbrella@1.0.0 vs master branch (95f492efa41d51d47c469e00c28c063256faa56c) at umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:18)
 Code is different:
@@ -33,6 +37,14 @@ except ScreenTooSmall:
 +        print("Screen is too small")
 sys.exit(1)
 
+Collecting raincoat_umbrella==1.0.0
+  Using cached raincoat_umbrella-1.0.0-py3-none-any.whl (5.0 kB)
+Saved XXX/raincoat_umbrella-1.0.0-py3-none-any.whl
+Successfully downloaded raincoat_umbrella
+Collecting raincoat_umbrella==2.0.0
+  Using cached raincoat_umbrella-2.0.0-py3-none-any.whl (4.3 kB)
+Saved XXX/raincoat_umbrella-2.0.0-py3-none-any.whl
+Successfully downloaded raincoat_umbrella
 raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:10)
 Code is different:
 --- umbrella/__init__.py
@@ -104,7 +116,9 @@ Invalid Raincoat PyPI comment : non_existant does not exist in umbrella/__init__
 raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/non_existant.py:whole module (from tests/acceptance/test_project/__init__.py:15)
 Invalid Raincoat PyPI comment : umbrella/non_existant.py does not exist""".strip()
 
-    # It's ok if the output has lines that we don't have,
-    # but all the expected lines should be there.
-    for line in expected.splitlines():
-        assert line in output
+    pattern = "^" + re.escape(expected).replace("XXX", ".+?") + "$"
+
+    # Note that this will display the lines with XXX as having diff, just ignore them.
+    assert re.match(pattern, output), "\n".join(
+        difflib.unified_diff(expected.splitlines(), output.splitlines())
+    )
