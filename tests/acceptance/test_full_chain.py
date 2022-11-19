@@ -38,11 +38,11 @@ except ScreenTooSmall:
 sys.exit(1)
 
 Collecting raincoat_umbrella==1.0.0
-  Using cached raincoat_umbrella-1.0.0-py3-none-any.whl (5.0 kB)
+  XXX
 Saved XXX/raincoat_umbrella-1.0.0-py3-none-any.whl
 Successfully downloaded raincoat_umbrella
 Collecting raincoat_umbrella==2.0.0
-  Using cached raincoat_umbrella-2.0.0-py3-none-any.whl (4.3 kB)
+  XXX
 Saved XXX/raincoat_umbrella-2.0.0-py3-none-any.whl
 Successfully downloaded raincoat_umbrella
 raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:10)

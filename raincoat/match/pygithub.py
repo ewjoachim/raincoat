@@ -59,9 +59,7 @@ class PyGithubMatch(PythonMatch):
             "{branch_commit} at {match.path}:{element} "
             "(from {match.filename}:{match.lineno})".format(
                 match=self,
-                branch_commit=" ({})".format(self.branch_commit)
-                if self.branch_commit
-                else "",
+                branch_commit=f" ({self.branch_commit})" if self.branch_commit else "",
                 element=self.element or "whole module",
             )
         )
