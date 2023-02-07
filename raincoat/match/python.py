@@ -103,7 +103,6 @@ class PythonChecker:
                 )
 
     def run_match(self, match, match_element, current_element):
-
         if match_element is constants.FILE_NOT_FOUND:
             return (
                 "Invalid Raincoat PyPI comment : {match.path} does "

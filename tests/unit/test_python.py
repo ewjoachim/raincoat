@@ -180,7 +180,6 @@ def test_run_matches_identical_element_not_found(python_match):
 
 
 def test_run_match(python_match):
-
     result = Checker().run_match(
         match=python_match, match_element=["element a"], current_element=["element b"]
     )
@@ -197,7 +196,6 @@ def test_run_match(python_match):
 
 
 def test_run_match_file_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=constants.FILE_NOT_FOUND,
@@ -211,7 +209,6 @@ def test_run_match_file_not_found(python_match):
 
 
 def test_run_match_element_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=constants.ELEMENT_NOT_FOUND,
@@ -225,7 +222,6 @@ def test_run_match_element_not_found(python_match):
 
 
 def test_run_match_current_file_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=["element a"],
@@ -236,7 +232,6 @@ def test_run_match_current_file_not_found(python_match):
 
 
 def test_run_match_current_element_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=["element a"],
@@ -247,7 +242,6 @@ def test_run_match_current_element_not_found(python_match):
 
 
 def test_run_match_both_files_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=constants.FILE_NOT_FOUND,
@@ -261,7 +255,6 @@ def test_run_match_both_files_not_found(python_match):
 
 
 def test_run_match_both_elements_not_found(python_match):
-
     result = Checker().run_match(
         match=python_match,
         match_element=constants.ELEMENT_NOT_FOUND,

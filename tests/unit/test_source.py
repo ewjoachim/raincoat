@@ -9,7 +9,6 @@ from raincoat import source
 
 
 def test_open_in_tarball():
-
     file_path = os.path.join(
         os.path.dirname(__file__), "samples", "fr2csv-1.0.1.tar.gz"
     )
@@ -156,7 +155,6 @@ def test_file_not_found_wheel(tmpdir, mocker):
 
 
 def test_file_not_found_installed(tmpdir, mocker):
-
     result = source.open_installed(source.get_distributed_files("pytest"), ["bla.py"])
 
     assert result == {"bla.py": source.FILE_NOT_FOUND}

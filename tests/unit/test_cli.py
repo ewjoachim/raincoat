@@ -57,7 +57,6 @@ def test_handle_errors_no_error():
 
 
 def test_main(mocker):
-
     environ = mocker.patch("os.environ", {"LANG": "fr-FR.UTF-8"})
     mocker.patch("raincoat.cli.cli")
     cli.main()
@@ -66,7 +65,6 @@ def test_main(mocker):
 
 
 def test_cli(cli_runner, mocker, match):
-
     raincoat = mocker.patch("raincoat.glue.raincoat")
 
     match.other_version = "2.0.0"
@@ -82,7 +80,6 @@ def test_cli(cli_runner, mocker, match):
 
 
 def test_cli_path(cli_runner, mocker, match):
-
     raincoat = mocker.patch("raincoat.glue.raincoat")
 
     cli_runner.invoke(cli.cli, ["tests", "raincoat", "--exclude=*.py"])

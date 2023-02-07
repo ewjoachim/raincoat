@@ -50,7 +50,6 @@ def list_python_files(base_dir=".", exclude=None):
     exclude = exclude or []
     exclude = {os.path.normpath(path) for path in exclude}
     for root, folders, files in os.walk(base_dir, topdown=True):
-
         # Prune excluded folders
         full_pathes = [
             os.path.normpath(os.path.join(root, folder)) for folder in folders

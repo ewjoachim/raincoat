@@ -50,14 +50,12 @@ class CodeLocator(ast.NodeVisitor):
 
 
 def find_elements(source, elements) -> Iterable[tuple[str, Lines]]:
-
     elements = set(elements)
     if "" in elements:
         yield "", source.splitlines()
         elements.remove("")
 
     if elements and source:
-
         locator = CodeLocator(source=source, filters=elements)
 
         for node_name, node in locator.load().items():

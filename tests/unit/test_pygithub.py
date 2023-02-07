@@ -67,7 +67,6 @@ def test_current_source_key_cache(mocker, pygithub_match):
 
 
 def test_match_source_key(pygithub_match):
-
     assert pygithub.PyGithubChecker().match_source_key(pygithub_match) == (
         "python/cpython",
         "abc123",
