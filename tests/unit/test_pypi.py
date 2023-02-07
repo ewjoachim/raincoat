@@ -51,7 +51,6 @@ def test_current_source_key_cache(mocker, match):
 
 
 def test_match_source_key(match):
-
     assert pypi.PyPIChecker().match_source_key(match) == ("umbrella", "3.2", False)
 
 

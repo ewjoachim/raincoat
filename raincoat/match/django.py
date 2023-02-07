@@ -8,7 +8,6 @@ from raincoat.match import Match, NotMatching
 
 
 def get_merge_commit_sha1(ticket, session):
-
     # This is an adaptation of
     # https://github.com/django/code.djangoproject.com/blob/
     # cad96e2d980fc0453b34dd3d17ce6cb895e1aa89/trac-env/htdocs/

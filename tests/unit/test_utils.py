@@ -46,7 +46,6 @@ def test_cleaner_folder(tmpdir):
 
 
 def test_cleaner_add_folder():
-
     with utils.Cleaner() as cleaner:
         dir_name = cleaner.mkdir()
         assert os.path.exists(dir_name)

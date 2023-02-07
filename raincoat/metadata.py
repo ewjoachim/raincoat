@@ -10,7 +10,6 @@ else:
 
 
 def extract_metadata() -> Mapping[str, str]:
-
     # Backport of Python 3.8's future importlib.metadata()
     metadata = importlib_metadata.metadata("raincoat")
 
