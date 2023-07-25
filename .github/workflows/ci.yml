@@ -4,21 +4,20 @@ on:
   pull_request:
   push:
     branches:
-      - 'main'
+      - "main"
 
 concurrency:
   group: ${{ github.event_name }}-${{ github.ref }}
 
 jobs:
   build:
-
     strategy:
       matrix:
-          python-version:
-          - "3.7"
+        python-version:
           - "3.8"
           - "3.9"
           - "3.10"
+          - "3.11"
 
     name: "py${{ matrix.python-version }}"
     runs-on: ubuntu-latest
@@ -53,13 +52,11 @@ jobs:
           name: coverage
           path: .coverage.${{ matrix.python-version }}
 
-
   report-status:
     name: success
     runs-on: ubuntu-latest
     needs: build
     steps:
-
       - name: Report success
         run: echo 'Success !'
 
@@ -73,7 +70,7 @@ jobs:
       - uses: actions/download-artifact@v3
         id: download
         with:
-          name: 'coverage'
+          name: "coverage"
 
       - name: Display coverage
         uses: ewjoachim/python-coverage-comment-action@v3
