@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-import attr
+import dataclasses
+
 import pytest
 
 from raincoat import match as match_module
@@ -57,7 +58,7 @@ def test_compute_match_types(mocker):
         def __repr__(self):
             return self.name
 
-    @attr.dataclass
+    @dataclasses.dataclass
     class EntryPoint:
         name: str
         match: Match
@@ -89,7 +90,7 @@ def test_compute_match_types_duplicate(mocker, caplog):
         def __repr__(self):
             return self.name
 
-    @attr.dataclass
+    @dataclasses.dataclass
     class EntryPoint:
         name: str
         match: Match
