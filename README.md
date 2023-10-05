@@ -6,7 +6,7 @@
 |------------------------------- | -------: | -------: | -------: | -------: | -------: | --------: |
 | raincoat/\_\_init\_\_.py       |       10 |        0 |        0 |        0 |     100% |           |
 | raincoat/\_\_main\_\_.py       |        6 |        0 |        2 |        0 |     100% |           |
-| raincoat/cli.py                |       52 |        0 |       14 |        0 |     100% |           |
+| raincoat/cli.py                |       52 |        0 |       32 |        0 |     100% |           |
 | raincoat/color.py              |       20 |        0 |        2 |        0 |     100% |           |
 | raincoat/constants.py          |        3 |        0 |        0 |        0 |     100% |           |
 | raincoat/exceptions.py         |        7 |        0 |        2 |        0 |     100% |           |
@@ -22,7 +22,7 @@
 | raincoat/parse.py              |       50 |        0 |       10 |        0 |     100% |           |
 | raincoat/source.py             |       97 |        0 |       30 |        0 |     100% |           |
 | raincoat/utils.py              |       31 |        0 |       10 |        0 |     100% |           |
-|                      **TOTAL** |  **645** |    **0** |  **182** |    **0** | **100%** |           |
+|                      **TOTAL** |  **645** |    **0** |  **200** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
