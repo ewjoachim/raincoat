@@ -58,7 +58,8 @@ jobs:
     needs: build
     steps:
       - name: Report success
-        run: echo 'Success !'
+        if: ${{ needs.build.result != 'success' }}
+        run: exit 1
 
   coverage:
     name: Coverage
