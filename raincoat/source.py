@@ -5,9 +5,9 @@ import subprocess
 import sys
 import tarfile
 import zipfile
-from distutils.version import StrictVersion
 
 import requests
+from packaging.version import parse
 
 from raincoat import github_utils
 from raincoat.constants import FILE_NOT_FOUND
@@ -101,11 +101,11 @@ def get_current_or_latest_version(package):
 
     for version in releases:
         try:
-            parsed_version = StrictVersion(version)
+            parsed_version = parse(version)
         except ValueError:
             continue
 
-        if parsed_version.prerelease:
+        if parsed_version.pre:
             continue
 
         versions.append((parsed_version, version))

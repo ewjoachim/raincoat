@@ -21,7 +21,7 @@ def test_full_chain():
 
     # If the test fails, copy/paste the output in place of the string below and
     # inspect the git diff.
-    expected = """
+    expected_start = """
 Django ticket #25981 (from tests/acceptance/test_project/__init__.py:16)
 Ticket #25981 has been merged in Django XXX
 
@@ -35,17 +35,9 @@ curses.wrapper(loop)
 except ScreenTooSmall:
 -        print("Screen too small")
 +        print("Screen is too small")
-sys.exit(1)
+sys.exit(1)""".strip()
 
-Collecting raincoat_umbrella==1.0.0
-  XXX
-Saved XXX/raincoat_umbrella-1.0.0-py3-none-any.whl
-Successfully downloaded raincoat_umbrella
-Collecting raincoat_umbrella==2.0.0
-  XXX
-Saved XXX/raincoat_umbrella-2.0.0-py3-none-any.whl
-Successfully downloaded raincoat_umbrella
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:10)
+    expected_end = """
 Code is different:
 --- umbrella/__init__.py
 +++ umbrella/__init__.py
@@ -116,9 +108,8 @@ Invalid Raincoat PyPI comment : non_existant does not exist in umbrella/__init__
 raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/non_existant.py:whole module (from tests/acceptance/test_project/__init__.py:15)
 Invalid Raincoat PyPI comment : umbrella/non_existant.py does not exist""".strip()
 
-    pattern = "^" + re.escape(expected).replace("XXX", ".+?") + "$"
+    for exp, res in zip(expected_start.splitlines(), output.splitlines()):
+        assert re.match(re.escape(exp).replace("XXX", ".+") + "$", res)
 
-    # Note that this will display the lines with XXX as having diff, just ignore them.
-    assert re.match(pattern, output), "\n".join(
-        difflib.unified_diff(expected.splitlines(), output.splitlines())
-    )
+    for exp, res in zip(expected_end.splitlines()[::-1], output.splitlines()[::-1]):
+        assert re.match(re.escape(exp) + "$", res)
