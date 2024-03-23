@@ -2,27 +2,27 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/ewjoachim/raincoat/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                           |    Stmts |     Miss |   Branch |   BrPart |    Cover |   Missing |
-|------------------------------- | -------: | -------: | -------: | -------: | -------: | --------: |
-| raincoat/\_\_init\_\_.py       |       10 |        0 |        0 |        0 |     100% |           |
-| raincoat/\_\_main\_\_.py       |        6 |        0 |        2 |        0 |     100% |           |
-| raincoat/cli.py                |       52 |        0 |       32 |        0 |     100% |           |
-| raincoat/color.py              |       20 |        0 |        2 |        0 |     100% |           |
-| raincoat/constants.py          |        3 |        0 |        0 |        0 |     100% |           |
-| raincoat/exceptions.py         |        7 |        0 |        2 |        0 |     100% |           |
-| raincoat/github\_utils.py      |        9 |        0 |        2 |        0 |     100% |           |
-| raincoat/glue.py               |       18 |        0 |        4 |        0 |     100% |           |
-| raincoat/grep.py               |       43 |        0 |       26 |        0 |     100% |           |
-| raincoat/match/\_\_init\_\_.py |       62 |        0 |       14 |        0 |     100% |           |
-| raincoat/match/django.py       |       68 |        0 |       24 |        0 |     100% |           |
-| raincoat/match/pygithub.py     |       39 |        0 |        2 |        0 |     100% |           |
-| raincoat/match/pypi.py         |       44 |        0 |        6 |        0 |     100% |           |
-| raincoat/match/python.py       |       77 |        0 |       32 |        0 |     100% |           |
-| raincoat/metadata.py           |        9 |        0 |        2 |        0 |     100% |           |
-| raincoat/parse.py              |       50 |        0 |       10 |        0 |     100% |           |
-| raincoat/source.py             |       97 |        0 |       30 |        0 |     100% |           |
-| raincoat/utils.py              |       31 |        0 |       10 |        0 |     100% |           |
-|                      **TOTAL** |  **645** |    **0** |  **200** |    **0** | **100%** |           |
+| Name                           |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
+|------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
+| raincoat/\_\_init\_\_.py       |       10 |        0 |        0 |        0 |    100% |           |
+| raincoat/\_\_main\_\_.py       |        6 |        0 |        2 |        0 |    100% |           |
+| raincoat/cli.py                |       52 |        0 |       30 |        0 |    100% |           |
+| raincoat/color.py              |       20 |        0 |        2 |        0 |    100% |           |
+| raincoat/constants.py          |        3 |        0 |        0 |        0 |    100% |           |
+| raincoat/exceptions.py         |        7 |        0 |        2 |        0 |    100% |           |
+| raincoat/github\_utils.py      |        9 |        0 |        2 |        0 |    100% |           |
+| raincoat/glue.py               |       18 |        0 |        4 |        0 |    100% |           |
+| raincoat/grep.py               |       43 |        0 |       16 |        0 |    100% |           |
+| raincoat/match/\_\_init\_\_.py |       62 |        0 |       14 |        0 |    100% |           |
+| raincoat/match/django.py       |       68 |        0 |       24 |        0 |    100% |           |
+| raincoat/match/pygithub.py     |       39 |        0 |        2 |        0 |    100% |           |
+| raincoat/match/pypi.py         |       44 |        0 |        6 |        0 |    100% |           |
+| raincoat/match/python.py       |       77 |        0 |       32 |        0 |    100% |           |
+| raincoat/metadata.py           |        9 |        0 |        2 |        0 |    100% |           |
+| raincoat/parse.py              |       50 |        0 |       10 |        0 |    100% |           |
+| raincoat/source.py             |       97 |        2 |       28 |        0 |     98% |   105-106 |
+| raincoat/utils.py              |       31 |        0 |       10 |        0 |    100% |           |
+|                      **TOTAL** |  **645** |    **2** |  **186** |    **0** | **99%** |           |
 
 
 ## Setup coverage badge
