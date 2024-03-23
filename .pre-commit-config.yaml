@@ -54,6 +54,7 @@ repos:
       - "types-click==7.1.8"
       - "asttokens==2.0.8"
       - "importlib_metadata==5.0.0"
+      - "packaging==24.0"
 
 
 - repo: https://github.com/PyCQA/doc8

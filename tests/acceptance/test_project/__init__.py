@@ -2,7 +2,6 @@
 Raincoat comments that are checked in acceptance tests
 """
 
-
 from __future__ import annotations
 
 

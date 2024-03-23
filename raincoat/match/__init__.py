@@ -4,6 +4,7 @@ All different types of matches.
 When coded, every new type of match should be added
 in the match_classes list at the end of this file
 """
+
 from __future__ import annotations
 
 import logging
@@ -25,8 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class Checker(Protocol):
-    def check(self, matches: Match) -> Iterable[Match]:
-        ...
+    def check(self, matches: Match) -> Iterable[Match]: ...
 
 
 class Match:

@@ -35,6 +35,7 @@ colorama = "*"
 requests = "*"
 importlib-metadata = { version = "*", python = "<3.10" }
 typing-extensions = "*"
+packaging = "^24.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
