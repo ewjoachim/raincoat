@@ -13,7 +13,7 @@
 | raincoat/github\_utils.py      |        9 |        0 |        2 |        0 |    100% |           |
 | raincoat/glue.py               |       18 |        0 |        4 |        0 |    100% |           |
 | raincoat/grep.py               |       43 |        0 |       16 |        0 |    100% |           |
-| raincoat/match/\_\_init\_\_.py |       62 |        0 |       14 |        0 |    100% |           |
+| raincoat/match/\_\_init\_\_.py |       62 |        0 |       16 |        1 |     99% |  29->exit |
 | raincoat/match/django.py       |       68 |        0 |       24 |        0 |    100% |           |
 | raincoat/match/pygithub.py     |       39 |        0 |        2 |        0 |    100% |           |
 | raincoat/match/pypi.py         |       44 |        0 |        6 |        0 |    100% |           |
@@ -22,7 +22,7 @@
 | raincoat/parse.py              |       50 |        0 |       10 |        0 |    100% |           |
 | raincoat/source.py             |       97 |        2 |       28 |        0 |     98% |   105-106 |
 | raincoat/utils.py              |       31 |        0 |       10 |        0 |    100% |           |
-|                      **TOTAL** |  **645** |    **2** |  **186** |    **0** | **99%** |           |
+|                      **TOTAL** |  **645** |    **2** |  **188** |    **1** | **99%** |           |
 
 
 ## Setup coverage badge
