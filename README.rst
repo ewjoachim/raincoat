@@ -1,27 +1,28 @@
 Raincoat
 ========
+|pypi| |doc| |ci| |cov| |license| |coc|
 
-.. image:: https://badge.fury.io/py/raincoat.svg
+.. |pypi| image:: https://badge.fury.io/py/raincoat.svg
     :target: https://pypi.org/pypi/raincoat
     :alt: Deployed to PyPI
 
-.. image:: https://readthedocs.org/projects/raincoat/badge/?version=latest
+.. |doc| image:: https://readthedocs.org/projects/raincoat/badge/?version=latest
     :target: http://raincoat.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://travis-ci.org/ewjoachim/raincoat.svg?branch=main
+.. |ci| image:: https://travis-ci.org/ewjoachim/raincoat.svg?branch=main
     :target: https://travis-ci.org/ewjoachim/raincoat
     :alt: Continuous Integration Status
 
-.. image:: https://raw.githubusercontent.com/ewjoachim/raincoat/python-coverage-comment-action-data/badge.svg
+.. |cov| image:: https://raw.githubusercontent.com/ewjoachim/raincoat/python-coverage-comment-action-data/badge.svg
     :target: https://github.com/ewjoachim/raincoat/tree/python-coverage-comment-action-data
     :alt: Coverage Status
 
-.. image:: https://img.shields.io/badge/License-MIT-green.svg
+.. |license| image:: https://img.shields.io/badge/License-MIT-green.svg
     :target: https://github.com/ewjoachim/raincoat/blob/main/LICENSE
     :alt: MIT License
 
-.. image:: https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg
+.. |coc| image:: https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg
     :target: CODE_OF_CONDUCT.md
     :alt: Contributor Covenant
 
