@@ -21,10 +21,10 @@ def test_full_chain():
     # If the test fails, copy/paste the output in place of the string below and
     # inspect the git diff.
     expected_start = """
-Django ticket #25981 (from tests/acceptance/test_project/__init__.py:16)
+Django ticket #25981 (from tests/acceptance/test_project/__init__.py:15)
 Ticket #25981 has been merged in Django XXX
 
-ewjoachim/umbrella@1.0.0 vs master branch (95f492efa41d51d47c469e00c28c063256faa56c) at umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:18)
+ewjoachim/umbrella@1.0.0 vs master branch (95f492efa41d51d47c469e00c28c063256faa56c) at umbrella/__init__.py:main (from tests/acceptance/test_project/__init__.py:17)
 Code is different:
 --- umbrella/__init__.py
 +++ umbrella/__init__.py
@@ -48,7 +48,7 @@ except ScreenTooSmall:
 +        print("Screen is too small")
 sys.exit(1)
 
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:Drop.fall (from tests/acceptance/test_project/__init__.py:11)
+raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:Drop.fall (from tests/acceptance/test_project/__init__.py:10)
 Code is different:
 --- umbrella/__init__.py
 +++ umbrella/__init__.py
@@ -61,7 +61,7 @@ raise self.FellOnSomething
 except curses.error:
 raise self.FellOnSomething
 
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:Drop (from tests/acceptance/test_project/__init__.py:12)
+raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:Drop (from tests/acceptance/test_project/__init__.py:11)
 Code is different:
 --- umbrella/__init__.py
 +++ umbrella/__init__.py
@@ -74,7 +74,7 @@ raise self.FellOnSomething
 except curses.error:
 raise self.FellOnSomething
 
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:whole module (from tests/acceptance/test_project/__init__.py:13)
+raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:whole module (from tests/acceptance/test_project/__init__.py:12)
 Code is different:
 --- umbrella/__init__.py
 +++ umbrella/__init__.py
@@ -101,14 +101,16 @@ raise ScreenTooSmall
 drops.add(Drop(window))
 for drop in list(drops):
 
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:non_existant (from tests/acceptance/test_project/__init__.py:14)
+raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/__init__.py:non_existant (from tests/acceptance/test_project/__init__.py:13)
 Invalid Raincoat PyPI comment : non_existant does not exist in umbrella/__init__.py
 
-raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/non_existant.py:whole module (from tests/acceptance/test_project/__init__.py:15)
+raincoat_umbrella == 1.0.0 vs 2.0.0 @ umbrella/non_existant.py:whole module (from tests/acceptance/test_project/__init__.py:14)
 Invalid Raincoat PyPI comment : umbrella/non_existant.py does not exist""".strip()
 
     for exp, res in zip(expected_start.splitlines(), output.splitlines()):
-        assert re.match(re.escape(exp).replace("XXX", ".+") + "$", res)
+        assert re.match(
+            re.escape(exp).replace("XXX", ".+") + "$", res
+        ), f"Diff:\n- {exp}\n+ {res}"
 
     for exp, res in zip(expected_end.splitlines()[::-1], output.splitlines()[::-1]):
-        assert re.match(re.escape(exp) + "$", res)
+        assert re.match(re.escape(exp) + "$", res), f"Diff:\n- {exp}\n+ {res}"
