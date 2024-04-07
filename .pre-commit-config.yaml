@@ -17,7 +17,7 @@ repos:
   - id: check-added-large-files
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: "v3.15.0"
+  rev: "v3.15.2"
   hooks:
   - id: pyupgrade
     args: ["--py37-plus"]
@@ -38,7 +38,7 @@ repos:
   - id: isort
 
 - repo: https://github.com/PyCQA/flake8
-  rev: "6.1.0"
+  rev: "7.0.0"
   hooks:
   - id: flake8
 
