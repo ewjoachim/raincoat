@@ -28,7 +28,7 @@ repos:
   - id: pycln
 
 - repo: https://github.com/psf/black
-  rev: "24.4.2"
+  rev: "24.3.0"
   hooks:
   - id: black
 
@@ -43,7 +43,7 @@ repos:
   - id: flake8
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: "v1.10.1"
+  rev: "v1.9.0"
   hooks:
   - id: mypy
     files: ^raincoat/
