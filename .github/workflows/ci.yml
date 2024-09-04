@@ -72,7 +72,7 @@ jobs:
       - uses: actions/download-artifact@v4
         id: download
         with:
-          name: "coverage-*"
+          pattern: "coverage-*"
           merge-multiple: true
 
       - name: Display coverage
