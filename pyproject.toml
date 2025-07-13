@@ -1,0 +1,83 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+
+[tool.uv-dynamic-versioning]
+pattern = "default-unprefixed"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.hatch.build.targets.sdist]
+
+[tool.hatch.build.targets.wheel]
+
+[project]
+name = "raincoat"
+dynamic = ["version"]
+description = "Raincoat has you covered when you can't stay DRY. A tool to track upstream changes in your Python projects."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Joachim Jablon", email = "ewjoachim@gmail.com" }]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = ["tomlkit"]
+
+[tool.uv]
+default-groups = ["test"]
+
+[dependency-groups]
+test = ["pytest>=8.3.5"]
+
+[project.scripts]
+raincoat = "raincoat.cli:run_cli"
+
+[tool.pytest.ini_options]
+addopts = ["-vv", "--strict-markers", "-rfE"]
+
+[tool.ruff]
+unsafe-fixes = true
+
+[tool.ruff.lint]
+# Enable ruff features:
+# E  => pycodestyle (errors), enabled in ruff default configuration
+# W  => pycodestyle (warnings)
+# F  => pyflakes, enabled in ruff default configuration
+# I  => isort
+# UP => pyupgrade
+# PL => pylint
+select = ["UP", "E", "F", "W", "PL", "I", "TID"]
+ignore = [
+    "E501",    # "Line too long"
+    "E402",    # "Module level import not at top of file"
+    "PLR2004", # "Magic value used in comparison"
+    "PLR0913", # "Too many arguments to function call"
+    "PLR0911", # "Too many return statements"
+    "PLR0912", # "Too many branches"
+    "PLR0915", # "Too many statements"
+    "PLW2901", # "Redefined loop name"
+    "PLR5501", # "Use elif instead of if"
+    "PLW0603", # "Global statement"
+    "PLW1508", # "Invalid-envvar-default"
+]
+
+# Ruff isort specific options
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.sync-pre-commit-with-uv.pyright-python]
+pypi_package_name = "pyright"
+additional_dependencies_uv_params = ["--all-extras"]

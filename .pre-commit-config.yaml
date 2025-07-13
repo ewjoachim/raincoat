@@ -1,0 +1,46 @@
+ci:
+  autoupdate_schedule: quarterly
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # File names
+      - id: check-case-conflict
+      # File formats
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      # Git shenanigans
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      # Python issues
+      - id: check-ast
+      - id: debug-statements
+      # Whitespace
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.7.7
+    hooks:
+      - id: uv-lock
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.11
+    hooks:
+      - id: ruff
+        args: [--fix, --unsafe-fixes, --show-fixes]
+      - id: ruff-format
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.400
+    hooks:
+      - id: pyright
+        additional_dependencies: []
+
+  - repo: https://github.com/ewjoachim/sync-pre-commit-with-uv
+    rev: 1.0.2
+    hooks:
+      - id: sync
