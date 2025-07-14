@@ -34,7 +34,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run tests
-        run: uv run pytest
+        run: uv --all-extras run pytest
 
   self-check:
     name: Run sync-pre-commit-with-uv on the repo itself

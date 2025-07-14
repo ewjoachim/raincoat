@@ -96,11 +96,17 @@ element = "use_umbrella"
 Now, install and run `raincoat` in your project:
 
 ```console
-$ pip install raincoat
-$ raincoat
+$ pip install 'raincoat[plugins]'
 ```
 
-It will read `raincoat.toml`, and:
+> [!NOTE]
+> the `[plugins]` extra adds the dependencies for the builtin plugins, if you don't need them, you can just install `raincoat`)
+
+```console
+$ raincoat update
+```
+
+This will read `raincoat.toml`, and:
 
 1. Find the current version of `umbrella` using the `venv` updater plugin.
 2. If that version matches `14.5.7`, we're good.
@@ -177,7 +183,7 @@ Raincoat is built around the concept of:
 - **Updater plugins**: Updater plugins are responsible for determining the current
   version of the code to compare against, so as to update the version in
   `raincoat.toml`. If you don't specify an updater plugin, you'll need to manually
-  call `raincoat update <check_name> <version>` to check if the code has changed.
+  call `raincoat update <check_name>=<version>` to check if the code has changed.
 
 ## Reference documentation
 
@@ -222,19 +228,22 @@ One may implement other diff plugins, such as:
 
 - Any other language (e.g. `typescript`, `rust`, etc.)
 
-#### Builtin version plugins
+#### Builtin updater plugins
 
 ##### `venv`
 
 Reports the currently installed version of a package in the current virtualenv.
 
-##### `github`
+##### `github-tag`
 
-Reports the latest version of a package on GitHub. If used without parameters, it will
-use the default branch of the repository. You can specify a branch to use
-(`branch="main"`) or use tags (`latest_tag=true`). When using tags, you can use
-`remove_v_prefix=true` if the project's tags are prefixed with `v` (e.g. `v1.2.3`)
-and the source plugin takes PEP-440 version strings (e.g. `1.2.3`).
+Reports the latest tag of a repository on GitHub. You can use `remove_v_prefix=true` (it's the default value) if
+the project's tags are prefixed with `v` (e.g. `v1.2.3`) and the source plugin takes
+PEP-440 version strings (e.g. `1.2.3`).
+
+##### `github-branch`
+
+Reports the latest commit hash of a branch on GitHub. You can specify a branch to use
+(`branch="main"`) or let it default to the repository's default branch.
 
 #### Other ideas
 
@@ -250,6 +259,9 @@ familiarize yourself with how those work in your Python package manager of choic
 
 - [PEP-621 compatible tool (setuptools, uv, hatch, ...)](https://setuptools.pypa.io/en/latest/userguide/entry_point.html#entry-points-for-plugins)
 - [poetry](https://python-poetry.org/docs/pyproject/#entry-points)
+
+The entry points are registered under the `raincoat.source`, `raincoat.diff` and
+`raincoat.updater` namespaces, respectively.
 
 Example (PEP-621):
 
@@ -278,7 +290,7 @@ At core, a source plugin is a _callable_ (usually a function, or an object that 
 `__call__` method) with the following signature:
 
 ```python
-def source_plugin(version: str, **config: Any) -> str:
+async def source_plugin(*, version: str, **config: Any) -> str:
     """
     A source plugin locates the code of a third party package at a specific version.
 
@@ -287,7 +299,8 @@ def source_plugin(version: str, **config: Any) -> str:
     version:
         The version of the code to locate
     config:
-        The configuration dict for the check parsed from `raincoat.toml`.
+        The configuration dict for the source section of the check parsed
+        from `raincoat.toml`.
 
     Returns
     -------
@@ -300,14 +313,17 @@ Example of a source plugin for a Rust crate:
 ```python
 import tarfile
 
-def rust_crate(version: str, crate: str, filename: str) -> str:
-    response = httpx.get(
-        f"https://static.crates.io/crates/{crate}/{crate}-{version}.crate"
-    )
-    response.raise_for_status()
-    with tarfile.open(fileobj=io.BytesIO(response.content)) as tar:
+async def rust_crate(*, version: str, crate: str, filename: str) -> str:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"https://static.crates.io/crates/{crate}/{crate}-{version}.crate"
+        )
+        response.raise_for_status()
+        content = await response.aread()
+
+    with tarfile.open(fileobj=io.BytesIO(content)) as tar:
         # Extract the file from the tar archive
-        member = tar.getmember(config["filename"])
+        member = tar.getmember(filename)
         return tar.extractfile(member).read().decode("utf-8")
 ```
 
@@ -329,7 +345,7 @@ to a specific section of the code, and returning a string explaining the differe
 `None` if they're identical.
 
 ```python
-def diff_plugin(ref: str, new: str, **config: Any) -> str | None:
+async def diff_plugin(*, ref: str, new: str, **config: Any) -> str | None:
     """
     A diff plugin computes the diff between two versions of the same code, potentially
     scoping the diff to a specific section of the code.
@@ -341,7 +357,8 @@ def diff_plugin(ref: str, new: str, **config: Any) -> str | None:
     new:
         The new code to compare with the reference code.
     config:
-        The configuration dict for the check parsed from `raincoat.toml`.
+        The configuration dict for the diff section of the check parsed
+        from `raincoat.toml`.
 
     Returns
     -------
@@ -352,10 +369,10 @@ def diff_plugin(ref: str, new: str, **config: Any) -> str | None:
 ```python
 import difflib
 
-def diff_between(ref: str, new: str, after: str, before: str) -> str:
+async def diff_between(*, ref: str, new: str, after: str, before: str) -> str | None:
     """
     A diff plugin that compares two code strings, scoped between the first occurrence
-    of `after` and the subseqyent occurrence of `before`.
+    of `after` and the subsequent occurrence of `before`.
     """
 
     scoped_ref = ref.split(after, 1)[-1].split(before, 1)[0]
@@ -403,7 +420,7 @@ section. They are expected to accept `**kwargs`, so that they can be used with
 different configurations.
 
 ```python
-def updater_plugin(**config: Any) -> str:
+async def updater_plugin(**config: Any) -> str:
     """
     An updater plugin determines the current version of the code to compare against.
 
@@ -423,14 +440,15 @@ def updater_plugin(**config: Any) -> str:
 ```python
 import httpx
 
-def github_latest_tag(repo: str, **kwargs) -> str:
+async def github_latest_tag(*, repo: str, **kwargs) -> str:
     """
     An updater plugin that fetches the latest tag of a GitHub repository.
     """
-    response = httpx.get(f"https://api.github.com/repos/{repo}/tags")
-    response.raise_for_status()
-    latest_tag = response.json()[0]["name"]
-    return latest_tag
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"https://api.github.com/repos/{repo}/tags")
+        response.raise_for_status()
+        latest_tag = (await response.json())[0]["name"]
+        return latest_tag
 ```
 
 Corresponding `raincoat.toml` configuration:
@@ -457,13 +475,13 @@ before = "\n}"
   you actually do with the code you want to track: whether you copy/paste it, or port
   it to another language, or even if you just use it as a reference, Raincoat just
   track the upstream code.
-- Raincoat's builtin plugins don't run upstream code. That said, external pligins might
+- Raincoat's builtin plugins don't run upstream code. That said, external plugins might
   do do.
 - You probably shouldn't use raincoat as a linter on every pull request if you use
   updater plugins that fetch the latest version of the code, because it will
   likely fail on every PR if the upstream code has changed.
 - For this reason, we have opted against providing a `.pre-commit-hooks.yaml` file.
-  Also, it's probably to slow to run on every commit
+  Also, it's probably too slow to run on every commit
 - For the two reasons above, we recommend running Raincoat in CI, (or manually
   when you want to update your code.)
 

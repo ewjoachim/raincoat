@@ -9,3 +9,31 @@ class RaincoatError(Exception):
         message = message.format(**kwargs)
 
         super().__init__(message)
+
+
+class RaincoatConfigFormatError(RaincoatError):
+    """The configuration file is not in the expected format: {error}"""
+
+
+class PythonDiffSyntaxError(exceptions.RaincoatError):
+    """Syntax error when parsing Python file to compare code: {error}"""
+
+
+class PythonDiffElementNotFoundError(exceptions.RaincoatError):
+    """Element {element} not found in Python source code"""
+
+
+class PypiPackageNotFoundError(RaincoatError):
+    """Package {package}=={version} not found in PyPI repository"""
+
+
+class PypiWheelDistributionNotFoundError(RaincoatError):
+    """Wheel distribution matching {match} for {package}=={version} not found in PyPI repository"""
+
+
+class PypiSdistDistributionNotFoundError(RaincoatError):
+    """Source distribution for {package}=={version} not found in PyPI repository"""
+
+
+class PypiFileNotFoundError(RaincoatError):
+    """File {path} not found in package {package}=={version}"""

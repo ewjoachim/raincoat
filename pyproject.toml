@@ -34,7 +34,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 
-dependencies = ["tomlkit"]
+dependencies = ["tomlkit>=0.12.3", "pydantic>=2.11.7"]
+
+[project.optional-dependencies]
+plugins = ["httpx>=0.27.0", "packaging>=24.0"]
 
 [tool.uv]
 default-groups = ["test"]
@@ -44,6 +47,19 @@ test = ["pytest>=8.3.5"]
 
 [project.scripts]
 raincoat = "raincoat.cli:run_cli"
+
+[project.entry-points."raincoat.source"]
+pypi = "raincoat.plugins.source:pypi"
+github = "raincoat.plugins.source:github"
+
+[project.entry-points."raincoat.diff"]
+default = "raincoat.plugins.diff:default"
+python = "raincoat.plugins.diff:python"
+
+[project.entry-points."raincoat.updater"]
+venv = "raincoat.plugins.updater:venv"
+github-tag = "raincoat.plugins.updater:github_tag"
+github-branch = "raincoat.plugins.updater:github_branch"
 
 [tool.pytest.ini_options]
 addopts = ["-vv", "--strict-markers", "-rfE"]
