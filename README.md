@@ -93,6 +93,14 @@ element = "use_umbrella"
 [checks.dance_with_umbrella.updater.venv]
 ```
 
+> [!NOTE]
+> You can also add that in `pyproject.toml` but you'll have to prefix sections with `tool.raincoat`:
+> ```toml
+> # pyproject.toml
+> [tools.raincoat.checks.dance_with_umbrella]
+> ...
+> ```
+
 Now, install and run `raincoat` in your project:
 
 ```console
