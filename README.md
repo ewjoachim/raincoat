@@ -142,7 +142,9 @@ This will read `raincoat.toml`, and:
 Of course, `raincoat` will do the above steps for all checks defined in
 `raincoat.toml`.
 
-Raincoat can be used like a linter, you can integrate it in CI.
+Raincoat should run in your CI like a "dependabot": on a cron, creating
+PRs and warning you when you need to make an upgrade but not blocking you
+on unrelated PRs.
 
 ## And beyond!
 
