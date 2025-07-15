@@ -98,7 +98,7 @@ element = "use_umbrella"
 > ```toml
 > # pyproject.toml
 > [tools.raincoat.checks.dance_with_umbrella]
-> ...
+> # ...
 > ```
 
 Now, install and run `raincoat` in your project:
