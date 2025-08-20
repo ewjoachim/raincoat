@@ -1,0 +1,4 @@
+- id: raincoat
+  name: "Raincoat: Check whether tracked upstream code has changed"
+  entry: raincoat check --update
+  language: python

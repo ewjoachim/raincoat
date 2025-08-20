@@ -16,7 +16,7 @@ from raincoat import exceptions
 from raincoat.plugins.wheel_reader import read_file_from_wheel
 
 
-async def pypi(
+def pypi(
     *,
     version: str,
     package: str,
@@ -48,8 +48,8 @@ async def pypi(
         The source code from the specified location
     """
     # Get package download URL from PyPI
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"https://pypi.org/pypi/{package}/{version}/json")
+    with httpx.Client() as client:
+        response = client.get(f"https://pypi.org/pypi/{package}/{version}/json")
         try:
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
@@ -59,14 +59,14 @@ async def pypi(
         api_data = response.json()
 
     if use_sdist:
-        return await fetch_sdist(
+        return fetch_sdist(
             package=package,
             version=version,
             path=path,
             api_data=api_data,
         )
     else:
-        return await fetch_wheel(
+        return fetch_wheel(
             package=package,
             version=version,
             path=path,
@@ -75,7 +75,7 @@ async def pypi(
         )
 
 
-async def fetch_wheel(
+def fetch_wheel(
     *,
     package: str,
     version: str,
@@ -91,7 +91,9 @@ async def fetch_wheel(
     normalized_path = f"{canonicalize_name(package)}/{path}"
 
     try:
-        return await read_file_from_wheel(url=wheel_url, path=normalized_path)
+        return read_file_from_wheel(
+            url=wheel_url, path=normalized_path, client=httpx.Client
+        )
     except KeyError as exc:
         raise exceptions.PypiFileNotFoundError(
             package=package, version=version, path=path
@@ -117,7 +119,7 @@ def find_wheel_url(
     )
 
 
-async def fetch_sdist(
+def fetch_sdist(
     *,
     package: str,
     version: str,
@@ -143,8 +145,8 @@ async def fetch_sdist(
         )
 
     # Download and extract the source
-    async with httpx.AsyncClient() as client:
-        response = await client.get(sdist_url)
+    with httpx.Client() as client:
+        response = client.get(sdist_url)
         response.raise_for_status()
 
         # Extract source
@@ -171,7 +173,7 @@ async def fetch_sdist(
             return extracted.read().decode("utf-8")
 
 
-async def github(
+def github(
     *,
     version: str,
     repo: str,
@@ -202,9 +204,9 @@ async def github(
     if "GITHUB_TOKEN" in os.environ:
         headers["Authorization"] = f"token {os.environ['GITHUB_TOKEN']}"
 
-    async with httpx.AsyncClient(headers=headers) as client:
+    with httpx.Client(headers=headers) as client:
         # Get the file content
-        response = await client.get(
+        response = client.get(
             f"https://api.github.com/repos/{repo}/contents/{path}",
             # If we don't pass this header, the format of the answer will depend on
             # the size of the file. With the header, we're sure to get the raw content.

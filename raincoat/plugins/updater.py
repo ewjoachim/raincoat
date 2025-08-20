@@ -8,8 +8,10 @@ from typing import Any
 
 import httpx
 
+import raincoat.updater
 
-async def venv(*, package: str, **config: Any) -> str:
+
+def venv(*, package: str, **config: Any) -> str:
     """
     An updater plugin that checks the installed version in the current virtualenv.
 
@@ -31,7 +33,8 @@ async def venv(*, package: str, **config: Any) -> str:
         raise ValueError(f"Package {package} not found in current environment")
 
 
-async def github_tag(*, repo: str, remove_v_prefix: bool = True, **config: Any) -> str:
+@raincoat.updater.external
+def github_tag(*, repo: str, remove_v_prefix: bool = True, **config: Any) -> str:
     """
     An updater plugin that gets the latest tag from GitHub.
 
@@ -56,9 +59,9 @@ async def github_tag(*, repo: str, remove_v_prefix: bool = True, **config: Any) 
     if "GITHUB_TOKEN" in os.environ:
         headers["Authorization"] = f"token {os.environ['GITHUB_TOKEN']}"
 
-    async with httpx.AsyncClient(headers=headers) as client:
+    with httpx.Client(headers=headers) as client:
         # Get latest tag
-        response = await client.get(f"https://api.github.com/repos/{repo}/tags")
+        response = client.get(f"https://api.github.com/repos/{repo}/tags")
         response.raise_for_status()
         tags = response.json()
         if not tags:
@@ -69,7 +72,8 @@ async def github_tag(*, repo: str, remove_v_prefix: bool = True, **config: Any) 
         return version
 
 
-async def github_branch(
+@raincoat.updater.external
+def github_branch(
     *,
     repo: str,
     branch: str | None = None,
@@ -97,17 +101,15 @@ async def github_branch(
     if "GITHUB_TOKEN" in os.environ:
         headers["Authorization"] = f"token {os.environ['GITHUB_TOKEN']}"
 
-    async with httpx.AsyncClient(headers=headers) as client:
+    with httpx.Client(headers=headers) as client:
         if not branch:
             # Get default branch
-            response = await client.get(f"https://api.github.com/repos/{repo}")
+            response = client.get(f"https://api.github.com/repos/{repo}")
             response.raise_for_status()
             branch = response.json()["default_branch"]
 
         # Get latest commit on branch
-        response = await client.get(
-            f"https://api.github.com/repos/{repo}/commits/{branch}"
-        )
+        response = client.get(f"https://api.github.com/repos/{repo}/commits/{branch}")
         response.raise_for_status()
         commit = response.json()
         return commit["sha"]

@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import asyncio
-import concurrent.futures
 import contextlib
-import functools
 import io
 import logging
 import zipfile
@@ -119,16 +116,11 @@ class HTTPRangeReader(io.RawIOBase):
         return data
 
 
-def sync_read_file_from_wheel(
-    *, url: str, path: str, client: httpx.Client | None = None
-) -> str:
+def read_file_from_wheel(*, url: str, path: str, client: httpx.Client) -> str:
     """
     Read a single file from a wheel without downloading the entire file.
 
     Uses ZipFile with a custom file-like object that performs HTTP Range requests.
-
-    This is a synchronous function, because ZipFile does not support async I/O.
-    See `read_file_from_wheel` for the async version.
 
     Parameters
     ----------
@@ -147,23 +139,7 @@ def sync_read_file_from_wheel(
         The contents of the file
     """
     with contextlib.ExitStack() as stack:
-        if client is None:
-            client = stack.enter_context(httpx.Client())
+        client = stack.enter_context(httpx.Client())
         range_file = stack.enter_context(HTTPRangeReader(url=url, client=client))
         zf = stack.enter_context(zipfile.ZipFile(file=range_file))
         return zf.read(name=path).decode(encoding="utf-8")
-
-
-async def read_file_from_wheel(
-    *,
-    url: str,
-    path: str,
-    executor: concurrent.futures.ThreadPoolExecutor | None = None,
-) -> str:
-    """
-    This is an async wrapper around sync_read_file_from_wheel that runs it in a thread.
-    """
-    call = functools.partial(sync_read_file_from_wheel, url=url, path=path)
-
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(executor=executor, func=call)

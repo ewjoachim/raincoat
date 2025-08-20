@@ -51,7 +51,7 @@ def get_element_code(tree: ast.AST, element: str) -> ast.AST:
     return found
 
 
-async def python(
+def python(
     *,
     ref: str,
     new: str,
@@ -87,7 +87,7 @@ async def python(
             new_ast = get_element_code(new_ast, element)
         except exceptions.PythonDiffElementNotFoundError:
             # If element not found in new code, consider it as removed, show diff of removal
-            return await default(
+            return default(
                 ref=ast.get_source_segment(ref, ref_ast) or ast.unparse(ref_ast),
                 new="",
             )
@@ -97,7 +97,7 @@ async def python(
         return None
 
     # If ASTs differ, show a traditional diff of real code (or of unparsed AST)
-    return await default(
+    return default(
         ref=ast.get_source_segment(ref, ref_ast) or ast.unparse(ref_ast),
         new=ast.get_source_segment(new, new_ast) or ast.unparse(new_ast),
     )

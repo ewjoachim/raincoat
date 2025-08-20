@@ -1,4 +1,4 @@
-# raincoat
+# Raincoat
 
 [![Deployed to PyPI](https://img.shields.io/pypi/v/raincoat?logo=pypi&logoColor=white)](https://pypi.org/pypi/raincoat)
 [![Deployed to PyPI](https://img.shields.io/pypi/pyversions/raincoat?logo=pypi&logoColor=white)](https://pypi.org/pypi/raincoat)
@@ -7,16 +7,16 @@
 [![MIT License](https://img.shields.io/github/license/ewjoachim/raincoat?logo=open-source-initiative&logoColor=white)](https://github.com/ewjoachim/raincoat/blob/main/LICENSE)
 
 _Raincoat has you covered when you can't stay DRY_. When the time comes where you HAVE
-to copy/paste code from a third party into your own repo, Raincoat is a kind of
+to copy/paste code from a third party into your own repo, Raincoat is a _kind of_
 linter that will track if the third party gets updated, so that you can update/adjust
 your local copy.
 
 Raincoat is a tool made with Python where Python is the main usecase, but it can be used
 for other stacks as well, thanks to its modular architecture.
 
-# What is Raincoat?
+## What is Raincoat?
 
-## The problem
+### The problem
 
 Let's say you're using a lib named `umbrella` which provides a function named
 `use_umbrella` and it reads as such:
@@ -48,7 +48,7 @@ other personal reason. So what do you do? There's no real alternative. You copy/
 the code, modify it to fit your needs and use your modified version. And whenever
 there's a change to the upstream function, chances are you'll never know.
 
-## The solution
+### The solution
 
 _Enter Raincoat._
 
@@ -75,31 +75,23 @@ def dance_with_umbrella(umbrella):
     umbrella.put_pouch()
 ```
 
-Now in `raincoat.toml`, add a section like this:
+Let's add a comment to the code so that we can track it in Raincoat:
 
-```toml
-[checks.dance_with_umbrella]
-# use_umbrella is copied and adapted in movie.singing_in_the_rain/__init__.py
-# as dance_with_umbrella
-version = "14.5.7"
-
-[checks.dance_with_umbrella.source.pypi]
-package = "umbrella"
-
-[checks.dance_with_umbrella.diff.python]
-path = "umbrella/__init__.py"
-element = "use_umbrella"
-
-[checks.dance_with_umbrella.updater.venv]
+```python
+# --- rainoat
+# [dance_with_umbrella]
+# version = "14.5.7"
+# plugins = {source = "pypi", diff = "python, updater = "venv"}
+# package = "umbrella"
+# path = "umbrella/__init__.py"
+# element = "use_umbrella"
+# ---
+def dance_with_umbrella(umbrella):
+    """
+    I'm siiiiiinging in the rain!
+    """
+    # ...
 ```
-
-> [!NOTE]
-> You can also add that in `pyproject.toml` but you'll have to prefix sections with `tool.raincoat`:
-> ```toml
-> # pyproject.toml
-> [tools.raincoat.checks.dance_with_umbrella]
-> # ...
-> ```
 
 Now, install and run `raincoat` in your project:
 
@@ -108,43 +100,46 @@ $ pip install 'raincoat[plugins]'
 ```
 
 > [!NOTE]
-> the `[plugins]` extra adds the dependencies for the builtin plugins, if you don't need them, you can just install `raincoat`)
+> the `[plugins]` extra adds the dependencies for the builtin plugins, if you don't need
+> them, you can just install `raincoat`)
 
 ```console
-$ raincoat update
+$ raincoat check
 ```
 
-This will read `raincoat.toml`, and:
+Raincoat will then do the following:
 
+1. Locate the raincoat configuration comment defined above.
 1. Find the current version of `umbrella` using the `venv` updater plugin.
-2. If that version matches `14.5.7`, we're good.
-3. If that version is different (say the current version is `16.0.3`), it will use the
+1. If that version matches `14.5.7`, we're good.
+1. If that version is different (say the current version is `16.0.3`), it will use the
    `pypi` source plugin to download the code of `umbrella` at version `14.5.7` and
    at version `16.0.3`.
-4. It will then use the `python` diff plugin to compare the 2 versions of the code
+1. It will then use the `python` diff plugin to compare the 2 versions of the code
    at the location specified in the `path` and `element` keys (so as to only compare
    the `use_umbrella` function).
-5. If the code is identical, it will rewrite the `raincoat.toml` file to update
-   the version to `16.0.3`
-6. If the code is different, it will error out and tell you that the code has changed
-   and you should update your code accordingly. It will show you the diff.
-7. Then, your role is to look at the diff, decide what to do with your code, and
-   when you're done, update the version in `raincoat.toml` to `16.0.3` manually.
+1. If the code is identical, we're good.
+1. If the code is different, it will update your comment with: `version = "16.0.3"` and
+   `old_version = "14.5.7"`, and display the diff between the two versions of the code
+   in your terminal.
+1. Then, your role is to look at the diff, decide what to do with your code, and
+   when you're done, manually remove the `old_version` line from the comment (or run
+   `raincoat fix`)
+1. Until you do that, running `raincoat check` will fail.
 
 ```diff
-  [checks.dance_with_umbrella]
-  # use_umbrella is copied and adapted in movie.singing_in_the_rain/__init__.py
-  # as dance_with_umbrella
-- version = "14.5.7"
-+ version = "16.0.3"
+  # --- raincoat
+  # [dance_with_umbrella]
+  # # use_umbrella is copied and adapted in movie.singing_in_the_rain/__init__.py
+  # # as dance_with_umbrella
+- # version = "14.5.7"
++ # version = "16.0.3"
++ # old_version = "14.5.7" # Remove this line when the diff has been checked
+  # ---
 ```
 
 Of course, `raincoat` will do the above steps for all checks defined in
-`raincoat.toml`.
-
-Raincoat should run in your CI like a "dependabot": on a cron, creating
-PRs and warning you when you need to make an upgrade but not blocking you
-on unrelated PRs.
+your codebase and in `raincoat.toml`.
 
 ## And beyond!
 
@@ -157,19 +152,12 @@ in the file `Lib/mailbox.py` at commit `43ba8861` and you need to know if it was
 on the master branch. What you can do is:
 
 ```toml
-[checks.maildir_lookup]
-
+[maildir_lookup]
 version = "43ba8861"
-
-[checks.maildir_lookup.source.github]
-repo = "python/cpython"
-
-[checks.maildir_lookup.diff.python]
-path = "Lib/mailbox.py"
-element = "Maildir._lookup"
-
-[checks.maildir_lookup.updater.github]
-branch = "main"
+source.github.repo = "python/cpython"
+diff.python.path = "Lib/mailbox.py"
+diff.python.element = "Maildir._lookup"
+updater.github_branch.branch = "main"
 ```
 
 Then, when you run Raincoat, it will file `Lib/mailbox.py` from the `python/cpython`
@@ -193,11 +181,158 @@ Raincoat is built around the concept of:
 - **Updater plugins**: Updater plugins are responsible for determining the current
   version of the code to compare against, so as to update the version in
   `raincoat.toml`. If you don't specify an updater plugin, you'll need to manually
-  call `raincoat update <check_name>=<version>` to check if the code has changed.
+  call `raincoat check <check_name>=<version>` to check if the code has changed.
+
+### The two kinds of updaters
+
+With Raincoat, you compare the code at the "reference" version with the code at
+the "new" version. There are two ways "new" can be defined:
+
+#### Internal
+
+Updaters may be set as "internal", this means the current version is only expected to
+change in relation to something else in your project changing, such as a new version of
+a dependency being set in your lock file. This is the case for the `venv` updater
+plugin.
+
+You probably want `raincoat` to check whether internal updaters report a new version
+on every PR, so that you can update your code accordingly. This is what you get by
+calling:
+
+```console
+$ raincoat check
+```
+
+This command will modify `raincoat.toml` or `pyproject.toml` if updaters report
+new versions and the code on that new version has changed, so that you can review the
+changes and update your code accordingly.
+
+#### External
+
+Updaters may be set as "external", this means the current version is expected to
+change independently of your project, such as a new version of the upstream code being
+released. This is the case for the `github-tag` and `github-branch` updater
+plugins.
+
+You probably don't want `raincoat` to check whether external updaters report a new
+version on every PR, because it will likely fail on every PR if a new version has been
+released upstream. Instead, you probably want `raincoat` to run periodically to check if
+the version has changed, and if it has, make a PR with the changes.
+
+You also probably want that PR's CI to fail if the code has changed, so that you
+can review the changes and update your code accordingly. This is what you get by
+calling:
+
+```console
+$ raincoat update
+```
+
+if updaters report new versions, this command will modify `raincoat.toml` or
+`pyproject.toml`. If the code hasn't changed, it will just update the version. If the
+code has changed, it will add an `old_version` attribute to the check. Following calls
+to `raincoat check` will then compare the code at the `old_version` with the code at
+`version`, which will fail, so that you can review the changes and update your code
+accordingly.
+
+```diff
+  # --- raincoat
+  # [dance_with_umbrella]
+- # version = "14.5.7"
++ # version = "16.0.3"
++ # old_version = "14.5.7" # Remove this line when the diff has been checked
+  # ---
+```
+
+To get the PR to pass, you will need to remove the `old_version` line. There are
+ways to remove this line simply, without checking out the PR, see the "GitHub Actions"
+section below.
 
 ## Reference documentation
 
-### `raincoat.toml`
+### inline comments, `raincoat.toml`, `pyproject.toml`
+
+Raincoat checks can be defined in a `raincoat.toml` file, or inline in your code
+using comments.
+
+#### Inline comments
+
+Given Raincoat excepts may be introduced in non-Python files, the detection allows for
+abitrary comment types. Raincoat will look for lines containing `--- raincoat`, and will
+take note of the prefix of this line. Then it will look for the following lines
+until it finds a line containing `---` with the same prefix. In each of those lines, the
+prefix will be stripped, and the remaining text will be parsed as a TOML table.
+
+Example:
+
+````python
+# --- raincoat
+# [dance_with_umbrella]
+# version = "14.5.7"
+# source.pypi.package = "umbrella"
+# diff.python.path = "umbrella/__init__.py"
+# diff.python.element = "use_umbrella"
+# updater.venv = {}
+# ---
+def dance_with_umbrella(umbrella):
+    ...
+
+#### `raincoat.toml`
+
+If you want to avoid inline comments, or if there's no good place to put it in your
+code, you can put the configuration in `raincoat.toml` . In that case, don't put the
+`# --- raincoat` prefix and `# ---` suffix.
+Also, the table should be nested in a `checks` section, like this:
+
+```toml
+[checks.dance_with_umbrella]
+version = "14.5.7"
+location = "umbrella/__init__.py"
+source.pypi.package = "umbrella"
+diff.python.path = "umbrella/__init__.py"
+diff.python.element = "use_umbrella"
+updater.venv = {}
+````
+
+When a check is defined inline, its `location` is the file where the check is defined.
+When it's defined in `raincoat.toml`, it has no default `location`. You may provide a
+`location` as an arbitrary string that will be displayed in the error message when the
+check fails.
+
+#### `pyproject.toml`
+
+It's also possible to put it in `pyproject.toml`. It works the same way as
+`raincoat.toml`, you'll have to nest sections within `tool.raincoat` (with the `checks`):
+
+```toml
+# pyproject.toml
+[tools.raincoat.checks.dance_with_umbrella]
+# ...
+```
+
+### Check configuration structure
+
+Each raincoat check configuration looks like:
+
+```toml
+[...{check_name}]
+version = "str"
+update_if_no_diff = true
+source.{source_plugin_name}.{...} = ...
+diff.{diff_plugin_name}.{...} = ...
+updater.{updater_plugin_name}.{...} = ...
+```
+
+Where:
+
+- `check_name` may be prefixed, as explained above:
+  - `[check_name]` if in an inline comment
+  - `[checks.check_name]` if in `raincoat.toml`
+  - `[tool.raincoat.checks.check_name]` if in `pyproject.toml`
+- `version` (mandatory): a string representation of the current version
+- `update_if_no_diff` (optional, default `true`): if true, the comment will be updated to the newest version even when there's no diff to report
+- `source.{source_plugin_name}.{...}`: (mandatory): source plugin name and configuration keys
+- `diff.{diff_plugin_name}.{...}`: (optional): diff plugin name and configuration keys. If not present, defaults to plugin named `default` that does a simple textual diff between the 2 full sources.
+- `updater.{updater_plugin_name}.{...}`: (optional): update plugin name and configuration keys. If not present, this check can only be updated manually.
 
 ### Builtin plugins & future ideas
 
@@ -280,14 +415,10 @@ Example (PEP-621):
 [project]
 # ...
 
-[project.entry-points."raincoat.source"]
-my_source_plugin_name = "dotted.path.to.module:callable_name"
-
-[project.entry-points."raincoat.diff"]
-my_diff_plugin_name = "dotted.path.to.module:callable_name"
-
-[project.entry-points."raincoat.updater"]
-my_updater_plugin_name = "dotted.path.to.module:callable_name"
+[project.entry-points]
+"raincoat.source".my_source_plugin_name = "dotted.path.to.module:callable_name"
+"raincoat.diff".my_diff_plugin_name = "dotted.path.to.module:callable_name"
+"raincoat.updater".my_updater_plugin_name = "dotted.path.to.module:callable_name"
 ```
 
 #### Source plugins
@@ -300,7 +431,7 @@ At core, a source plugin is a _callable_ (usually a function, or an object that 
 `__call__` method) with the following signature:
 
 ```python
-async def source_plugin(*, version: str, **config: Any) -> str:
+def source_plugin(*, version: str, **config: Any) -> str:
     """
     A source plugin locates the code of a third party package at a specific version.
 
@@ -323,13 +454,13 @@ Example of a source plugin for a Rust crate:
 ```python
 import tarfile
 
-async def rust_crate(*, version: str, crate: str, filename: str) -> str:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
+def rust_crate(*, version: str, crate: str, filename: str) -> str:
+    with httpx.Client() as client:
+        response = client.get(
             f"https://static.crates.io/crates/{crate}/{crate}-{version}.crate"
         )
         response.raise_for_status()
-        content = await response.aread()
+        content = response.aread()
 
     with tarfile.open(fileobj=io.BytesIO(content)) as tar:
         # Extract the file from the tar archive
@@ -337,15 +468,13 @@ async def rust_crate(*, version: str, crate: str, filename: str) -> str:
         return tar.extractfile(member).read().decode("utf-8")
 ```
 
-Corresponding `raincoat.toml` configuration:
+Corresponding `raincoat` configuration example:
 
 ```toml
-[checks.foo]
+[foo]
 version = "3.2.7"
-
-[checks.foo.source.rust_crate]
-crate = "some_crate"
-filename= "src/lib.rs"
+source.rust_crate.crate = "some_crate"
+source.rust_crate.filename= "src/lib.rs"
 ```
 
 #### Diff plugins
@@ -355,7 +484,7 @@ to a specific section of the code, and returning a string explaining the differe
 `None` if they're identical.
 
 ```python
-async def diff_plugin(*, ref: str, new: str, **config: Any) -> str | None:
+def diff_plugin(*, ref: str, new: str, **config: Any) -> str | None:
     """
     A diff plugin computes the diff between two versions of the same code, potentially
     scoping the diff to a specific section of the code.
@@ -379,7 +508,7 @@ async def diff_plugin(*, ref: str, new: str, **config: Any) -> str | None:
 ```python
 import difflib
 
-async def diff_between(*, ref: str, new: str, after: str, before: str) -> str | None:
+def diff_between(*, ref: str, new: str, after: str, before: str) -> str | None:
     """
     A diff plugin that compares two code strings, scoped between the first occurrence
     of `after` and the subsequent occurrence of `before`.
@@ -402,19 +531,15 @@ async def diff_between(*, ref: str, new: str, after: str, before: str) -> str | 
     )
 ```
 
-Corresponding `raincoat.toml` configuration:
+Corresponding `raincoat` configuration example:
 
 ```toml
-[checks.foo]
+[foo]
 version = "3.2.7"
-
-[checks.foo.source.rust_crate]
-crate = "some_crate"
-filename= "src/lib.rs"
-
-[checks.foo.diff.python]
-after = "fn foo("
-before = "\n}"
+source.rust_crate.crate = "some_crate"
+source.rust_crate.filename= "src/lib.rs"
+diff.between.after = "fn foo("
+diff.between.before = "\n}"
 ```
 
 #### Updater plugins
@@ -430,7 +555,7 @@ section. They are expected to accept `**kwargs`, so that they can be used with
 different configurations.
 
 ```python
-async def updater_plugin(**config: Any) -> str:
+def updater_plugin(**config: Any) -> str:
     """
     An updater plugin determines the current version of the code to compare against.
 
@@ -450,31 +575,77 @@ async def updater_plugin(**config: Any) -> str:
 ```python
 import httpx
 
-async def github_latest_tag(*, repo: str, **kwargs) -> str:
+def github_latest_tag(*, repo: str, **kwargs) -> str:
     """
     An updater plugin that fetches the latest tag of a GitHub repository.
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"https://api.github.com/repos/{repo}/tags")
+    with httpx.Client() as client:
+        response = client.get(f"https://api.github.com/repos/{repo}/tags")
         response.raise_for_status()
-        latest_tag = (await response.json())[0]["name"]
+        latest_tag = (response.json())[0]["name"]
         return latest_tag
 ```
 
-Corresponding `raincoat.toml` configuration:
+Corresponding `raincoat` configuration example:
 
 ```toml
-[checks.foo]
+[foo]
 version = "3.2.7"
+source.github.repo = "some/repo"
+updater.github_latest_tag = {}
+```
 
-[checks.foo.source.github]
-repo = "some/repo"
+##### External updaters
 
-[checks.foo.diff.python]
-after = "def foo("
-before = "\n}"
+By default, updater plugins are "internal", meaning they are considered to only detect
+a new version if _something in your project changes_, such as a new version of a
+dependency being set in your lock file. These updaters can run in the CI on every
+PR, and won't randomly fail solely because upstream code has a new version.
 
-[checks.foo.updater.github_latest_tag]
+If you want to declare your updater plugin as "external", meaning it will update the
+latest avaliable version of its project, then you should provide a callable that has the
+`external` attribute set to `True`. The recommanded way of doing that is to use the
+`@raincoat.external`. In our example above, the `github_latest_tag` updater plugin
+should be declared as external, like this:
+
+```python
+import httpx
+import raincoat
+
+@raincoat.external
+def github_latest_tag(*, repo: str, **kwargs) -> str:
+    ...
+```
+
+> [!NOTE]
+> You could also do it "the ugly way", by setting the `external` attribute
+> manually (and your type-checker will likely complain about it):
+>
+> ```python
+> import httpx
+>
+> def github_latest_tag(*, repo: str, **kwargs) -> str:
+>     ...
+> github_latest_tag.external = True
+> ```
+
+### Github Actions
+
+TODO!
+
+### Pre-commit hooks
+
+You can use Raincoat as a pre-commit hook to check if the code has changed before
+committing. This will only check the internal updaters. To do so, you can add the
+following to your `.pre-commit-config.yaml` file:
+
+```yaml
+repos:
+  # ...
+  - repo: "https://github.com/ewjoachim/raincoat"
+    rev: "x.y.z" # Use the latest version
+    hooks:
+      - id: raincoat
 ```
 
 ## Discussions
@@ -487,13 +658,8 @@ before = "\n}"
   track the upstream code.
 - Raincoat's builtin plugins don't run upstream code. That said, external plugins might
   do do.
-- You probably shouldn't use raincoat as a linter on every pull request if you use
-  updater plugins that fetch the latest version of the code, because it will
-  likely fail on every PR if the upstream code has changed.
-- For this reason, we have opted against providing a `.pre-commit-hooks.yaml` file.
-  Also, it's probably too slow to run on every commit
-- For the two reasons above, we recommend running Raincoat in CI, (or manually
-  when you want to update your code.)
+- We recommand against running external updaters on every PR, as they will
+  likely fail if a new version has been released upstream.
 
 ### v2?
 
@@ -504,7 +670,20 @@ compatibility with the previous version was a once-in-a-decade acceptable thing 
 
 If you knew Raincoat before v2, congratulations, you're a long-time fan!
 
+### Inline comments and PEP-723
+
+You'll notice that the inline comment format looks similar to the one defined by
+PEP-723, but it's not the same: Raincoat uses `---` instead of `///` to delimit
+blocks, allows multiple `raincoat` blocks in the same file and allows comments to
+be indented. Also, PEP-723 explicitly forbids the introduction of custom blocks types,
+so Raincoat's inline comments could never be PEP-723 compliant. Instead, Raincoat
+uses its own format, which is similar to PEP-723 but distinct.
+
 ## Acknowledgments
 
 This code is based on an idea we got at [Smart Impulse](http://smart-impulse.com)
 around 2014. Kudos to them.
+
+```
+
+```
