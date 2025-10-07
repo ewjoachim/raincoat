@@ -8,7 +8,7 @@ exclude: "^tests/unit/umbrella/.+"
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: trailing-whitespace
   - id: end-of-file-fixer
@@ -27,13 +27,13 @@ repos:
   hooks:
   - id: pycln
 
-- repo: https://github.com/psf/black
-  rev: "24.3.0"
+- repo: https://github.com/psf/black-pre-commit-mirror
+  rev: "25.9.0"
   hooks:
   - id: black
 
 - repo: https://github.com/PyCQA/isort
-  rev: "6.0.1"
+  rev: "6.1.0"
   hooks:
   - id: isort
 
@@ -63,6 +63,6 @@ repos:
   - id: doc8
 
 - repo: https://github.com/floatingpurr/sync_with_poetry
-  rev: 1.2.0
+  rev: 1.2.1
   hooks:
     - id: sync_with_poetry
