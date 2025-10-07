@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage for raincoat/match/pygithub.py: 100%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_81f8c14c.css" type="text/css">
+    <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="pyfile">
@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_f2ec3b22c25edd40_pypi_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.9.2">coverage.py v7.9.2</a>,
-            created at 2025-07-12 07:46 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.7">coverage.py v7.10.7</a>,
+            created at 2025-10-07 19:35 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -118,8 +118,8 @@
     <p class="pln"><span class="n"><a id="t34" href="#t34">34</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t35" href="#t35">35</a></span><span class="t">    <span class="key">def</span> <span class="nam">get_source</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">key</span><span class="op">,</span> <span class="nam">files</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t36" href="#t36">36</a></span><span class="t">        <span class="key">return</span> <span class="nam">source</span><span class="op">.</span><span class="nam">download_files_from_repo</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t37" href="#t37">37</a></span><span class="t">            <span class="nam">repo</span><span class="op">=</span><span class="nam">key</span><span class="op">.</span><span class="nam">repo</span><span class="op">,</span> <span class="nam">commit</span><span class="op">=</span><span class="nam">key</span><span class="op">.</span><span class="nam">commit</span><span class="op">,</span> <span class="nam">files</span><span class="op">=</span><span class="nam">files</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t37" href="#t37">37</a></span><span class="t">            <span class="nam">repo</span><span class="op">=</span><span class="nam">key</span><span class="op">.</span><span class="nam">repo</span><span class="op">,</span> <span class="nam">commit</span><span class="op">=</span><span class="nam">key</span><span class="op">.</span><span class="nam">commit</span><span class="op">,</span> <span class="nam">files</span><span class="op">=</span><span class="nam">files</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t"><span class="key">class</span> <span class="nam">PyGithubMatch</span><span class="op">(</span><span class="nam">PythonMatch</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -139,14 +139,14 @@
     <p class="pln"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t">    <span class="key">def</span> <span class="nam">__str__</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t">        <span class="key">return</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">            <span class="str">"{match.repo}@{match.commit} vs {match.branch} branch"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">            <span class="str">"{branch_commit} at {match.path}:{element} "</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">            <span class="str">"(from {match.filename}:{match.lineno})"</span><span class="op">.</span><span class="nam">format</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">                <span class="nam">match</span><span class="op">=</span><span class="nam">self</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">                <span class="nam">branch_commit</span><span class="op">=</span><span class="fst">f"</span><span class="fst"> (</span><span class="op">{</span><span class="nam">self</span><span class="op">.</span><span class="nam">branch_commit</span><span class="op">}</span><span class="fst">)</span><span class="fst">"</span> <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">branch_commit</span> <span class="key">else</span> <span class="str">""</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">                <span class="nam">element</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">element</span> <span class="key">or</span> <span class="str">"whole module"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t">            <span class="str">"{match.repo}@{match.commit} vs {match.branch} branch"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">            <span class="str">"{branch_commit} at {match.path}:{element} "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">            <span class="str">"(from {match.filename}:{match.lineno})"</span><span class="op">.</span><span class="nam">format</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">                <span class="nam">match</span><span class="op">=</span><span class="nam">self</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">                <span class="nam">branch_commit</span><span class="op">=</span><span class="fst">f"</span><span class="fst"> (</span><span class="op">{</span><span class="nam">self</span><span class="op">.</span><span class="nam">branch_commit</span><span class="op">}</span><span class="fst">)</span><span class="fst">"</span> <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">branch_commit</span> <span class="key">else</span> <span class="str">""</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">                <span class="nam">element</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">element</span> <span class="key">or</span> <span class="str">"whole module"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">    <span class="nam">checker</span> <span class="op">=</span> <span class="nam">PyGithubChecker</span>&nbsp;</span><span class="r"></span></p>
 </main>
@@ -157,8 +157,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_f2ec3b22c25edd40_pypi_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.9.2">coverage.py v7.9.2</a>,
-            created at 2025-07-12 07:46 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.7">coverage.py v7.10.7</a>,
+            created at 2025-10-07 19:35 +0000
         </p>
     </div>
 </footer>
