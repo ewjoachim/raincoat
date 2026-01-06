@@ -22,7 +22,7 @@
 | raincoat/parse.py              |       50 |        0 |       10 |        0 |    100% |           |
 | raincoat/source.py             |       97 |        2 |       20 |        0 |     98% |   105-106 |
 | raincoat/utils.py              |       31 |        0 |       10 |        0 |    100% |           |
-|                      **TOTAL** |  **645** |    **2** |  **146** |    **1** | **99%** |           |
+| **TOTAL**                      |  **645** |    **2** |  **146** |    **1** | **99%** |           |
 
 
 ## Setup coverage badge
