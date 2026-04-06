@@ -77,11 +77,9 @@ def test_empty():
 
 def test_find_in_file(match_class):
     with tempfile.NamedTemporaryFile("w+") as handler:
-        handler.write(
-            """
+        handler.write("""
             # Raincoat: pypi package: BLA==1.2.3 path: yo/yeah.py element: foo
-        """
-        )
+        """)
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
         assert len(matches) == 1
@@ -89,8 +87,7 @@ def test_find_in_file(match_class):
 
 def test_find_in_file_encoding(match_class, caplog):
     with tempfile.NamedTemporaryFile("wb+") as handler:
-        handler.write(
-            b"""
+        handler.write(b"""
             b"# coding: iso-8859-5
             # (Unlikely to be the default encoding for most testers.)
             # \xb1\xb6\xff\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8
@@ -98,8 +95,7 @@ def test_find_in_file_encoding(match_class, caplog):
             u = '\xae\xe2\xf0\xc4'
             "
 
-        """
-        )
+        """)
         handler.seek(0)
         matches = list(grep.find_in_file(handler.name))
 
