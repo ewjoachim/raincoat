@@ -13,7 +13,7 @@
 | raincoat/github\_utils.py      |        9 |        0 |        2 |        0 |    100% |           |
 | raincoat/glue.py               |       18 |        0 |        4 |        0 |    100% |           |
 | raincoat/grep.py               |       43 |        0 |       12 |        0 |    100% |           |
-| raincoat/match/\_\_init\_\_.py |       62 |        0 |       16 |        1 |     99% |  29->exit |
+| raincoat/match/\_\_init\_\_.py |       62 |        0 |       16 |        1 |     99% | 29-\>exit |
 | raincoat/match/django.py       |       68 |        0 |       20 |        0 |    100% |           |
 | raincoat/match/pygithub.py     |       39 |        0 |        2 |        0 |    100% |           |
 | raincoat/match/pypi.py         |       44 |        0 |        4 |        0 |    100% |           |
