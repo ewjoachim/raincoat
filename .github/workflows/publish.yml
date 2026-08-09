@@ -10,14 +10,14 @@ jobs:
     name: Publish package to PyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Install poetry
         run: |
           pipx install poetry
           pipx inject poetry 'poetry-dynamic-versioning[plugin]'
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v7
         with:
           python-version: "3"
           cache: "poetry"
